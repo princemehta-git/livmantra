@@ -1,0 +1,140 @@
+{
+  "body": {
+    "Ectomorph": {
+      "paragraph": "You are naturally light, quick, sensitive, and mentally active. Your body responds fast to change, and so does your mind. You may find it hard to gain weight, and energy may fluctuate.",
+      "commonFeeling": "Sometimes my mind is ahead of my body.",
+      "tip": "Eat warm, cooked foods and keep a steady meal routine."
+    },
+    "Mesomorph": {
+      "paragraph": "You are naturally strong, athletic, and focused. Your digestion is usually good, and your body responds well to routines. You have an inner fire and drive that makes you disciplined.",
+      "commonFeeling": "My energy is strong but sometimes overheats.",
+      "tip": "Keep meals non-spicy and avoid skipping meals."
+    },
+    "Endomorph": {
+      "paragraph": "You are naturally grounded, steady, supportive, and emotionally warm. Your body holds energy well, but sometimes this turns into heaviness.",
+      "commonFeeling": "I start slow but remain steady.",
+      "tip": "Start your morning with movement before eating."
+    }
+  },
+  "modifiers": {
+    "Ectomorph": {
+      "Pitta": "You feel light but also driven, sharp, and intense.",
+      "Kapha": "You feel light but sometimes get tired easily or feel low energy."
+    },
+    "Mesomorph": {
+      "Vata": "You feel strong but also get restless or overstimulated.",
+      "Kapha": "You feel strong but also experience heaviness or cravings at times."
+    },
+    "Endomorph": {
+      "Vata": "Heaviness with restlessness or anxiety.",
+      "Pitta": "Heaviness with internal heat, irritation, or acidity."
+    }
+  },
+  "prakriti": {
+    "Vata": {
+      "paragraph": "You are creative, intuitive, imaginative, fast-thinking, and emotionally sensitive. You notice things others miss.",
+      "strengths": [
+        "Quick learner",
+        "Creative mind",
+        "Empathetic"
+      ],
+      "tip": "Warmth + routine stabilizes you."
+    },
+    "Pitta": {
+      "paragraph": "You are driven, focused, practical, disciplined, and passionate. You like clarity and purpose.",
+      "strengths": [
+        "Leadership",
+        "Determination",
+        "Problem-solving"
+      ],
+      "tip": "Cooling foods calm your inner fire."
+    },
+    "Kapha": {
+      "paragraph": "You are nurturing, patient, loyal, kind, and emotionally deep. People trust you quickly.",
+      "strengths": [
+        "Stability",
+        "Compassion",
+        "Endurance"
+      ],
+      "tip": "Movement + warmth keeps you energized."
+    }
+  },
+  "prakritiModifiers": {
+    "Vata": {
+      "Pitta": "Creative + sharp — beautiful combination but needs cooling.",
+      "Kapha": "Creative + steady — needs stimulation to avoid stagnation."
+    },
+    "Pitta": {
+      "Vata": "Driven + restless — powerful but needs grounding.",
+      "Kapha": "Driven + steady — powerhouse but needs lightness."
+    },
+    "Kapha": {
+      "Vata": "Nurturing + sensitive — needs grounding.",
+      "Pitta": "Nurturing + strong — needs cooling."
+    }
+  },
+  "vikriti": {
+    "Vata": {
+      "paragraph": "You may feel restless, anxious, overwhelmed, or mentally overactive. Your body may feel cold, sensitive, or irregular.",
+      "quickTip": "Warm foods + early dinners + grounding breathwork.",
+      "empathyLine": "Your system feels restless and needs grounding."
+    },
+    "Pitta": {
+      "paragraph": "You may feel irritated, heated, acidic, impatient, or mentally overdriven.",
+      "quickTip": "Cool down your system — avoid spicy food for 48 hours.",
+      "empathyLine": "Your system is heated — cool and calm routines will help."
+    },
+    "Kapha": {
+      "paragraph": "You may feel heavy, dull, emotionally low, or low on energy.",
+      "quickTip": "Warm water + movement first thing in morning.",
+      "empathyLine": "Your system feels heavy — warmth, movement and light foods will help."
+    },
+    "Vata-Pitta": {
+      "paragraph": "You may feel restless + irritated together — tired but unable to relax.",
+      "quickTip": "Warm, soft meals; no spicy foods for the next 48 hours.",
+      "empathyLine": "Restless and heated — ground + cool."
+    },
+    "Pitta-Vata": {
+      "paragraph": "You may feel overwhelmed + overheated — anxious but triggered easily.",
+      "quickTip": "Cool the body; slow the mind.",
+      "empathyLine": "Heated and restless — cool + ground."
+    },
+    "Pitta-Kapha": {
+      "paragraph": "Heat trapped under heaviness — frustration mixing with emotional weight.",
+      "quickTip": "Light dinners + avoid spicy food.",
+      "empathyLine": "Heated and heavy — cool + move."
+    },
+    "Kapha-Pitta": {
+      "paragraph": "Feeling stuck but irritated; heavy inside and hot inside.",
+      "quickTip": "Warm morning routine + light meals.",
+      "empathyLine": "Heavy and heated — move + cool."
+    },
+    "Vata-Kapha": {
+      "paragraph": "Restless mind + heavy body — wanting to move but unable to start.",
+      "quickTip": "Warm water + 20 min walk today.",
+      "empathyLine": "Restless yet heavy — ground + move."
+    },
+    "Kapha-Vata": {
+      "paragraph": "Heavy body + anxious mind — emotional weight plus mental restlessness.",
+      "quickTip": "Warm, light meals + grounding breath.",
+      "empathyLine": "Heavy yet restless — move + ground."
+    },
+    "Balanced": {
+      "paragraph": "Your current Vikriti shows a balanced state, with all three doshas working in harmony. This indicates good overall health and balance in your system. Continue maintaining your current routines, diet, and lifestyle practices that support this equilibrium.",
+      "quickTip": "Maintain your current balanced routines and lifestyle practices.",
+      "empathyLine": "You're well balanced — maintain your current routines."
+    }
+  },
+  "paidPreview": {
+    "text": "To help you heal deeply, I've created a personalized 14-day plan that includes: Food plan • Movement plan • Sleep guidance • Emotional healing ritual • 24-hour quick fix • Herb suggestions • What your body is REALLY trying to tell you",
+    "features": [
+      "Food plan",
+      "Movement plan",
+      "Sleep guidance",
+      "Emotional healing ritual",
+      "24-hour quick fix",
+      "Herb suggestions",
+      "What your body is REALLY trying to tell you"
+    ]
+  }
+}

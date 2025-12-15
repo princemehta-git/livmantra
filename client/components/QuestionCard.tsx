@@ -1,11 +1,13 @@
 import React from "react";
-import { Card, CardContent, Typography, Button, Box } from "@mui/material";
+import { Card, CardContent, Typography, Button, Box, Tooltip, IconButton } from "@mui/material";
+import { InfoOutlined } from "@mui/icons-material";
 import { motion } from "framer-motion";
 
 type Props = {
   qIndex: number;
   text: string;
   options: string[];
+  hint?: string;
   onAnswer: (val: number) => void;
   selected?: number;
 };
@@ -14,6 +16,7 @@ export default function QuestionCard({
   qIndex,
   text,
   options,
+  hint,
   onAnswer,
   selected,
 }: Props) {
@@ -26,45 +29,132 @@ export default function QuestionCard({
       <Card 
         sx={{ 
           mb: 3,
-          background: "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)",
+          background: "rgba(10, 14, 39, 0.6)",
           backdropFilter: "blur(10px)",
-          border: "1px solid rgba(99, 102, 241, 0.1)",
-          boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+          border: "1px solid rgba(0, 255, 255, 0.2)",
+          borderRadius: 0,
+          boxShadow: "0 0 30px rgba(0, 255, 255, 0.1), inset 0 0 20px rgba(138, 43, 226, 0.05)",
+          position: "relative",
+          overflow: "hidden",
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: "2px",
+            background: "linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.5), transparent)",
+            animation: "shimmer 2s linear infinite",
+          },
+          "&:hover": {
+            borderColor: "rgba(0, 255, 255, 0.4)",
+            boxShadow: "0 0 40px rgba(0, 255, 255, 0.2), inset 0 0 30px rgba(138, 43, 226, 0.1)",
+          },
+          transition: "all 0.3s ease",
         }}
       >
         <CardContent sx={{ p: 4 }}>
-          <Box
-            sx={{
-              display: "inline-flex",
-              px: 2,
-              py: 0.5,
-              borderRadius: 2,
-              background: "linear-gradient(135deg, #6366f1 0%, #ec4899 100%)",
-              mb: 3,
-            }}
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3 }}
           >
-            <Typography 
-              variant="h6" 
-              sx={{ 
-                color: "white",
-                fontWeight: 700,
-                fontSize: "0.9rem",
+            <Box
+              sx={{
+                display: "inline-flex",
+                px: 3,
+                py: 1,
+                borderRadius: 0,
+                background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
+                mb: 3,
+                border: "1px solid rgba(0, 255, 255, 0.5)",
+                boxShadow: "0 0 20px rgba(0, 255, 255, 0.4)",
               }}
             >
-              Q{qIndex + 1}
+              <Typography 
+                variant="h6" 
+                sx={{ 
+                  color: "#0a0e27",
+                  fontWeight: 900,
+                  fontSize: "0.9rem",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                }}
+              >
+                Question {qIndex + 1}
+              </Typography>
+            </Box>
+          </motion.div>
+          <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1, my: 3 }}>
+            <Typography 
+              variant="h5" 
+              sx={{ 
+                fontWeight: 600,
+                color: "#ffffff",
+                lineHeight: 1.6,
+                flex: 1,
+                fontSize: { xs: "1.25rem", md: "1.5rem" },
+              }}
+            >
+              {text}
             </Typography>
+            {hint && (
+              <Tooltip
+                title={hint}
+                arrow
+                placement="top"
+                PopperProps={{
+                  modifiers: [
+                    {
+                      name: "offset",
+                      options: {
+                        offset: [0, 8],
+                      },
+                    },
+                  ],
+                }}
+                slotProps={{
+                  tooltip: {
+                    sx: {
+                      bgcolor: "rgba(15, 23, 42, 0.95)",
+                      backdropFilter: "blur(10px)",
+                      color: "#f1f5f9",
+                      fontSize: "0.95rem",
+                      padding: "12px 16px",
+                      borderRadius: "8px",
+                      boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2)",
+                      border: "1px solid rgba(99, 102, 241, 0.2)",
+                      maxWidth: 300,
+                      "& .MuiTooltip-arrow": {
+                        color: "rgba(15, 23, 42, 0.95)",
+                      },
+                    },
+                  },
+                }}
+              >
+                <IconButton
+                  size="small"
+                  sx={{
+                    color: "#00ffff",
+                    bgcolor: "rgba(0, 255, 255, 0.1)",
+                    border: "1px solid rgba(0, 255, 255, 0.3)",
+                    width: 32,
+                    height: 32,
+                    borderRadius: 0,
+                    "&:hover": {
+                      bgcolor: "rgba(0, 255, 255, 0.2)",
+                      borderColor: "rgba(0, 255, 255, 0.6)",
+                      boxShadow: "0 0 15px rgba(0, 255, 255, 0.4)",
+                      transform: "scale(1.1)",
+                    },
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  <InfoOutlined sx={{ fontSize: 18 }} />
+                </IconButton>
+              </Tooltip>
+            )}
           </Box>
-          <Typography 
-            variant="h5" 
-            sx={{ 
-              my: 3,
-              fontWeight: 600,
-              color: "#1e293b",
-              lineHeight: 1.6,
-            }}
-          >
-            {text}
-          </Typography>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {[1, 2, 3].map((val) => (
               <motion.div
@@ -81,29 +171,34 @@ export default function QuestionCard({
                     textAlign: "left",
                     justifyContent: "flex-start",
                     px: 3,
-                    py: 2,
-                    borderRadius: 2,
+                    py: 2.5,
+                    borderRadius: 0,
                     fontSize: "1rem",
                     fontWeight: 600,
                     textTransform: "none",
                     ...(selected === val
                       ? {
-                          background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
-                          color: "white",
-                          boxShadow: "0 10px 15px -3px rgba(99, 102, 241, 0.3), 0 4px 6px -2px rgba(99, 102, 241, 0.2)",
+                          background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
+                          color: "#0a0e27",
+                          border: "2px solid #00ffff",
+                          boxShadow: "0 0 25px rgba(0, 255, 255, 0.5), inset 0 0 15px rgba(138, 43, 226, 0.2)",
                           "&:hover": {
-                            background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
-                            boxShadow: "0 20px 25px -5px rgba(99, 102, 241, 0.4), 0 10px 10px -5px rgba(99, 102, 241, 0.2)",
+                            background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
+                            boxShadow: "0 0 35px rgba(0, 255, 255, 0.7), inset 0 0 20px rgba(138, 43, 226, 0.3)",
+                            transform: "translateY(-2px)",
                           },
                         }
                       : {
-                          borderColor: "#e2e8f0",
-                          color: "#475569",
+                          borderColor: "rgba(0, 255, 255, 0.3)",
+                          color: "rgba(255, 255, 255, 0.8)",
                           borderWidth: 2,
+                          bgcolor: "rgba(0, 255, 255, 0.05)",
                           "&:hover": {
-                            borderColor: "#6366f1",
-                            bgcolor: "rgba(99, 102, 241, 0.05)",
+                            borderColor: "rgba(0, 255, 255, 0.6)",
+                            bgcolor: "rgba(0, 255, 255, 0.15)",
+                            boxShadow: "0 0 20px rgba(0, 255, 255, 0.3)",
                             borderWidth: 2,
+                            color: "#00ffff",
                           },
                         }),
                     transition: "all 0.3s ease",

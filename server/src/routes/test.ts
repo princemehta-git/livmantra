@@ -12,8 +12,8 @@ router.post("/submit", async (req, res) => {
 
     // Validate answers if VPK test
     if (testType === "VPK") {
-      if (!Array.isArray(answers) || answers.length !== 36) {
-        return res.status(400).json({ error: "answers must be an array of length 36" });
+      if (!Array.isArray(answers) || answers.length !== 35) {
+        return res.status(400).json({ error: "answers must be an array of length 35" });
       }
       const invalidValues = answers.filter((a: number) => a !== 1 && a !== 2 && a !== 3);
       if (invalidValues.length > 0) {

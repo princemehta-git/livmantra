@@ -65,10 +65,9 @@ export default function Header() {
                     fontWeight: 900,
                     fontSize: "1.5rem",
                     letterSpacing: "0.1em",
-                    textTransform: "uppercase",
                   }}
                 >
-                  LIVMANTRA
+                  LivMantra
                 </Typography>
               </Box>
             </Box>

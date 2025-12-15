@@ -37,6 +37,46 @@ export type Templates = {
     text: string;
     features: string[];
   };
+  bodyCodeReports?: {
+    [key: string]: {
+      title: string;
+      subtitle: string;
+      howYourBodyLives: string;
+      howYourMindMoves?: string;
+      howYourMindWorks?: string;
+      howStressShowsUp: string;
+      earlySignals: string[];
+      dailyAnchors: string[];
+      closingMessage: string;
+    };
+  };
+  prakritiCodeReports?: {
+    [key: string]: {
+      title: string;
+      subtitle: string;
+      yourNaturalNature: string;
+      howYouThinkAndRespond: string;
+      yourSuperpowers: string[];
+      whenThisGetsTooMuch: string;
+      lifeStageAndSeasonSensitivity: string;
+      anchors: string[];
+      anchorsTitle: string;
+      closingMessage: string;
+    };
+  };
+  vikritiCodeReports?: {
+    [key: string]: {
+      title: string;
+      subtitle: string;
+      whatsHappening: string;
+      whyFeelingLikeThis: string;
+      commonSymptoms: string[];
+      earlyWarningsTitle: string;
+      earlyWarnings: string;
+      whatYourBodyNeeds: string[];
+      closingMessage: string;
+    };
+  };
 };
 
 let templatesCache: Templates | null = null;
@@ -92,6 +132,40 @@ export function mergeReportWithTemplates(result: any): {
   vikritiQuickTip: string;
   vikritiEmpathyLine: string;
   paidPreviewText: string;
+  bodyCodeReport: {
+    title: string;
+    subtitle: string;
+    howYourBodyLives: string;
+    howYourMindMoves?: string;
+    howYourMindWorks?: string;
+    howStressShowsUp: string;
+    earlySignals: string[];
+    dailyAnchors: string[];
+    closingMessage: string;
+  } | null;
+  prakritiCodeReport: {
+    title: string;
+    subtitle: string;
+    yourNaturalNature: string;
+    howYouThinkAndRespond: string;
+    yourSuperpowers: string[];
+    whenThisGetsTooMuch: string;
+    lifeStageAndSeasonSensitivity: string;
+    anchors: string[];
+    anchorsTitle: string;
+    closingMessage: string;
+  } | null;
+  vikritiCodeReport: {
+    title: string;
+    subtitle: string;
+    whatsHappening: string;
+    whyFeelingLikeThis: string;
+    commonSymptoms: string[];
+    earlyWarningsTitle: string;
+    earlyWarnings: string;
+    whatYourBodyNeeds: string[];
+    closingMessage: string;
+  } | null;
 } {
   const templates = loadTemplates();
   const bodyType = result.bodyTypeDetailed?.primary || result.bodyType;
@@ -147,6 +221,27 @@ export function mergeReportWithTemplates(result: any): {
   // Paid preview
   const paidPreviewText = templates.paidPreview?.text || "72-hour reset • 14-day meal plan • 14-day movement plan";
 
+  // Body code report (B1-B9)
+  let bodyCodeReport = null;
+  const bodyCode = result.bodyCode;
+  if (bodyCode && templates.bodyCodeReports && templates.bodyCodeReports[bodyCode]) {
+    bodyCodeReport = templates.bodyCodeReports[bodyCode];
+  }
+
+  // Prakriti code report (P1-P9)
+  let prakritiCodeReport = null;
+  const prakritiCode = result.prakritiCode;
+  if (prakritiCode && templates.prakritiCodeReports && templates.prakritiCodeReports[prakritiCode]) {
+    prakritiCodeReport = templates.prakritiCodeReports[prakritiCode];
+  }
+
+  // Vikriti code report (V0-V9)
+  let vikritiCodeReport = null;
+  const vikritiCode = result.vikritiCode;
+  if (vikritiCode && templates.vikritiCodeReports && templates.vikritiCodeReports[vikritiCode]) {
+    vikritiCodeReport = templates.vikritiCodeReports[vikritiCode];
+  }
+
   return {
     bodyParagraph: bodyTemplate.paragraph,
     bodyModifierLine,
@@ -160,6 +255,9 @@ export function mergeReportWithTemplates(result: any): {
     vikritiQuickTip: vikritiTemplate.quickTip,
     vikritiEmpathyLine: vikritiTemplate.empathyLine || result.shortEmotionalLine,
     paidPreviewText,
+    bodyCodeReport,
+    prakritiCodeReport,
+    vikritiCodeReport,
   };
 }
 

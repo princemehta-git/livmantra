@@ -231,18 +231,18 @@ describe("VPK Scoring Service", () => {
 
   describe("scoreVPK - Integration Tests", () => {
     it("should validate input length", () => {
-      expect(() => scoreVPK([])).toThrow("answers must be length 36");
-      expect(() => scoreVPK(new Array(35).fill(1))).toThrow("answers must be length 36");
+      expect(() => scoreVPK([])).toThrow("answers must be length 35");
+      expect(() => scoreVPK(new Array(34).fill(1))).toThrow("answers must be length 35");
     });
 
     it("should validate answer values", () => {
-      const invalid = new Array(36).fill(1);
+      const invalid = new Array(35).fill(1);
       invalid[0] = 4;
       expect(() => scoreVPK(invalid)).toThrow("Invalid answer value");
     });
 
     it("should return backward compatible structure", () => {
-      const answers = new Array(36).fill(1);
+      const answers = new Array(35).fill(1);
       const result = scoreVPK(answers);
       expect(result).toHaveProperty("bodyType");
       expect(result).toHaveProperty("prakriti");
@@ -252,7 +252,7 @@ describe("VPK Scoring Service", () => {
     });
 
     it("should return enriched structure", () => {
-      const answers = new Array(36).fill(1);
+      const answers = new Array(35).fill(1);
       const result = scoreVPK(answers);
       expect(result).toHaveProperty("bodyTypeDetailed");
       expect(result).toHaveProperty("prakritiDetailed");

@@ -60,6 +60,40 @@ type MergedReport = {
   vikritiQuickTip: string;
   vikritiEmpathyLine: string;
   paidPreviewText: string;
+  bodyCodeReport: {
+    title: string;
+    subtitle: string;
+    howYourBodyLives: string;
+    howYourMindMoves?: string;
+    howYourMindWorks?: string;
+    howStressShowsUp: string;
+    earlySignals: string[];
+    dailyAnchors: string[];
+    closingMessage: string;
+  } | null;
+  prakritiCodeReport: {
+    title: string;
+    subtitle: string;
+    yourNaturalNature: string;
+    howYouThinkAndRespond: string;
+    yourSuperpowers: string[];
+    whenThisGetsTooMuch: string;
+    lifeStageAndSeasonSensitivity: string;
+    anchors: string[];
+    anchorsTitle: string;
+    closingMessage: string;
+  } | null;
+  vikritiCodeReport: {
+    title: string;
+    subtitle: string;
+    whatsHappening: string;
+    whyFeelingLikeThis: string;
+    commonSymptoms: string[];
+    earlyWarningsTitle: string;
+    earlyWarnings: string;
+    whatYourBodyNeeds: string[];
+    closingMessage: string;
+  } | null;
 };
 
 type ResultSnapshot = {
@@ -73,6 +107,10 @@ type ResultSnapshot = {
   vikritiDetailed?: VikritiDetailed;
   reportId?: number | null;
   debug?: { rawImbalance: number };
+  // Optional elemental codes from backend (B1-9, P1-9, V0-9)
+  bodyCode?: string;
+  prakritiCode?: string;
+  vikritiCode?: string;
 };
 
 type Props = {
@@ -117,6 +155,140 @@ const getBodyTypeColor = (bodyType: string): string => {
     default:
       return "#6b7280";
   }
+};
+
+type ElementKind = "air" | "fire" | "earth";
+
+// Map B_/P_/V_ codes to elemental themes
+const getElementsForCode = (code?: string): ElementKind[] => {
+  if (!code) return [];
+
+  const prefix = code[0];
+  const n = parseInt(code.slice(1), 10);
+  if (Number.isNaN(n)) return [];
+
+  // V0 → no clear imbalance → no aura
+  if (prefix === "V" && n === 0) return [];
+
+  const mapNumber = (num: number): ElementKind[] => {
+    switch (num) {
+      case 1:
+        return ["air"];
+      case 2:
+        return ["air", "fire"];
+      case 3:
+        return ["air", "earth"];
+      case 4:
+        return ["fire"];
+      case 5:
+        return ["fire", "air"];
+      case 6:
+        return ["fire", "earth"];
+      case 7:
+        return ["earth"];
+      case 8:
+        return ["earth", "air"];
+      case 9:
+        return ["earth", "fire"];
+      default:
+        return [];
+    }
+  };
+
+  if (prefix === "B" || prefix === "P" || prefix === "V") {
+    return mapNumber(n);
+  }
+
+  return [];
+};
+
+function ElementAura({ elements }: { elements: ElementKind[] }) {
+  if (!elements.length) return null;
+
+  return (
+    <Box
+      sx={{
+        position: "absolute",
+        inset: -24,
+        zIndex: 0,
+        pointerEvents: "none",
+        opacity: 0.9,
+      }}
+    >
+      {elements.includes("air") && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: "-20%",
+            left: "-15%",
+            width: "160%",
+            height: "80%",
+            background:
+              "radial-gradient(circle at 5% 10%, rgba(56,189,248,0.55), transparent 55%), radial-gradient(circle at 80% 0%, rgba(129,140,248,0.4), transparent 60%)",
+            filter: "blur(22px)",
+            animation: "aeroFlow 20s ease-in-out infinite",
+            mixBlendMode: "screen",
+          }}
+        />
+      )}
+      {elements.includes("fire") && (
+        <>
+          <Box
+            sx={{
+              position: "absolute",
+              bottom: "-20%",
+              right: "-15%",
+              width: "150%",
+              height: "80%",
+              background:
+                "radial-gradient(circle at 100% 100%, rgba(248,113,113,0.6), transparent 60%), radial-gradient(circle at 60% 120%, rgba(251,191,36,0.5), transparent 65%)",
+              filter: "blur(26px)",
+              animation: "pyroWave 18s ease-in-out infinite",
+              mixBlendMode: "screen",
+            }}
+          />
+          <Box
+            sx={{
+              position: "absolute",
+              bottom: "-5%",
+              right: "5%",
+              width: "60%",
+              height: "40%",
+              background:
+                "radial-gradient(circle at 50% 0%, rgba(252,211,77,0.6), transparent 70%)",
+              filter: "blur(20px)",
+              animation: "pyroWave 24s ease-in-out infinite reverse",
+              mixBlendMode: "screen",
+            }}
+          />
+        </>
+      )}
+      {elements.includes("earth") && (
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: "-10%",
+            left: "10%",
+            width: "130%",
+            height: "70%",
+            background:
+              "radial-gradient(circle at 50% 120%, rgba(16,185,129,0.55), transparent 65%), linear-gradient(to top, rgba(15,118,110,0.55), rgba(15,23,42,0.0))",
+            filter: "blur(24px)",
+            animation: "geoDrift 26s ease-in-out infinite",
+            mixBlendMode: "screen",
+          }}
+        />
+      )}
+    </Box>
+  );
+}
+
+const getPrimaryElement = (elements: ElementKind[]): ElementKind | null => {
+  if (!elements.length) return null;
+  if (elements.includes("fire")) return "fire";
+  if (elements.includes("air")) return "air";
+  if (elements.includes("earth")) return "earth";
+  return elements[0] || null;
 };
 
 // Truncate text to approximately 2-3 lines (roughly 200 characters)
@@ -182,6 +354,33 @@ export default function VpkResultCard({ snapshot, mergedReport }: Props) {
   const prakriti = snapshot.prakritiDetailed?.primary || snapshot.prakriti;
   const vikritiSummary = snapshot.vikritiDetailed?.summary || snapshot.vikriti;
 
+  // Elemental themes per section (minimal, neon-on-dark)
+  const bodyElements = getElementsForCode(snapshot.bodyCode);
+  const prakritiElements = getElementsForCode(snapshot.prakritiCode);
+  const vikritiElements = getElementsForCode(snapshot.vikritiCode);
+
+  const [cursorElement, setCursorElement] = useState<ElementKind | null>(null);
+  const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(null);
+
+  const makeSectionMouseHandlers = (elements: ElementKind[]) => {
+    const primary = getPrimaryElement(elements);
+    if (!primary) {
+      return {
+        onMouseMove: undefined,
+        onMouseLeave: undefined,
+      };
+    }
+    return {
+      onMouseMove: (e: React.MouseEvent) => {
+        setCursorElement(primary);
+        setCursorPos({ x: e.clientX, y: e.clientY });
+      },
+      onMouseLeave: () => {
+        setCursorElement((prev) => (prev === primary ? null : prev));
+      },
+    };
+  };
+
   // Use merged report if available, otherwise fallback to basic display
   const useMergedReport = mergedReport !== null && mergedReport !== undefined;
 
@@ -197,7 +396,11 @@ export default function VpkResultCard({ snapshot, mergedReport }: Props) {
   };
 
   return (
-    <Box>
+    <Box
+      sx={{
+        position: "relative",
+      }}
+    >
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -208,13 +411,27 @@ export default function VpkResultCard({ snapshot, mergedReport }: Props) {
           gutterBottom
           sx={{
             fontWeight: 800,
-            background: "linear-gradient(135deg, #6366f1 0%, #ec4899 100%)",
+            background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            mb: 2,
+            mb: 1,
+            letterSpacing: "-0.03em",
+            textShadow: "0 0 30px rgba(0, 255, 255, 0.3)",
           }}
         >
-          Your LivMantra Snapshot
+          Body Detected
+        </Typography>
+        <Typography
+          variant="subtitle1"
+          sx={{
+            color: "rgba(255, 255, 255, 0.7)",
+            fontWeight: 400,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            fontSize: "0.8rem",
+          }}
+        >
+          BODY • MIND • IMBALANCE OVERVIEW
         </Typography>
       </motion.div>
 
@@ -226,220 +443,580 @@ export default function VpkResultCard({ snapshot, mergedReport }: Props) {
       >
         <Paper
           sx={{
-            p: 4,
+            p: { xs: 3, md: 4 },
             mt: 3,
-            background: "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)",
-            backdropFilter: "blur(10px)",
-            border: "1px solid rgba(99, 102, 241, 0.1)",
-            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
+            background: "rgba(10, 14, 39, 0.9)",
+            backdropFilter: "blur(18px)",
+            borderRadius: 0,
+            border: "1px solid rgba(0, 255, 255, 0.25)",
+            boxShadow:
+              "0 24px 60px rgba(0, 0, 0, 0.75), 0 0 40px rgba(0, 255, 255, 0.15)",
+            position: "relative",
+            overflow: "hidden",
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(135deg, rgba(0,255,255,0.08), transparent 40%, rgba(138,43,226,0.15))",
+              opacity: 0.9,
+              pointerEvents: "none",
+            },
+            "& > *": {
+              position: "relative",
+              zIndex: 1,
+            },
           }}
         >
-          <Box sx={{ mb: 3 }}>
-            <Typography
-              variant="h6"
-              component="h2"
-              sx={{
-                fontWeight: 700,
-                color: "#6366f1",
-                mb: 1,
-              }}
-            >
-              Body Type: {bodyType}
-              {snapshot.bodyTypeDetailed?.modifier && ` (${snapshot.bodyTypeDetailed.modifier} as modifier)`}
-            </Typography>
+          <Box
+            sx={{
+              mb: 3,
+              position: "relative",
+              borderRadius: 2,
+              overflow: "hidden",
+              px: { xs: 2.5, md: 3 },
+              py: { xs: 2.5, md: 3 },
+              background: "rgba(15, 23, 42, 0.92)",
+              border: "1px solid rgba(148, 163, 184, 0.25)",
+              ...(bodyElements.includes("air") && {
+                animation: "airWobble 18s ease-in-out infinite",
+              }),
+              ...(bodyElements.includes("fire") && {
+                animation: "fireCrumple 22s ease-in-out infinite",
+                boxShadow:
+                  "0 0 32px rgba(248,113,113,0.55), 0 0 18px rgba(250,204,21,0.35)",
+                borderColor: "rgba(248,113,113,0.6)",
+              }),
+              ...(bodyElements.includes("earth") && {
+                animation: "earthPulse 20s ease-in-out infinite",
+                boxShadow: "0 0 28px rgba(16,185,129,0.45)",
+                borderColor: "rgba(16,185,129,0.55)",
+              }),
+              ...(getPrimaryElement(bodyElements) && {
+                cursor: "none",
+              }),
+            }}
+            {...makeSectionMouseHandlers(bodyElements)}
+          >
+            <ElementAura elements={bodyElements} />
 
-            {/* Body Paragraph */}
-            {useMergedReport && mergedReport?.bodyParagraph ? (
-              <ExpandableParagraph text={mergedReport.bodyParagraph} />
-            ) : (
-              <Typography variant="body1" sx={{ lineHeight: 1.8, userSelect: "text" }}>
-                You show {bodyType} tendencies — more details in paid report.
-              </Typography>
-            )}
+            {/* Intro paragraph, common feeling, tip, and distribution removed for Body Type */}
 
-            {/* Common Feeling */}
-            {useMergedReport && mergedReport?.bodyCommonFeeling && (
-              <Box sx={{ mt: 2 }}>
+            {/* Body Code Report (B1-B9) */}
+            {mergedReport?.bodyCodeReport && (
+              <Box sx={{ mt: 4, pt: 4, borderTop: "2px solid rgba(99, 102, 241, 0.2)" }}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 700,
+                    color: "#00ffff",
+                    mb: 1,
+                  }}
+                >
+                  {mergedReport.bodyCodeReport.title}
+                </Typography>
                 <Typography
                   variant="body2"
-                  sx={{ fontStyle: "italic", color: "text.secondary" }}
-                >
-                  Common feeling: {mergedReport.bodyCommonFeeling}
-                </Typography>
-              </Box>
-            )}
-
-            {/* Tip */}
-            {useMergedReport && mergedReport?.bodyTip && (
-              <Box sx={{ mt: 2 }}>
-                <Chip
-                  label={mergedReport.bodyTip}
-                  size="small"
                   sx={{
-                    backgroundColor: "rgba(99, 102, 241, 0.1)",
-                    color: "#6366f1",
-                    fontWeight: 600,
+                    color: "rgba(226, 232, 240, 0.7)",
+                    mb: 3,
+                    fontStyle: "italic",
                   }}
-                />
-              </Box>
-            )}
+                >
+                  {mergedReport.bodyCodeReport.subtitle}
+                </Typography>
 
-            {/* Distribution */}
-            {snapshot.bodyTypeDetailed && (
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                Distribution: Vata {snapshot.bodyTypeDetailed.countsA.vata} • Pitta{" "}
-                {snapshot.bodyTypeDetailed.countsA.pitta} • Kapha{" "}
-                {snapshot.bodyTypeDetailed.countsA.kapha}
-              </Typography>
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                  >
+                    How Your Body Lives
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                  >
+                    {mergedReport.bodyCodeReport.howYourBodyLives}
+                  </Typography>
+                </Box>
+
+                {(mergedReport.bodyCodeReport.howYourMindMoves || mergedReport.bodyCodeReport.howYourMindWorks) && (
+                  <Box sx={{ mb: 3 }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                    >
+                      How Your Mind {mergedReport.bodyCodeReport.howYourMindMoves ? "Moves" : "Works"}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                    >
+                      {mergedReport.bodyCodeReport.howYourMindMoves || mergedReport.bodyCodeReport.howYourMindWorks}
+                    </Typography>
+                  </Box>
+                )}
+
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                  >
+                    How Stress Shows Up {mergedReport.bodyCodeReport.howYourMindMoves ? "for You" : "in You"}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                  >
+                    {mergedReport.bodyCodeReport.howStressShowsUp}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                  >
+                    Your Body's Early Signals
+                  </Typography>
+                  <Box component="ul" sx={{ pl: 3, m: 0 }}>
+                    {mergedReport.bodyCodeReport.earlySignals.map((signal, idx) => (
+                      <li key={idx}>
+                        <Typography
+                          variant="body1"
+                          sx={{ lineHeight: 1.8, color: "rgba(226, 232, 240, 0.9)" }}
+                        >
+                          {signal}
+                        </Typography>
+                      </li>
+                    ))}
+                  </Box>
+                </Box>
+
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                  >
+                    Daily Anchors
+                  </Typography>
+                  <Box component="ul" sx={{ pl: 3, m: 0 }}>
+                    {mergedReport.bodyCodeReport.dailyAnchors.map((anchor, idx) => (
+                      <li key={idx}>
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            lineHeight: 1.8,
+                            fontWeight: 500,
+                            color: "rgba(226, 232, 240, 0.95)",
+                          }}
+                        >
+                          ✔ {anchor}
+                        </Typography>
+                      </li>
+                    ))}
+                  </Box>
+                </Box>
+
+                <Box
+                  sx={{
+                    mt: 3,
+                    p: 2,
+                    bgcolor: "rgba(0, 255, 255, 0.06)",
+                    borderRadius: 2,
+                    borderLeft: "4px solid #00ffff",
+                  }}
+                >
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      lineHeight: 1.8,
+                      fontStyle: "italic",
+                      color: "rgba(226, 232, 240, 0.95)",
+                    }}
+                  >
+                    {mergedReport.bodyCodeReport.closingMessage}
+                  </Typography>
+                </Box>
+              </Box>
             )}
           </Box>
 
           <Divider sx={{ my: 3 }} />
 
           {/* Prakriti Section */}
-          <Box sx={{ mb: 3 }}>
-            <Typography
-              variant="h6"
-              component="h2"
-              sx={{
-                fontWeight: 700,
-                color: "#ec4899",
-                mb: 1,
-              }}
-            >
-              Prakriti (Constitution): {prakriti}
-              {snapshot.prakritiDetailed?.modifier && ` (${snapshot.prakritiDetailed.modifier} as modifier)`}
-            </Typography>
+          <Box
+            sx={{
+              mb: 3,
+              position: "relative",
+              borderRadius: 2,
+              overflow: "hidden",
+              px: { xs: 2.5, md: 3 },
+              py: { xs: 2.5, md: 3 },
+              background: "rgba(15, 23, 42, 0.92)",
+              border: "1px solid rgba(148, 163, 184, 0.25)",
+              ...(prakritiElements.includes("air") && {
+                animation: "airWobble 20s ease-in-out infinite",
+              }),
+              ...(prakritiElements.includes("fire") && {
+                animation: "fireCrumple 24s ease-in-out infinite",
+                boxShadow:
+                  "0 0 30px rgba(248,113,113,0.5), 0 0 16px rgba(250,204,21,0.3)",
+                borderColor: "rgba(248,113,113,0.6)",
+              }),
+              ...(prakritiElements.includes("earth") && {
+                animation: "earthPulse 22s ease-in-out infinite",
+                boxShadow: "0 0 26px rgba(16,185,129,0.4)",
+                borderColor: "rgba(16,185,129,0.55)",
+              }),
+              ...(getPrimaryElement(prakritiElements) && {
+                cursor: "none",
+              }),
+            }}
+            {...makeSectionMouseHandlers(prakritiElements)}
+          >
+            <ElementAura elements={prakritiElements} />
 
-            {/* Prakriti Paragraph */}
-            {useMergedReport && mergedReport?.prakritiParagraph ? (
-              <ExpandableParagraph text={mergedReport.prakritiParagraph} />
-            ) : (
-              <Typography variant="body1" sx={{ lineHeight: 1.8, userSelect: "text" }}>
-                You show {prakriti} constitution tendencies — more details in paid report.
-              </Typography>
-            )}
+            {/* Strengths removed as per updated report requirements */}
 
-            {/* Strengths */}
-            {useMergedReport && mergedReport?.prakritiStrengths && mergedReport.prakritiStrengths.length > 0 && (
-              <Box sx={{ mt: 2 }}>
-                <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
-                  Strengths:
+            {/* Intro paragraph, tip, and distribution removed for Prakriti */}
+
+            {/* Prakriti Code Report (P1-P9) */}
+            {mergedReport?.prakritiCodeReport && (
+              <Box sx={{ mt: 4, pt: 4, borderTop: "2px solid rgba(236, 72, 153, 0.2)" }}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 700,
+                    color: "#ff9de6",
+                    mb: 1,
+                  }}
+                >
+                  {mergedReport.prakritiCodeReport.title}
                 </Typography>
-                <Box component="ul" sx={{ pl: 2, m: 0 }}>
-                  {mergedReport.prakritiStrengths.map((strength, idx) => (
-                    <li key={idx}>
-                      <Typography variant="body2" sx={{ lineHeight: 1.8, userSelect: "text" }}>
-                        {strength}
-                      </Typography>
-                    </li>
-                  ))}
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "rgba(226, 232, 240, 0.7)",
+                    mb: 3,
+                    fontStyle: "italic",
+                  }}
+                >
+                  {mergedReport.prakritiCodeReport.subtitle}
+                </Typography>
+
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                  >
+                    Your Natural Nature
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                  >
+                    {mergedReport.prakritiCodeReport.yourNaturalNature}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                  >
+                    How You Think & Respond
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                  >
+                    {mergedReport.prakritiCodeReport.howYouThinkAndRespond}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                  >
+                    Your Superpowers
+                  </Typography>
+                  <Box component="ul" sx={{ pl: 3, m: 0 }}>
+                    {mergedReport.prakritiCodeReport.yourSuperpowers.map((power, idx) => (
+                      <li key={idx}>
+                        <Typography
+                          variant="body1"
+                          sx={{ lineHeight: 1.8, color: "rgba(226, 232, 240, 0.9)" }}
+                        >
+                          {power}
+                        </Typography>
+                      </li>
+                    ))}
+                  </Box>
+                </Box>
+
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                  >
+                    When This Gets Too Much
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                  >
+                    {mergedReport.prakritiCodeReport.whenThisGetsTooMuch}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                  >
+                    Life-Stage & Season Sensitivity
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                  >
+                    {mergedReport.prakritiCodeReport.lifeStageAndSeasonSensitivity}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                  >
+                    {mergedReport.prakritiCodeReport.anchorsTitle}
+                  </Typography>
+                  <Box component="ul" sx={{ pl: 3, m: 0 }}>
+                    {mergedReport.prakritiCodeReport.anchors.map((anchor, idx) => (
+                      <li key={idx}>
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            lineHeight: 1.8,
+                            fontWeight: 500,
+                            color: "rgba(226, 232, 240, 0.95)",
+                          }}
+                        >
+                          ✔ {anchor}
+                        </Typography>
+                      </li>
+                    ))}
+                  </Box>
+                </Box>
+
+                <Box
+                  sx={{
+                    mt: 3,
+                    p: 2,
+                    bgcolor: "rgba(236, 72, 153, 0.08)",
+                    borderRadius: 2,
+                    borderLeft: "4px solid #ff9de6",
+                  }}
+                >
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      lineHeight: 1.8,
+                      fontStyle: "italic",
+                      color: "rgba(226, 232, 240, 0.95)",
+                    }}
+                  >
+                    {mergedReport.prakritiCodeReport.closingMessage}
+                  </Typography>
                 </Box>
               </Box>
-            )}
-
-            {/* Tip */}
-            {useMergedReport && mergedReport?.prakritiTip && (
-              <Box sx={{ mt: 2 }}>
-                <Chip
-                  label={mergedReport.prakritiTip}
-                  size="small"
-                  sx={{
-                    backgroundColor: "rgba(236, 72, 153, 0.1)",
-                    color: "#ec4899",
-                    fontWeight: 600,
-                  }}
-                />
-              </Box>
-            )}
-
-            {/* Distribution */}
-            {snapshot.prakritiDetailed && (
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                Distribution: Vata {snapshot.prakritiDetailed.countsB.vata} • Pitta{" "}
-                {snapshot.prakritiDetailed.countsB.pitta} • Kapha{" "}
-                {snapshot.prakritiDetailed.countsB.kapha}
-              </Typography>
             )}
           </Box>
 
           <Divider sx={{ my: 3 }} />
 
           {/* Vikriti Section */}
-          <Box>
-            <Typography
-              variant="h6"
-              component="h2"
-              sx={{
-                fontWeight: 700,
-                color: "#10b981",
-                mb: 1,
-              }}
-            >
-              Vikriti (Imbalance): {vikritiSummary}
-            </Typography>
+          <Box
+            sx={{
+              position: "relative",
+              borderRadius: 2,
+              overflow: "hidden",
+              px: { xs: 2.5, md: 3 },
+              py: { xs: 2.5, md: 3 },
+              background: "rgba(15, 23, 42, 0.92)",
+              border: "1px solid rgba(148, 163, 184, 0.25)",
+              ...(vikritiElements.includes("air") && {
+                animation: "airWobble 16s ease-in-out infinite",
+              }),
+              ...(vikritiElements.includes("fire") && {
+                animation: "fireCrumple 20s ease-in-out infinite",
+                boxShadow:
+                  "0 0 34px rgba(248,113,113,0.6), 0 0 20px rgba(250,204,21,0.4)",
+                borderColor: "rgba(248,113,113,0.7)",
+              }),
+              ...(vikritiElements.includes("earth") && {
+                animation: "earthPulse 24s ease-in-out infinite",
+                boxShadow: "0 0 30px rgba(16,185,129,0.5)",
+                borderColor: "rgba(16,185,129,0.65)",
+              }),
+              ...(getPrimaryElement(vikritiElements) && {
+                cursor: "none",
+              }),
+            }}
+            {...makeSectionMouseHandlers(vikritiElements)}
+          >
+            <ElementAura elements={vikritiElements} />
 
-            {/* Imbalance Levels */}
-            {snapshot.vikritiDetailed && snapshot.vikritiDetailed.imbalances.length > 0 && (
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
-                  Imbalance Levels:
+            {/* Imbalance levels removed as per updated report requirements */}
+
+            {/* Intro paragraph, quick tip, and distribution removed for Vikriti */}
+
+            {/* Vikriti Code Report (V0-V9) */}
+            {mergedReport?.vikritiCodeReport && (
+              <Box sx={{ mt: 4, pt: 4, borderTop: "2px solid rgba(16, 185, 129, 0.2)" }}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 700,
+                    color: "#4ade80",
+                    mb: 1,
+                  }}
+                >
+                  {mergedReport.vikritiCodeReport.title}
                 </Typography>
-                <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-                  {snapshot.vikritiDetailed.imbalances.map((imbalance, idx) => (
-                    <Chip
-                      key={idx}
-                      label={`${imbalance.dosha}: ${imbalance.count} (${imbalance.level})`}
-                      size="small"
-                      sx={{
-                        backgroundColor: getLevelColor(imbalance.level),
-                        color: "white",
-                        fontWeight: 600,
-                      }}
-                    />
-                  ))}
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "rgba(226, 232, 240, 0.7)",
+                    mb: 3,
+                    fontStyle: "italic",
+                  }}
+                >
+                  {mergedReport.vikritiCodeReport.subtitle}
+                </Typography>
+
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                  >
+                    What's Happening in Your System Right Now
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                  >
+                    {mergedReport.vikritiCodeReport.whatsHappening}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                  >
+                    Why You May Be Feeling Like This
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                  >
+                    {mergedReport.vikritiCodeReport.whyFeelingLikeThis}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                  >
+                    Common Symptoms You Might Notice
+                  </Typography>
+                  <Box component="ul" sx={{ pl: 3, m: 0 }}>
+                    {mergedReport.vikritiCodeReport.commonSymptoms.map((symptom, idx) => (
+                      <li key={idx}>
+                        <Typography
+                          variant="body1"
+                          sx={{ lineHeight: 1.8, color: "rgba(226, 232, 240, 0.9)" }}
+                        >
+                          {symptom}
+                        </Typography>
+                      </li>
+                    ))}
+                  </Box>
+                </Box>
+
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                  >
+                    {mergedReport.vikritiCodeReport.earlyWarningsTitle}
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                  >
+                    {mergedReport.vikritiCodeReport.earlyWarnings}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ mb: 3 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                  >
+                    What Your Body Needs Immediately
+                  </Typography>
+                  <Box component="ul" sx={{ pl: 3, m: 0 }}>
+                    {mergedReport.vikritiCodeReport.whatYourBodyNeeds.map((need, idx) => (
+                      <li key={idx}>
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            lineHeight: 1.8,
+                            fontWeight: 500,
+                            color: "rgba(226, 232, 240, 0.95)",
+                          }}
+                        >
+                          ✔ {need}
+                        </Typography>
+                      </li>
+                    ))}
+                  </Box>
+                </Box>
+
+                <Box
+                  sx={{
+                    mt: 3,
+                    p: 2,
+                    bgcolor: "rgba(34, 197, 94, 0.08)",
+                    borderRadius: 2,
+                    borderLeft: "4px solid #4ade80",
+                  }}
+                >
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      lineHeight: 1.8,
+                      fontStyle: "italic",
+                      color: "rgba(226, 232, 240, 0.95)",
+                    }}
+                  >
+                    {mergedReport.vikritiCodeReport.closingMessage}
+                  </Typography>
                 </Box>
               </Box>
-            )}
-
-            {/* Vikriti Paragraph */}
-            {useMergedReport && mergedReport?.vikritiParagraph ? (
-              <ExpandableParagraph text={mergedReport.vikritiParagraph} />
-            ) : (
-              <Typography variant="body1" sx={{ lineHeight: 1.8, userSelect: "text" }}>
-                {snapshot.shortEmotionalLine || "No significant imbalance detected."}
-              </Typography>
-            )}
-
-            {/* Quick Tip */}
-            {useMergedReport && mergedReport?.vikritiQuickTip && (
-              <Box sx={{ mt: 2 }}>
-                <Chip
-                  label={mergedReport.vikritiQuickTip}
-                  size="small"
-                  sx={{
-                    backgroundColor: "rgba(16, 185, 129, 0.1)",
-                    color: "#10b981",
-                    fontWeight: 600,
-                  }}
-                />
-              </Box>
-            )}
-
-            {/* Distribution */}
-            {snapshot.vikritiDetailed && (
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-                Distribution: Vata {snapshot.vikritiDetailed.countsC.vata} • Pitta{" "}
-                {snapshot.vikritiDetailed.countsC.pitta} • Kapha{" "}
-                {snapshot.vikritiDetailed.countsC.kapha}
-              </Typography>
             )}
           </Box>
         </Paper>
       </motion.div>
 
-      {/* Emotional Line */}
-      <motion.div
+      {/* Emotional Line - Hidden */}
+      {/* <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
@@ -462,10 +1039,10 @@ export default function VpkResultCard({ snapshot, mergedReport }: Props) {
               : snapshot.shortEmotionalLine}
           </Typography>
         </Paper>
-      </motion.div>
+      </motion.div> */}
 
-      {/* Score Section */}
-      {snapshot.score !== undefined && (
+      {/* Score Section - Hidden */}
+      {/* {snapshot.score !== undefined && (
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -492,7 +1069,7 @@ export default function VpkResultCard({ snapshot, mergedReport }: Props) {
             </Typography>
           </Box>
         </motion.div>
-      )}
+      )} */}
 
       {/* CTA Banner - Sticky */}
       <motion.div
@@ -506,9 +1083,10 @@ export default function VpkResultCard({ snapshot, mergedReport }: Props) {
             bottom: 0,
             mt: 4,
             p: 3,
-            background: "linear-gradient(135deg, #6366f1 0%, #ec4899 100%)",
+            background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
             color: "white",
-            boxShadow: "0 -4px 6px -1px rgba(0, 0, 0, 0.1)",
+            boxShadow:
+              "0 -10px 30px rgba(0, 0, 0, 0.6), 0 0 35px rgba(0, 255, 255, 0.4)",
             zIndex: 1000,
           }}
         >
@@ -530,7 +1108,7 @@ export default function VpkResultCard({ snapshot, mergedReport }: Props) {
               startIcon={<LockIcon />}
               sx={{
                 backgroundColor: "white",
-                color: "#6366f1",
+                color: "#0f172a",
                 fontWeight: 700,
                 "&:hover": {
                   backgroundColor: "rgba(255, 255, 255, 0.9)",
@@ -542,7 +1120,44 @@ export default function VpkResultCard({ snapshot, mergedReport }: Props) {
           </Box>
         </Paper>
       </motion.div>
+
+      {cursorElement && cursorPos && (
+        <Box
+          sx={{
+            position: "fixed",
+            top: cursorPos.y,
+            left: cursorPos.x,
+            width: 28,
+            height: 28,
+            transform: "translate(-50%, -50%)",
+            borderRadius: "999px",
+            pointerEvents: "none",
+            zIndex: 2000,
+            mixBlendMode: "screen",
+            animation: "cursorPulse 1.4s ease-in-out infinite",
+            ...(cursorElement === "fire" && {
+              background:
+                "radial-gradient(circle, rgba(252,211,77,0.95) 0%, rgba(248,113,113,0.8) 45%, transparent 70%)",
+              boxShadow:
+                "0 0 25px rgba(248,113,113,0.9), 0 0 40px rgba(250,204,21,0.7)",
+            }),
+            ...(cursorElement === "air" && {
+              background:
+                "radial-gradient(circle, rgba(191,219,254,0.9) 0%, rgba(56,189,248,0.7) 40%, transparent 70%)",
+              boxShadow:
+                "0 0 24px rgba(56,189,248,0.9), 0 0 40px rgba(129,140,248,0.6)",
+            }),
+            ...(cursorElement === "earth" && {
+              background:
+                "radial-gradient(circle, rgba(209,250,229,0.95) 0%, rgba(16,185,129,0.75) 40%, transparent 70%)",
+              boxShadow:
+                "0 0 22px rgba(16,185,129,0.9), 0 0 36px rgba(45,212,191,0.7)",
+            }),
+          }}
+        />
+      )}
     </Box>
   );
 }
+
 

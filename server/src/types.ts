@@ -7,7 +7,7 @@ export type GuestUser = {
 export type TestSubmission = {
   user: GuestUser;
   testType: string; // "VPK"
-  answers: number[]; // length 36, values 1|2|3
+  answers: number[]; // length 35, values 1|2|3
 };
 
 

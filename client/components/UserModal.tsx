@@ -32,15 +32,28 @@ export default function UserModal({ open, onClose }: Props) {
   };
 
   return (
-    <Dialog 
+      <Dialog 
       open={open} 
       onClose={() => onClose()}
       PaperProps={{
         sx: {
-          borderRadius: 4,
-          background: "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)",
+          borderRadius: 0,
+          background: "rgba(10, 14, 39, 0.95)",
           backdropFilter: "blur(20px)",
-          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+          border: "2px solid rgba(0, 255, 255, 0.3)",
+          boxShadow: "0 0 50px rgba(0, 255, 255, 0.3), inset 0 0 30px rgba(138, 43, 226, 0.1)",
+          position: "relative",
+          overflow: "hidden",
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: "2px",
+            background: "linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.5), transparent)",
+            animation: "shimmer 2s linear infinite",
+          },
         },
       }}
     >
@@ -53,16 +66,27 @@ export default function UserModal({ open, onClose }: Props) {
           <Typography
             variant="h5"
             sx={{
-              fontWeight: 800,
-              background: "linear-gradient(135deg, #6366f1 0%, #ec4899 100%)",
+              fontWeight: 900,
+              background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 50%, #00ffff 100%)",
+              backgroundSize: "200% 200%",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              animation: "gradient 3s ease infinite",
+              textTransform: "uppercase",
+              letterSpacing: "0.1em",
             }}
           >
-            Tell us about you
+            Player Registration
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            We'll use this to personalize your results
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              mt: 1,
+              color: "rgba(255, 255, 255, 0.7)",
+            }}
+          >
+            Enter your details to begin the mission
           </Typography>
         </DialogTitle>
         <DialogContent sx={{ pt: 2 }}>
@@ -75,14 +99,29 @@ export default function UserModal({ open, onClose }: Props) {
               onChange={(e) => setName(e.target.value)}
               sx={{
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: 2,
+                  borderRadius: 0,
+                  bgcolor: "rgba(0, 255, 255, 0.05)",
+                  color: "#ffffff",
+                  "& fieldset": {
+                    borderColor: "rgba(0, 255, 255, 0.3)",
+                  },
                   "&:hover fieldset": {
-                    borderColor: "#6366f1",
+                    borderColor: "rgba(0, 255, 255, 0.5)",
                   },
                   "&.Mui-focused fieldset": {
-                    borderColor: "#6366f1",
+                    borderColor: "#00ffff",
                     borderWidth: 2,
+                    boxShadow: "0 0 15px rgba(0, 255, 255, 0.3)",
                   },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  "&.Mui-focused": {
+                    color: "#00ffff",
+                  },
+                },
+                "& .MuiInputBase-input": {
+                  color: "#ffffff",
                 },
               }}
             />
@@ -94,14 +133,29 @@ export default function UserModal({ open, onClose }: Props) {
               type="email"
               sx={{
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: 2,
+                  borderRadius: 0,
+                  bgcolor: "rgba(0, 255, 255, 0.05)",
+                  color: "#ffffff",
+                  "& fieldset": {
+                    borderColor: "rgba(0, 255, 255, 0.3)",
+                  },
                   "&:hover fieldset": {
-                    borderColor: "#6366f1",
+                    borderColor: "rgba(0, 255, 255, 0.5)",
                   },
                   "&.Mui-focused fieldset": {
-                    borderColor: "#6366f1",
+                    borderColor: "#00ffff",
                     borderWidth: 2,
+                    boxShadow: "0 0 15px rgba(0, 255, 255, 0.3)",
                   },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  "&.Mui-focused": {
+                    color: "#00ffff",
+                  },
+                },
+                "& .MuiInputBase-input": {
+                  color: "#ffffff",
                 },
               }}
             />
@@ -112,50 +166,86 @@ export default function UserModal({ open, onClose }: Props) {
               onChange={(e) => setPhone(e.target.value)}
               sx={{
                 "& .MuiOutlinedInput-root": {
-                  borderRadius: 2,
+                  borderRadius: 0,
+                  bgcolor: "rgba(0, 255, 255, 0.05)",
+                  color: "#ffffff",
+                  "& fieldset": {
+                    borderColor: "rgba(0, 255, 255, 0.3)",
+                  },
                   "&:hover fieldset": {
-                    borderColor: "#6366f1",
+                    borderColor: "rgba(0, 255, 255, 0.5)",
                   },
                   "&.Mui-focused fieldset": {
-                    borderColor: "#6366f1",
+                    borderColor: "#00ffff",
                     borderWidth: 2,
+                    boxShadow: "0 0 15px rgba(0, 255, 255, 0.3)",
                   },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                  "&.Mui-focused": {
+                    color: "#00ffff",
+                  },
+                },
+                "& .MuiInputBase-input": {
+                  color: "#ffffff",
                 },
               }}
             />
           </Box>
         </DialogContent>
         <DialogActions sx={{ p: 3, pt: 2 }}>
-          <Button 
-            onClick={() => onClose()}
-            sx={{
-              px: 3,
-              py: 1,
-              borderRadius: 2,
-              fontWeight: 600,
-              color: "#64748b",
-            }}
-          >
-            Cancel
-          </Button>
-          <Button 
-            variant="contained" 
-            onClick={submit}
-            sx={{
-              px: 4,
-              py: 1,
-              borderRadius: 2,
-              fontWeight: 700,
-              background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
-              boxShadow: "0 10px 15px -3px rgba(99, 102, 241, 0.3), 0 4px 6px -2px rgba(99, 102, 241, 0.2)",
-              "&:hover": {
-                background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
-                boxShadow: "0 20px 25px -5px rgba(99, 102, 241, 0.4), 0 10px 10px -5px rgba(99, 102, 241, 0.2)",
-              },
-            }}
-          >
-            Continue
-          </Button>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button 
+              onClick={() => onClose()}
+              sx={{
+                px: 3,
+                py: 1,
+                borderRadius: 0,
+                fontWeight: 700,
+                color: "rgba(255, 255, 255, 0.6)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                fontSize: "0.85rem",
+                "&:hover": {
+                  borderColor: "rgba(255, 255, 255, 0.4)",
+                  bgcolor: "rgba(255, 255, 255, 0.05)",
+                  color: "rgba(255, 255, 255, 0.9)",
+                },
+                transition: "all 0.3s ease",
+              }}
+            >
+              Cancel
+            </Button>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button 
+              variant="contained" 
+              onClick={submit}
+              sx={{
+                px: 4,
+                py: 1,
+                borderRadius: 0,
+                fontWeight: 700,
+                background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
+                color: "#0a0e27",
+                border: "2px solid #00ffff",
+                boxShadow: "0 0 30px rgba(0, 255, 255, 0.5), inset 0 0 20px rgba(138, 43, 226, 0.2)",
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                fontSize: "0.9rem",
+                "&:hover": {
+                  background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
+                  boxShadow: "0 0 50px rgba(0, 255, 255, 0.8), inset 0 0 30px rgba(138, 43, 226, 0.3)",
+                  transform: "translateY(-2px)",
+                },
+                transition: "all 0.3s ease",
+              }}
+            >
+              Start Mission
+            </Button>
+          </motion.div>
         </DialogActions>
       </motion.div>
     </Dialog>

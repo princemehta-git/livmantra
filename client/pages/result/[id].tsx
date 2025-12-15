@@ -4,6 +4,7 @@ import { getResult, mergeReport } from "../../lib/api";
 import { Container, Typography, Box, CircularProgress } from "@mui/material";
 import VpkResultCard from "../../components/VpkResultCard";
 import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
 export default function ResultPage() {
   const router = useRouter();
@@ -41,37 +42,159 @@ export default function ResultPage() {
       });
   }, [id]);
 
-  if (loading) {
-    return (
-      <Box>
-        <Header />
-        <Container sx={{ py: 8, textAlign: "center" }}>
-          <CircularProgress />
-          <Typography sx={{ mt: 2 }}>Loading your results...</Typography>
-        </Container>
-      </Box>
-    );
-  }
-
-  if (error || !result) {
-    return (
-      <Box>
-        <Header />
-        <Container sx={{ py: 8, textAlign: "center" }}>
-          <Typography color="error">{error || "Result not found"}</Typography>
-        </Container>
-      </Box>
-    );
-  }
-
-  const snapshot = result.snapshot;
+  const snapshot = result?.snapshot;
 
   return (
-    <Box>
+    <Box
+      sx={{
+        overflowX: "hidden",
+        background: "#0a0e27",
+        minHeight: "100vh",
+        position: "relative",
+      }}
+    >
+      {/* Animated grid background */}
+      <Box
+        sx={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: `
+            linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px)
+          `,
+          backgroundSize: "50px 50px",
+          opacity: 0.4,
+          zIndex: 0,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Glowing orbs */}
+      <Box
+        sx={{
+          position: "fixed",
+          top: "15%",
+          left: "8%",
+          width: "380px",
+          height: "380px",
+          background:
+            "radial-gradient(circle, rgba(0, 255, 255, 0.18) 0%, transparent 70%)",
+          borderRadius: "50%",
+          filter: "blur(60px)",
+          zIndex: 0,
+          pointerEvents: "none",
+          animation: "float 8s ease-in-out infinite",
+        }}
+      />
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: "15%",
+          right: "8%",
+          width: "460px",
+          height: "460px",
+          background:
+            "radial-gradient(circle, rgba(138, 43, 226, 0.18) 0%, transparent 70%)",
+          borderRadius: "50%",
+          filter: "blur(80px)",
+          zIndex: 0,
+          pointerEvents: "none",
+          animation: "float 10s ease-in-out infinite reverse",
+        }}
+      />
+
       <Header />
-      <Container maxWidth="md" sx={{ py: 6 }}>
-        <VpkResultCard snapshot={snapshot} mergedReport={mergedReport} />
-      </Container>
+
+      <Box
+        sx={{
+          position: "relative",
+          zIndex: 1,
+          py: { xs: 6, md: 10 },
+        }}
+      >
+        <Container maxWidth="lg">
+          {loading && (
+            <Box sx={{ textAlign: "center", py: 8 }}>
+              <CircularProgress sx={{ color: "#00ffff" }} />
+              <Typography
+                sx={{ mt: 3, color: "rgba(255, 255, 255, 0.7)" }}
+                variant="h6"
+              >
+                Preparing Body Detection...
+              </Typography>
+            </Box>
+          )}
+
+          {!loading && (error || !snapshot) && (
+            <Box sx={{ textAlign: "center", py: 8 }}>
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: 700,
+                  mb: 2,
+                  color: "#ff6b6b",
+                }}
+              >
+                {error || "Result not found"}
+              </Typography>
+              <Typography
+                sx={{ color: "rgba(255, 255, 255, 0.7)", maxWidth: 480, mx: "auto" }}
+              >
+                We couldn&apos;t load this report. Please go back and retake the test
+                to generate a fresh snapshot.
+              </Typography>
+            </Box>
+          )}
+
+          {!loading && snapshot && (
+            <>
+              <Box sx={{ textAlign: "center", mb: 6 }}>
+                <Typography
+                  variant="h2"
+                  component="h1"
+                  sx={{
+                    fontWeight: 900,
+                    fontSize: { xs: "2.4rem", md: "3.4rem" },
+                    background:
+                      "linear-gradient(135deg, #00ffff 0%, #8a2be2 50%, #00ffff 100%)",
+                    backgroundSize: "200% 200%",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    animation: "gradient 3s ease infinite",
+                    letterSpacing: "-0.03em",
+                    textShadow: "0 0 40px rgba(0, 255, 255, 0.35)",
+                    mb: 1.5,
+                  }}
+                >
+                  Your Health Code Report
+                </Typography>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: "rgba(255, 255, 255, 0.7)",
+                    fontWeight: 300,
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase",
+                    fontSize: { xs: "0.85rem", md: "0.95rem" },
+                  }}
+                >
+                  PERSONAL AI WELLNESS
+                </Typography>
+              </Box>
+
+              <Container maxWidth="md" sx={{ px: { xs: 0, md: 2 } }}>
+                <VpkResultCard snapshot={snapshot} mergedReport={mergedReport} />
+              </Container>
+            </>
+          )}
+        </Container>
+      </Box>
+
+      <Footer />
     </Box>
   );
 }

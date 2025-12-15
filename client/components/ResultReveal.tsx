@@ -114,7 +114,7 @@ export default function ResultReveal({ snapshot }: Props) {
             mb: 2,
           }}
         >
-          Your LivMantra Snapshot
+          Body Detected
         </Typography>
       </motion.div>
 
@@ -169,13 +169,7 @@ export default function ResultReveal({ snapshot }: Props) {
                 />
               )}
             </Box>
-            {snapshot.bodyTypeDetailed && (
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                Distribution: Vata {snapshot.bodyTypeDetailed.countsA.vata} • Pitta{" "}
-                {snapshot.bodyTypeDetailed.countsA.pitta} • Kapha{" "}
-                {snapshot.bodyTypeDetailed.countsA.kapha}
-              </Typography>
-            )}
+            {/* Distribution details removed as per updated report requirements */}
           </Box>
 
           {/* Prakriti Section */}
@@ -214,13 +208,7 @@ export default function ResultReveal({ snapshot }: Props) {
                 />
               )}
             </Box>
-            {snapshot.prakritiDetailed && (
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                Distribution: Vata {snapshot.prakritiDetailed.countsB.vata} • Pitta{" "}
-                {snapshot.prakritiDetailed.countsB.pitta} • Kapha{" "}
-                {snapshot.prakritiDetailed.countsB.kapha}
-              </Typography>
-            )}
+            {/* Distribution details removed as per updated report requirements */}
           </Box>
 
           {/* Vikriti Section */}
@@ -271,12 +259,7 @@ export default function ResultReveal({ snapshot }: Props) {
                   </Box>
                 )}
 
-                {/* Counts */}
-                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                  Distribution: Vata {snapshot.vikritiDetailed.countsC.vata} • Pitta{" "}
-                  {snapshot.vikritiDetailed.countsC.pitta} • Kapha{" "}
-                  {snapshot.vikritiDetailed.countsC.kapha}
-                </Typography>
+                {/* Counts removed as per updated report requirements */}
 
                 {/* Report Recommendation */}
                 {snapshot.vikritiDetailed.report_recommendation && (

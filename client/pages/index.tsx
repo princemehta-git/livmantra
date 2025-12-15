@@ -120,12 +120,12 @@ export default function HomePage() {
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
                     animation: "gradient 3s ease infinite",
-                    letterSpacing: "-0.03em",
+                    letterSpacing: "0.1em",
                     textShadow: "0 0 40px rgba(0, 255, 255, 0.3)",
                     lineHeight: 1.1,
                   }}
                 >
-                  LIVMANTRA
+                  LivMantra
                 </Typography>
               </motion.div>
               
@@ -145,7 +145,7 @@ export default function HomePage() {
                     mb: 6,
                   }}
                 >
-                  AI-Powered Wellness System
+                  Personal AI Health Coach
                 </Typography>
               </motion.div>
 

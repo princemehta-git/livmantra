@@ -55,6 +55,10 @@ export type VPKResultSnapshot = {
   vikritiDetailed?: VikritiDetailed;
   reportId?: number | null;
   debug?: { rawImbalance: number };
+  // Module codes
+  bodyCode?: string; // B1-B9
+  prakritiCode?: string; // P1-P9
+  vikritiCode?: string; // V0-V9
 };
 
 /**
@@ -294,6 +298,136 @@ export function computeBalanceScore(countsC: DoshaCounts): {
 }
 
 /**
+ * Convert dosha name to numeric code: Vata=1, Pitta=2, Kapha=3
+ */
+function doshaNameToCode(dosha: "Vata" | "Pitta" | "Kapha"): 1 | 2 | 3 {
+  if (dosha === "Vata") return 1;
+  if (dosha === "Pitta") return 2;
+  return 3;
+}
+
+/**
+ * Convert body type to dosha code: Ectomorph=Vata=1, Mesomorph=Pitta=2, Endomorph=Kapha=3
+ */
+function bodyTypeToDoshaCode(bodyType: "Ectomorph" | "Mesomorph" | "Endomorph"): 1 | 2 | 3 {
+  if (bodyType === "Ectomorph") return 1;
+  if (bodyType === "Mesomorph") return 2;
+  return 3;
+}
+
+/**
+ * Map Body primary + modifier to code (B1-B9)
+ */
+function mapBodyToCode(primary: 1 | 2 | 3, modifier: 1 | 2 | 3 | null): string {
+  if (primary === 1) {
+    if (modifier === null || modifier === 1) return "B1"; // Vata only
+    if (modifier === 2) return "B2"; // Vata + Pitta
+    return "B3"; // Vata + Kapha
+  }
+  if (primary === 2) {
+    if (modifier === null || modifier === 2) return "B4"; // Pitta only
+    if (modifier === 1) return "B5"; // Pitta + Vata
+    return "B6"; // Pitta + Kapha
+  }
+  // primary === 3 (Kapha)
+  if (modifier === null || modifier === 3) return "B7"; // Kapha only
+  if (modifier === 1) return "B8"; // Kapha + Vata
+  return "B9"; // Kapha + Pitta
+}
+
+/**
+ * Map Prakriti primary + modifier to code (P1-P9)
+ */
+function mapPrakritiToCode(primary: 1 | 2 | 3, modifier: 1 | 2 | 3 | null): string {
+  if (primary === 1) {
+    if (modifier === null || modifier === 1) return "P1"; // Vata only
+    if (modifier === 2) return "P2"; // Vata + Pitta
+    return "P3"; // Vata + Kapha
+  }
+  if (primary === 2) {
+    if (modifier === null || modifier === 2) return "P4"; // Pitta only
+    if (modifier === 1) return "P5"; // Pitta + Vata
+    return "P6"; // Pitta + Kapha
+  }
+  // primary === 3 (Kapha)
+  if (modifier === null || modifier === 3) return "P7"; // Kapha only
+  if (modifier === 1) return "P8"; // Kapha + Vata
+  return "P9"; // Kapha + Pitta
+}
+
+/**
+ * Tie-break function using earliest-question precedence for Vikriti
+ * Returns the dosha code that reaches the tied count first when scanning from start to end
+ */
+function tieBreakEarliestPrecedenceVikriti(
+  section: number[],
+  tiedDoshas: (1 | 2 | 3)[],
+  targetCount: number
+): 1 | 2 | 3 {
+  const runningCounts: Record<number, number> = { 1: 0, 2: 0, 3: 0 };
+  
+  for (let i = 0; i < section.length; i++) {
+    const answer = section[i];
+    if (tiedDoshas.includes(answer as 1 | 2 | 3)) {
+      runningCounts[answer]++;
+      if (runningCounts[answer] === targetCount) {
+        return answer as 1 | 2 | 3;
+      }
+    }
+  }
+  
+  // Fallback: Vata (1) > Pitta (2) > Kapha (3)
+  if (tiedDoshas.includes(1)) return 1;
+  if (tiedDoshas.includes(2)) return 2;
+  return 3;
+}
+
+/**
+ * Determine Vikriti code (V0-V9) based on counts
+ */
+function determineVikritiCode(countsC: DoshaCounts, sectionC: number[]): string {
+  const V = countsC.vata;
+  const P = countsC.pitta;
+  const K = countsC.kapha;
+
+  // Rule 1: Single dosha >= 7 AND strictly highest
+  if (V >= 7 && V > P && V > K) return "V1";
+  if (P >= 7 && P > V && P > K) return "V2";
+  if (K >= 7 && K > V && K > P) return "V3";
+
+  // Rule 2: Two doshas >= 6 each
+  if (V >= 6 && P >= 6) {
+    if (V > P) return "V4";
+    if (P > V) return "V5";
+    // Tie: use tie-break
+    const dominant = tieBreakEarliestPrecedenceVikriti(sectionC, [1, 2], V);
+    return dominant === 1 ? "V4" : "V5";
+  }
+  if (P >= 6 && K >= 6) {
+    if (P > K) return "V6";
+    if (K > P) return "V7";
+    // Tie: use tie-break
+    const dominant = tieBreakEarliestPrecedenceVikriti(sectionC, [2, 3], P);
+    return dominant === 2 ? "V6" : "V7";
+  }
+  if (V >= 6 && K >= 6) {
+    if (V > K) return "V8";
+    if (K > V) return "V9";
+    // Tie: use tie-break
+    const dominant = tieBreakEarliestPrecedenceVikriti(sectionC, [1, 3], V);
+    return dominant === 1 ? "V8" : "V9";
+  }
+
+  // Rule 3: All doshas <= 5
+  if (V <= 5 && P <= 5 && K <= 5) return "V0";
+
+  // Fallback: Highest dosha
+  if (V >= P && V >= K) return "V1";
+  if (P >= V && P >= K) return "V2";
+  return "V3";
+}
+
+/**
  * Generate short emotional line based on vikriti summary
  */
 export function generateShortEmotionalLine(vikritiSummary: string): string {
@@ -331,8 +465,8 @@ export function generateShortEmotionalLine(vikritiSummary: string): string {
  */
 export function scoreVPK(answers: number[]): VPKResultSnapshot {
   // Validation
-  if (!answers || answers.length !== 36) {
-    throw new Error("answers must be length 36");
+  if (!answers || answers.length !== 35) {
+    throw new Error("answers must be length 35");
   }
 
   // Validate values are 1, 2, or 3
@@ -343,9 +477,9 @@ export function scoreVPK(answers: number[]): VPKResultSnapshot {
   }
 
   // Section segmentation
-  const sectionA = answers.slice(0, 6); // somatotype
-  const sectionB = answers.slice(6, 18); // prakriti
-  const sectionC = answers.slice(18, 36); // vikriti
+  const sectionA = answers.slice(0, 5); // Body Type (Q1-Q5)
+  const sectionB = answers.slice(5, 20); // Prakriti (Q6-Q20)
+  const sectionC = answers.slice(20, 35); // Vikriti (Q21-Q35)
 
   // Compute counts
   const countsA = computeCounts(sectionA);
@@ -371,6 +505,17 @@ export function scoreVPK(answers: number[]): VPKResultSnapshot {
   const prakriti = prakritiResult.primary;
   const vikriti = vikritiDetailed.summary;
 
+  // Compute module codes
+  const bodyPrimaryCode = bodyTypeToDoshaCode(bodyType);
+  const bodyModifierCode = bodyTypeResult.modifier ? doshaNameToCode(bodyTypeResult.modifier) : null;
+  const bodyCode = mapBodyToCode(bodyPrimaryCode, bodyModifierCode);
+
+  const prakritiPrimaryCode = doshaNameToCode(prakriti);
+  const prakritiModifierCode = prakritiResult.modifier ? doshaNameToCode(prakritiResult.modifier) : null;
+  const prakritiCode = mapPrakritiToCode(prakritiPrimaryCode, prakritiModifierCode);
+
+  const vikritiCode = determineVikritiCode(countsC, sectionC);
+
   return {
     // Backward compatible
     bodyType,
@@ -384,5 +529,9 @@ export function scoreVPK(answers: number[]): VPKResultSnapshot {
     vikritiDetailed,
     reportId,
     debug: { rawImbalance },
+    // Module codes
+    bodyCode,
+    prakritiCode,
+    vikritiCode,
   };
 }

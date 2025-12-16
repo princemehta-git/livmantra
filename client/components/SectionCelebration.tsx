@@ -11,6 +11,9 @@ interface SectionCelebrationProps {
   sectionName: string;
   bodyTypeHint?: BodyTypeResult | null;
   prakritiHint?: PrakritiResult | null;
+  isLastSection?: boolean;
+  onSubmit?: () => void;
+  allQuestionsAnswered?: boolean;
 }
 
 // Sparkle particle component
@@ -134,6 +137,9 @@ export default function SectionCelebration({
   sectionName,
   bodyTypeHint,
   prakritiHint,
+  isLastSection = false,
+  onSubmit,
+  allQuestionsAnswered = false,
 }: SectionCelebrationProps) {
   const [sparkles, setSparkles] = useState<Array<{ delay: number; x: number; y: number }>>([]);
   const [confetti, setConfetti] = useState<Array<{ delay: number; x: number; color: string }>>([]);
@@ -160,12 +166,14 @@ export default function SectionCelebration({
       }));
       setConfetti(newConfetti);
 
-      // Auto-close after 5 seconds
-      const timer = setTimeout(() => {
-        onClose();
-      }, 5000);
+      // Auto-close after 5 seconds only if not last section
+      if (!isLastSection) {
+        const timer = setTimeout(() => {
+          onClose();
+        }, 5000);
 
-      return () => clearTimeout(timer);
+        return () => clearTimeout(timer);
+      }
     }
   }, [open, onClose]);
 
@@ -379,16 +387,17 @@ export default function SectionCelebration({
             </motion.div>
           )}
 
-          {/* Continue Button */}
+          {/* Continue/Submit Button */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.7 }}
           >
             <Button
-              onClick={onClose}
+              onClick={isLastSection && onSubmit ? onSubmit : onClose}
               variant="contained"
               size="large"
+              disabled={isLastSection && !allQuestionsAnswered}
               sx={{
                 mt: 4,
                 px: 6,
@@ -407,10 +416,13 @@ export default function SectionCelebration({
                   boxShadow: "0 0 50px rgba(0, 255, 255, 0.8)",
                   transform: "translateY(-2px)",
                 },
+                "&:disabled": {
+                  opacity: 0.6,
+                },
                 transition: "all 0.3s ease",
               }}
             >
-              Continue Mission
+              {isLastSection ? "Submit" : "Continue Mission"}
             </Button>
           </motion.div>
         </motion.div>

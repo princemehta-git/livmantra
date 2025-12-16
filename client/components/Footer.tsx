@@ -128,7 +128,7 @@ export default function Footer() {
                 support@livmantra.com
               </Typography>
               <Typography variant="body2" sx={{ opacity: 0.6 }}>
-                © 2024 LivMantra. All rights reserved.
+                © 2026 LivMantra. All rights reserved.
               </Typography>
             </motion.div>
           </Grid>

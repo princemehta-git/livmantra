@@ -13,6 +13,7 @@ export default function ResultPage() {
   const [mergedReport, setMergedReport] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentSection, setCurrentSection] = useState(0); // 0: Body Type, 1: Prakriti, 2: Vikriti
 
   useEffect(() => {
     if (!id) return;
@@ -170,7 +171,7 @@ export default function ResultPage() {
                     mb: 1.5,
                   }}
                 >
-                  Your Health Code Report
+                  BODY DETECTION COMPLETED
                 </Typography>
                 <Typography
                   variant="h6"
@@ -182,12 +183,17 @@ export default function ResultPage() {
                     fontSize: { xs: "0.85rem", md: "0.95rem" },
                   }}
                 >
-                  PERSONAL AI WELLNESS
+                  Know your body
                 </Typography>
               </Box>
 
-              <Container maxWidth="md" sx={{ px: { xs: 0, md: 2 } }}>
-                <VpkResultCard snapshot={snapshot} mergedReport={mergedReport} />
+              <Container maxWidth="lg" sx={{ px: { xs: 0, md: 2 } }}>
+                <VpkResultCard 
+                  snapshot={snapshot} 
+                  mergedReport={mergedReport}
+                  currentSection={currentSection}
+                  onSectionChange={setCurrentSection}
+                />
               </Container>
             </>
           )}

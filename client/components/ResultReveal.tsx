@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Paper, Chip, Divider } from "@mui/material";
+import { Box, Typography, Chip, Divider } from "@mui/material";
 import { motion } from "framer-motion";
 
 // Enhanced type definitions matching backend
@@ -103,7 +103,7 @@ export default function ResultReveal({ snapshot }: Props) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Typography
+        {/* <Typography
           variant="h3"
           gutterBottom
           sx={{
@@ -115,7 +115,7 @@ export default function ResultReveal({ snapshot }: Props) {
           }}
         >
           Body Detected
-        </Typography>
+        </Typography> */}
       </motion.div>
 
       {/* Body Type Section */}
@@ -124,14 +124,10 @@ export default function ResultReveal({ snapshot }: Props) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <Paper
+        <Box
           sx={{
             p: 4,
             mt: 3,
-            background: "linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%)",
-            backdropFilter: "blur(10px)",
-            border: "1px solid rgba(99, 102, 241, 0.1)",
-            boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
           }}
         >
           <Box sx={{ mb: 4 }}>
@@ -298,7 +294,7 @@ export default function ResultReveal({ snapshot }: Props) {
               </Typography>
             )}
           </Box>
-        </Paper>
+        </Box>
       </motion.div>
 
       {/* Emotional Line */}
@@ -307,19 +303,17 @@ export default function ResultReveal({ snapshot }: Props) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.4 }}
       >
-        <Paper
+        <Box
           sx={{
             p: 4,
             mt: 3,
-            background: "linear-gradient(135deg, #6366f1 0%, #ec4899 100%)",
             color: "white",
-            boxShadow: "0 20px 25px -5px rgba(99, 102, 241, 0.3), 0 10px 10px -5px rgba(99, 102, 241, 0.2)",
           }}
         >
           <Typography variant="body1" sx={{ fontStyle: "italic", fontSize: "1.1rem", lineHeight: 1.8 }}>
             {snapshot.shortEmotionalLine}
           </Typography>
-        </Paper>
+        </Box>
       </motion.div>
 
       {/* Score Section */}

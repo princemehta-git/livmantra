@@ -14,6 +14,8 @@ import { motion } from "framer-motion";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import LockIcon from "@mui/icons-material/Lock";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 // Enhanced type definitions
 type DoshaCounts = {
@@ -116,6 +118,8 @@ type ResultSnapshot = {
 type Props = {
   snapshot: ResultSnapshot;
   mergedReport?: MergedReport | null;
+  currentSection?: number; // 0: Body Type, 1: Prakriti, 2: Vikriti
+  onSectionChange?: (section: number) => void;
 };
 
 const getLevelColor = (level: "dominant" | "secondary" | "mild"): string => {
@@ -231,7 +235,7 @@ function ElementAura({ elements }: { elements: ElementKind[] }) {
           }}
         />
       )}
-      {elements.includes("fire") && (
+      {false && elements.includes("fire") && (
         <>
           <Box
             sx={{
@@ -346,13 +350,25 @@ function ExpandableParagraph({
   );
 }
 
-export default function VpkResultCard({ snapshot, mergedReport }: Props) {
+export default function VpkResultCard({ snapshot, mergedReport, currentSection = 0, onSectionChange }: Props) {
   const hasEnhancedData =
     snapshot.bodyTypeDetailed || snapshot.prakritiDetailed || snapshot.vikritiDetailed;
 
   const bodyType = snapshot.bodyTypeDetailed?.primary || snapshot.bodyType;
   const prakriti = snapshot.prakritiDetailed?.primary || snapshot.prakriti;
   const vikritiSummary = snapshot.vikritiDetailed?.summary || snapshot.vikriti;
+
+  const handleNext = () => {
+    if (currentSection < 2 && onSectionChange) {
+      onSectionChange(currentSection + 1);
+    }
+  };
+
+  const handleBack = () => {
+    if (currentSection > 0 && onSectionChange) {
+      onSectionChange(currentSection - 1);
+    }
+  };
 
   // Elemental themes per section (minimal, neon-on-dark)
   const bodyElements = getElementsForCode(snapshot.bodyCode);
@@ -406,7 +422,7 @@ export default function VpkResultCard({ snapshot, mergedReport }: Props) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Typography
+        {/* <Typography
           variant="h3"
           gutterBottom
           sx={{
@@ -420,52 +436,45 @@ export default function VpkResultCard({ snapshot, mergedReport }: Props) {
           }}
         >
           Body Detected
-        </Typography>
+        </Typography> */}
         <Typography
-          variant="subtitle1"
+          variant="h5"
+          component="h2"
           sx={{
-            color: "rgba(255, 255, 255, 0.7)",
-            fontWeight: 400,
-            letterSpacing: "0.08em",
+            textAlign: "center",
+            fontWeight: 700,
+            letterSpacing: "0.12em",
             textTransform: "uppercase",
-            fontSize: "0.8rem",
+            fontSize: { xs: "1.1rem", md: "1.4rem" },
+            mb: 2,
+            background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 50%, #00ffff 100%)",
+            backgroundSize: "200% 200%",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+            animation: "gradient 3s ease infinite",
+            textShadow: "0 0 40px rgba(0, 255, 255, 0.35)",
           }}
         >
-          BODY • MIND • IMBALANCE OVERVIEW
+          {currentSection === 0 && "BODY TYPE OVERVIEW"}
+          {currentSection === 1 && "PRAKRITI (CONSTITUTION) OVERVIEW"}
+          {currentSection === 2 && "VIKRITI (IMBALANCE) OVERVIEW"}
         </Typography>
       </motion.div>
 
       {/* Body Type Section */}
+      {currentSection === 0 && (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <Paper
+        <Box
           sx={{
             p: { xs: 3, md: 4 },
             mt: 3,
-            background: "rgba(10, 14, 39, 0.9)",
-            backdropFilter: "blur(18px)",
-            borderRadius: 0,
-            border: "1px solid rgba(0, 255, 255, 0.25)",
-            boxShadow:
-              "0 24px 60px rgba(0, 0, 0, 0.75), 0 0 40px rgba(0, 255, 255, 0.15)",
             position: "relative",
-            overflow: "hidden",
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              inset: 0,
-              background:
-                "linear-gradient(135deg, rgba(0,255,255,0.08), transparent 40%, rgba(138,43,226,0.15))",
-              opacity: 0.9,
-              pointerEvents: "none",
-            },
-            "& > *": {
-              position: "relative",
-              zIndex: 1,
-            },
           }}
         >
           <Box
@@ -642,10 +651,25 @@ export default function VpkResultCard({ snapshot, mergedReport }: Props) {
               </Box>
             )}
           </Box>
+        </Box>
+      </motion.div>
+      )}
 
-          <Divider sx={{ my: 3 }} />
-
-          {/* Prakriti Section */}
+      {/* Prakriti Section */}
+      {currentSection === 1 && (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <Box
+          sx={{
+            p: { xs: 3, md: 4 },
+            mt: 3,
+            position: "relative",
+          }}
+        >
           <Box
             sx={{
               mb: 3,
@@ -835,10 +859,25 @@ export default function VpkResultCard({ snapshot, mergedReport }: Props) {
               </Box>
             )}
           </Box>
+        </Box>
+      </motion.div>
+      )}
 
-          <Divider sx={{ my: 3 }} />
-
-          {/* Vikriti Section */}
+      {/* Vikriti Section */}
+      {currentSection === 2 && (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <Box
+          sx={{
+            p: { xs: 3, md: 4 },
+            mt: 3,
+            position: "relative",
+          }}
+        >
           <Box
             sx={{
               position: "relative",
@@ -1012,8 +1051,98 @@ export default function VpkResultCard({ snapshot, mergedReport }: Props) {
               </Box>
             )}
           </Box>
-        </Paper>
+        </Box>
       </motion.div>
+      )}
+
+      {/* Navigation Buttons */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mt: 4,
+          gap: 2,
+          flexWrap: "wrap",
+        }}
+      >
+        <Button
+          variant="outlined"
+          startIcon={<ArrowBackIcon />}
+          onClick={handleBack}
+          disabled={currentSection === 0}
+          sx={{
+            color: "#00ffff",
+            borderColor: "#00ffff",
+            "&:hover": {
+              borderColor: "#00ffff",
+              backgroundColor: "rgba(0, 255, 255, 0.1)",
+            },
+            "&.Mui-disabled": {
+              borderColor: "rgba(255, 255, 255, 0.2)",
+              color: "rgba(255, 255, 255, 0.3)",
+            },
+          }}
+        >
+          Back
+        </Button>
+
+        {/* Page Indicator */}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1,
+            alignItems: "center",
+          }}
+        >
+          {[0, 1, 2].map((index) => (
+            <Box
+              key={index}
+              sx={{
+                width: currentSection === index ? 32 : 8,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: currentSection === index ? "#00ffff" : "rgba(255, 255, 255, 0.3)",
+                transition: "all 0.3s ease",
+                cursor: "pointer",
+              }}
+              onClick={() => onSectionChange && onSectionChange(index)}
+            />
+          ))}
+          <Typography
+            variant="body2"
+            sx={{
+              ml: 2,
+              color: "rgba(255, 255, 255, 0.7)",
+              fontWeight: 500,
+            }}
+          >
+            {currentSection + 1} / 3
+          </Typography>
+        </Box>
+
+        <Button
+          variant="contained"
+          endIcon={<ArrowForwardIcon />}
+          onClick={handleNext}
+          disabled={currentSection === 2}
+          sx={{
+            background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
+            color: "#0a0e27",
+            fontWeight: 700,
+            "&:hover": {
+              background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
+              boxShadow: "0 0 20px rgba(0, 255, 255, 0.5)",
+            },
+            "&.Mui-disabled": {
+              background: "rgba(255, 255, 255, 0.1)",
+              color: "rgba(255, 255, 255, 0.3)",
+            },
+          }}
+        >
+          Next
+        </Button>
+      </Box>
 
       {/* Emotional Line - Hidden */}
       {/* <motion.div

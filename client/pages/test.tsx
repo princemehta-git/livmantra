@@ -9,6 +9,8 @@ import { useRouter } from "next/router";
 import { Button, Container, Box, Typography } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 import { calculateBodyType, calculatePrakriti } from "../lib/bodyTypeCalculator";
+import { useLanguage } from "../hooks/useLanguage";
+import { QUESTIONS_HINDI } from "../data/translations";
 
 // VPK Test Questions - 35 Questions total
 // Section A: Body Type (1-5), Section B: Constitution (6-20), Section C: Current Imbalance (21-35)
@@ -197,6 +199,7 @@ export default function TestPage() {
   const router = useRouter();
   const total = 35;
   const questions = QUESTIONS_DATA;
+  const { language, changeLanguage } = useLanguage();
 
   const [openModal, setOpenModal] = useState(false);
   const [user, setUser] = useState<{
@@ -316,6 +319,21 @@ export default function TestPage() {
   };
 
   const currentQ = questions[index];
+  const currentQHindi = QUESTIONS_HINDI[index];
+  
+  // Get translated question based on language
+  const getTranslatedQuestion = () => {
+    if (language === "hi" && currentQHindi) {
+      return {
+        text: currentQHindi.text,
+        hint: currentQHindi.hint,
+        options: currentQHindi.options,
+      };
+    }
+    return currentQ;
+  };
+  
+  const translatedQ = getTranslatedQuestion();
   
   // Calculate hints for celebration
   const bodyTypeHint = calculateBodyType(answers);
@@ -410,6 +428,9 @@ export default function TestPage() {
           sectionName={celebrationSection}
           bodyTypeHint={displayBodyHint}
           prakritiHint={displayPrakritiHint}
+          isLastSection={celebrationLevel === 3}
+          onSubmit={onSubmit}
+          allQuestionsAnswered={!answers.some((a) => a === 0)}
         />
 
         <motion.div
@@ -527,11 +548,13 @@ export default function TestPage() {
           >
             <QuestionCard
               qIndex={index}
-              text={currentQ.text}
-              options={currentQ.options}
-              hint={currentQ.hint}
+              text={translatedQ.text}
+              options={translatedQ.options}
+              hint={translatedQ.hint}
               onAnswer={onAnswer}
               selected={answers[index] || undefined}
+              language={language}
+              onLanguageChange={changeLanguage}
             />
           </motion.div>
         </AnimatePresence>
@@ -610,7 +633,7 @@ export default function TestPage() {
               <Button
                 variant="contained"
                 onClick={onSubmit}
-                disabled={submitting}
+                disabled={submitting || answers.some((a) => a === 0)}
                 sx={{
                   px: 5,
                   py: 1.5,

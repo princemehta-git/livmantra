@@ -139,7 +139,7 @@
   },
   "bodyCodeReports": {
     "B1": {
-      "title": "🌬 B1 — Aero Energy Body: \"The Lightflow Build\"",
+      "title": "🌬 Aero Energy Body: \"The Lightflow Build\"",
       "subtitle": "(Pure Aero — light frame, fast mind, sensitive digestion)",
       "howYourBodyLives": "You have a naturally light frame — you may feel the cold more than others and tire faster when routines change. Hunger isn't consistent: some days you forget to eat… other days you suddenly realize you're starving. Gas and bloating come when meals are skipped or rushed.",
       "howYourMindMoves": "Ideas come faster than you can execute them. Your excitement to begin is high… but energy doesn't always stay to finish. You take in a lot — sounds, emotions, people's moods — and it drains you quietly.",
@@ -159,7 +159,7 @@
       "closingMessage": "Your body doesn't need more speed — it needs more stability."
     },
     "B2": {
-      "title": "🌬🔥 B2 — Aero–Pyro Energy Body: \"The Lightfire Build\"",
+      "title": "🌬🔥 Aero–Pyro Energy Body: \"The Lightfire Build\"",
       "subtitle": "(Aero body with Pyro influence — fast system, heat under stress)",
       "howYourBodyLives": "You have a naturally slim build but sharp features — your body responds fast. When life is structured, digestion is strong. But when hunger is delayed or stress rises → acidity, headache or bloating appear.",
       "howYourMindMoves": "You want things done properly and quickly. You take on responsibility even when your plate is full. You don't like being slowed down, and you don't let yourself rest easily.",
@@ -179,7 +179,7 @@
       "closingMessage": "Cooling the mind + grounding the body = your best health."
     },
     "B3": {
-      "title": "🌬🌧 B3 — Aero–Geo Energy Body: \"The Lightearth Build\"",
+      "title": "🌬🌧 Aero–Geo Energy Body: \"The Lightearth Build\"",
       "subtitle": "(Aero body with Geo grounding — light outside, heavy inside)",
       "howYourBodyLives": "Though your frame is light, your body can hold on to weight — especially around belly/hips — when routine slows. Your digestion prefers warmth and consistent timings.",
       "howYourMindMoves": "You appear calm… but inside your thoughts move constantly. You often wait for the \"right energy\" to start something — not laziness, just needing emotional readiness.",
@@ -199,7 +199,7 @@
       "closingMessage": "Your body asks for steady movement; your mind asks for gentleness."
     },
     "B4": {
-      "title": "🔥 B4 — Pyro Energy Body: \"The Fireform Build\"",
+      "title": "🔥 Pyro Energy Body: \"The Fireform Build\"",
       "subtitle": "(Pure Pyro — strong build, sharp digestion, heat-sensitive)",
       "howYourBodyLives": "You are built with strength — good muscle tone, clear skin, sharp features. Hunger arrives on time and asks to be respected. When routine slips or meals delay, acidity or heat builds quickly.",
       "howYourMindWorks": "You thrive on clarity, purpose, and results. When others are confused, you bring direction. You take ownership naturally — sometimes more than necessary.",
@@ -219,7 +219,7 @@
       "closingMessage": "Your strength is fire — protect it from turning into inflammation."
     },
     "B5": {
-      "title": "🔥🌬 B5 — Pyro–Aero Energy Body: \"The Fireflow Build\"",
+      "title": "🔥🌬 Pyro–Aero Energy Body: \"The Fireflow Build\"",
       "subtitle": "(Pyro body with Aero mind — strong body, fast mind, burnout-prone)",
       "howYourBodyLives": "Athletic frame with active energy. Digestion is strong when calm, but anxiety or rushing causes acidity, gas, or sudden appetite loss.",
       "howYourMindWorks": "You're a problem-solver with quick decisions. You think fast, move fast, and expect life to keep up. You push yourself — even when tired — because you want to finish things perfectly.",
@@ -239,7 +239,7 @@
       "closingMessage": "Ambition drives you far — grounding will help you sustain the journey."
     },
     "B6": {
-      "title": "🔥🌧 B6 — Pyro–Geo Energy Body: \"The Fireearth Build\"",
+      "title": "🔥🌧 Pyro–Geo Energy Body: \"The Fireearth Build\"",
       "subtitle": "(Pyro body with Geo stabilizing — strength + heaviness cycle)",
       "howYourBodyLives": "Your body holds strength and stamina. Hunger is strong — sometimes emotional. If meals become heavy or late, digestion slows and acidity or heaviness arrives together.",
       "howYourMindWorks": "You are calm until pushed — then fierce. You care deeply about people and quality. You protect others, even when you need protection yourself.",
@@ -259,7 +259,7 @@
       "closingMessage": "Your steadiness is powerful — lighten the load so your fire remains a strength."
     },
     "B7": {
-      "title": "🌧 B7 — Geo Energy Body: \"The Earthform Build\"",
+      "title": "🌧 Geo Energy Body: \"The Earthform Build\"",
       "subtitle": "(Pure Geo — grounded, steady, slow metabolism)",
       "howYourBodyLives": "Your body is naturally strong and stable. You gain weight easily — not because you overeat, but because your system stores energy efficiently. Digestion is slow but steady, and you take time to wake up fully in the morning.",
       "howYourMindWorks": "You are calming to be around. You don't hurry decisions — you think, feel, consider. You enjoy routine and lasting bonds. Change feels uncomfortable until you trust it.",
@@ -279,7 +279,7 @@
       "closingMessage": "Your steadiness is your strength — just help your energy stay in motion."
     },
     "B8": {
-      "title": "🌧🌬 B8 — Geo–Aero Energy Body: \"The Earthflow Build\"",
+      "title": "🌧🌬 Geo–Aero Energy Body: \"The Earthflow Build\"",
       "subtitle": "(Geo body with Aero mind — heavy body, sensitive mind)",
       "howYourBodyLives": "Your frame is strong, but energy is inconsistent — some days active, some days heavy. Digestion slows when life gets unpredictable, and bloating or discomfort appears after cold or irregular meals.",
       "howYourMindWorks": "You appear calm and patient, but your mind absorbs a lot. You replay conversations, worry about misunderstandings, and sometimes delay important decisions because emotions feel unclear.",
@@ -299,7 +299,7 @@
       "closingMessage": "Your body needs motion; your mind needs reassurance. Give both gently."
     },
     "B9": {
-      "title": "🌧🔥 B9 — Geo–Pyro Energy Body: \"The Earthfire Build\"",
+      "title": "🌧🔥 Geo–Pyro Energy Body: \"The Earthfire Build\"",
       "subtitle": "(Geo body with Pyro heat — strong, warm, emotional storage pattern)",
       "howYourBodyLives": "Your body has strength and a reliable appetite. You digest well when calm — but stress or heavy meals create both heat and sluggishness. Weight tends to stick, especially with emotional phases.",
       "howYourMindWorks": "You are calm on the outside but passionate inside. You care deeply and take responsibility seriously. You want stability, but you also want respect and progress.",
@@ -321,7 +321,7 @@
   },
   "prakritiCodeReports": {
     "P1": {
-      "title": "🌬 P1 — Aero Nature: \"The Light Energy Personality\"",
+      "title": "🌬 Aero Nature: \"The Light Energy Personality\"",
       "subtitle": "(Pure Aero mind–body nature)",
       "yourNaturalNature": "Your mind is always traveling — towards ideas, plans, stories, possibilities. You feel the world strongly: sounds, emotions, mood shifts… all affect you immediately.",
       "howYouThinkAndRespond": "You're curious and imaginative. Routine feels restricting — you thrive in flexibility. You start fast because inspiration pulls you forward… finishing happens when energy supports you.",
@@ -342,7 +342,7 @@
       "closingMessage": "Your imagination is your gift — protect the peace it needs to shine."
     },
     "P2": {
-      "title": "🌬🔥 P2 — Aero–Pyro Nature: \"The Lightfire Personality\"",
+      "title": "🌬🔥 Aero–Pyro Nature: \"The Lightfire Personality\"",
       "subtitle": "(Fast mind + sharp focus personality)",
       "yourNaturalNature": "You're a mix of speed and fire — quick to think, quick to decide. You enjoy challenges and set high standards for yourself.",
       "howYouThinkAndRespond": "Once you get an idea, you want to execute it immediately. You speak the truth openly — sometimes faster than the other person can receive it.",
@@ -363,7 +363,7 @@
       "closingMessage": "Your fire builds futures — just don't let it scorch your peace."
     },
     "P3": {
-      "title": "🌬🌧 P3 — Aero–Geo Nature: \"The Lightearth Personality\"",
+      "title": "🌬🌧 Aero–Geo Nature: \"The Lightearth Personality\"",
       "subtitle": "(Sensitive mind + stable emotional core)",
       "yourNaturalNature": "You connect with people deeply. You notice what others feel before they say a word. You think long and soft — processing through feelings.",
       "howYouThinkAndRespond": "You are careful with decisions. You move when it feels right — not when rushed. You love comfort, familiarity, and secure bonds.",
@@ -384,7 +384,7 @@
       "closingMessage": "Your care is powerful — give some of it back to yourself."
     },
     "P4": {
-      "title": "🔥 P4 — Pyro Nature: \"The Fire Energy Personality\"",
+      "title": "🔥 Pyro Nature: \"The Fire Energy Personality\"",
       "subtitle": "(Pure focused, driven, purposeful personality)",
       "yourNaturalNature": "You function best where there is clarity and purpose. You dislike chaos, half-truths, and guesswork. When you decide something, you give it your full energy.",
       "howYouThinkAndRespond": "You observe situations logically and cut straight to the point. You don't sugarcoat — not because you're harsh, but because honesty matters more to you than comfort.",
@@ -405,7 +405,7 @@
       "closingMessage": "Your clarity changes lives — let gentleness protect your fire."
     },
     "P5": {
-      "title": "🔥🌬 P5 — Pyro–Aero Nature: \"The Fireflow Personality\"",
+      "title": "🔥🌬 Pyro–Aero Nature: \"The Fireflow Personality\"",
       "subtitle": "(Driven but fast-thinking, burnout-prone personality)",
       "yourNaturalNature": "You see possibilities and chase them quickly. You enjoy a busy schedule — it makes you feel alive and useful.",
       "howYouThinkAndRespond": "You multitask effortlessly, but at the cost of inner calm. You act as soon as ideas arrive — delaying feels suffocating.",
@@ -426,7 +426,7 @@
       "closingMessage": "Your speed is a gift — but rest is what keeps you unstoppable."
     },
     "P6": {
-      "title": "🔥🌧 P6 — Pyro–Geo Nature: \"The Fireearth Personality\"",
+      "title": "🔥🌧 Pyro–Geo Nature: \"The Fireearth Personality\"",
       "subtitle": "(Strong-willed yet emotionally deep personality)",
       "yourNaturalNature": "You take responsibility seriously — almost personally. You can balance logic and empathy beautifully. You protect people and ideas you value.",
       "howYouThinkAndRespond": "Once you commit, you stay. You dislike giving up — even when tired or hurt. You don't show weakness easily, even to yourself.",
@@ -447,7 +447,7 @@
       "closingMessage": "You carry others so well — remember, you deserve the same support."
     },
     "P7": {
-      "title": "🌧 P7 — Geo Nature: \"The Earth Energy Personality\"",
+      "title": "🌧 Geo Nature: \"The Earth Energy Personality\"",
       "subtitle": "(Pure grounded, calm, steady personality)",
       "yourNaturalNature": "You move through life with warmth and patience. You value stability — in relationships, routines, and environments. People often find comfort just being around you.",
       "howYouThinkAndRespond": "You don't rush decisions. You observe, feel, absorb… and only act when your heart agrees. You dislike conflict and prefer harmony — even if it means compromising occasionally.",
@@ -468,7 +468,7 @@
       "closingMessage": "Your presence heals others — keep yourself light enough to shine."
     },
     "P8": {
-      "title": "🌧🌬 P8 — Geo–Aero Nature: \"The Earthflow Personality\"",
+      "title": "🌧🌬 Geo–Aero Nature: \"The Earthflow Personality\"",
       "subtitle": "(Calm outside, sensitive inside personality)",
       "yourNaturalNature": "You feel deeply and notice subtleties others miss. You have a quiet wisdom — and people often open up to you without asking.",
       "howYouThinkAndRespond": "You reflect before reacting. You want emotional clarity before making decisions. Sudden change feels uncomfortable; emotional safety matters more than speed.",
@@ -489,7 +489,7 @@
       "closingMessage": "You carry feelings beautifully — just don't carry what isn't yours."
     },
     "P9": {
-      "title": "🌧🔥 P9 — Geo–Pyro Nature: \"The Earthfire Personality\"",
+      "title": "🌧🔥 Geo–Pyro Nature: \"The Earthfire Personality\"",
       "subtitle": "(Stable base + inner intensity personality)",
       "yourNaturalNature": "You combine strength with compassion. You are dependable — when you commit, you commit with your full heart and full discipline.",
       "howYouThinkAndRespond": "You prefer clarity and loyalty. You dislike drama and untrustworthy behavior. You lead by example — steady, patient, and protective.",
@@ -529,7 +529,7 @@
       "closingMessage": "You're well balanced — maintain your current routines."
     },
     "V1": {
-      "title": "🌬 V1 — Aero Imbalance: \"The Overactive Air Pattern\"",
+      "title": "🌬 Aero Imbalance: \"The Overactive Air Pattern\"",
       "subtitle": "(Excess lightness, anxiety, gas, restlessness)",
       "whatsHappening": "Your nervous system is overstimulated. Your thoughts are moving faster than your body can stabilize. This creates irregular digestion, energy fluctuations, and disturbed sleep.",
       "whyFeelingLikeThis": "Stress, irregular meals, late nights, or emotional overload have pushed Vata higher than your system can handle. Your body is in \"alert mode,\" even when nothing dangerous is happening.",
@@ -552,7 +552,7 @@
       "closingMessage": "Your system is asking for grounding — not speed."
     },
     "V2": {
-      "title": "🔥 V2 — Pyro Imbalance: \"The Rising Heat Pattern\"",
+      "title": "🔥 Pyro Imbalance: \"The Rising Heat Pattern\"",
       "subtitle": "(Acidity, irritation, sharpness, inflammation)",
       "whatsHappening": "Your inner heat is rising faster than your body can cool it. This creates inflammation, acidity, and irritability. Your digestive fire is strong — but easily triggered.",
       "whyFeelingLikeThis": "Stress, long working hours, poor sleep, spicy/oily food, or pushing yourself too hard have aggravated Pitta. You're running on intensity — not balance.",
@@ -575,7 +575,7 @@
       "closingMessage": "Your fire is powerful — cool it before it burns your calm."
     },
     "V3": {
-      "title": "🌧 V3 — Geo Imbalance: \"The Heavy Drift Pattern\"",
+      "title": "🌧 Geo Imbalance: \"The Heavy Drift Pattern\"",
       "subtitle": "(Sluggish digestion, low mood, heaviness)",
       "whatsHappening": "Your body is moving slower than your mind. Digestion is sluggish, the lymphatic system is congested, and emotional weight is turning into physical heaviness.",
       "whyFeelingLikeThis": "Irregular routines, emotional eating, low activity, cold foods, poor sleep, or prolonged stress have elevated Kapha.",
@@ -598,7 +598,7 @@
       "closingMessage": "You don't lack discipline — your body just needs momentum."
     },
     "V4": {
-      "title": "🌬🔥 V4 — Aero–Pyro Imbalance: \"The Heated Flow Pattern\"",
+      "title": "🌬🔥 Aero–Pyro Imbalance: \"The Heated Flow Pattern\"",
       "subtitle": "(Aero dominant — nervous + heat combination)",
       "whatsHappening": "Your nervous system is overstimulated (Vata high), and your digestive fire is irritated (Pitta high). This creates the classic cycle of: overthinking → acidity → poor sleep → low energy → more overthinking. Your body is trying to run fast while your inner system is overheating.",
       "whyFeelingLikeThis": "Irregular meals, high workload, emotional pressure, late nights, or skipping food under stress have pushed both Vata and Pitta up — but Vata is leading the imbalance.",
@@ -621,7 +621,7 @@
       "closingMessage": "Your system needs rhythm — not more pressure."
     },
     "V5": {
-      "title": "🌬🔥 V5 — Pyro–Aero Imbalance: \"The Overheated Wind Pattern\"",
+      "title": "🌬🔥 Pyro–Aero Imbalance: \"The Overheated Wind Pattern\"",
       "subtitle": "(Pyro dominant — heat + restlessness)",
       "whatsHappening": "Your inner fire is running high, creating acidity, heat, irritability, and inflammation-like symptoms. Vata is rising too — making your thoughts faster and sleep lighter. You're running on intensity, not stability.",
       "whyFeelingLikeThis": "Deadlines, expectations, multitasking, long screen hours, late meals, and self-pressure have overactivated Pitta, and Vata rushed to follow.",
@@ -644,7 +644,7 @@
       "closingMessage": "Your body is asking you to cool down, not slow down."
     },
     "V6": {
-      "title": "🔥🌧 V6 — Pyro–Geo Imbalance: \"The Stagnant Heat Pattern\"",
+      "title": "🔥🌧 Pyro–Geo Imbalance: \"The Stagnant Heat Pattern\"",
       "subtitle": "(Pyro dominant — heat + heaviness)",
       "whatsHappening": "Your digestive fire is irritated (Pitta high), but your metabolism and lymphatic system have slowed (Kapha high). This creates a \"hot on the inside, heavy on the outside\" imbalance. You may feel both inflamed and stuck at the same time.",
       "whyFeelingLikeThis": "Stress, overeating, heavy meals, sweet cravings, emotional pressure, or lack of movement have pushed Kapha upward — while Pitta reacts with heat and irritation.",
@@ -667,7 +667,7 @@
       "closingMessage": "You don't need to push more — you need to release what's weighing you down."
     },
     "V7": {
-      "title": "🔥🌧 V7 — Geo–Pyro Imbalance: \"The Heavy Flame Pattern\"",
+      "title": "🔥🌧 Geo–Pyro Imbalance: \"The Heavy Flame Pattern\"",
       "subtitle": "(Geo dominant — heaviness + internal heat)",
       "whatsHappening": "Your body is holding onto heaviness (Kapha high), while your inner fire is still active (Pitta rising). This creates a trapped, uncomfortable mix: tired body + restless heat + emotional overload. Your system feels stuck, yet irritated.",
       "whyFeelingLikeThis": "Worrying quietly, eating for comfort, overthinking without expressing emotions, or staying in stressful environments for too long triggers both Kapha and Pitta — but Kapha takes the lead.",
@@ -690,7 +690,7 @@
       "closingMessage": "Your body is asking you to lighten the load you've been carrying quietly."
     },
     "V8": {
-      "title": "🌬🌧 V8 — Aero–Geo Imbalance: \"The Cold–Damp Flow Pattern\"",
+      "title": "🌬🌧 Aero–Geo Imbalance: \"The Cold–Damp Flow Pattern\"",
       "subtitle": "(Aero dominant — dryness + heaviness mix)",
       "whatsHappening": "Your mind is overstimulated (Vata high), but your body is moving slow (Kapha elevated). This creates a frustrating mismatch: you want to act, but your body doesn't move. Stress increases restlessness, and routine slows the body even more.",
       "whyFeelingLikeThis": "Irregular lifestyle, emotional holding, long sitting hours, cold meals, and overthinking have simultaneously raised Vata and Kapha — Vata faster.",
@@ -713,7 +713,7 @@
       "closingMessage": "Your mind wants motion; your body needs rhythm. Meet them halfway."
     },
     "V9": {
-      "title": "🌬🌧 V9 — Geo–Aero Imbalance: \"The Heavy Air Pattern\"",
+      "title": "🌬🌧 Geo–Aero Imbalance: \"The Heavy Air Pattern\"",
       "subtitle": "(Geo dominant — heaviness + anxiety)",
       "whatsHappening": "Your body is slowing down (Geo high) while your mind holds quiet worry (Vata rising). You may look calm, but internally feel unsettled or emotionally overloaded. This creates low energy + low motivation + quiet tension.",
       "whyFeelingLikeThis": "Emotional suppression, long periods of inactivity, cold foods, oversleeping, irregular routines, or carrying responsibilities silently can raise Kapha — with Vata rising through worry.",

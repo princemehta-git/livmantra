@@ -1,7 +1,8 @@
 import React from "react";
-import { Card, CardContent, Typography, Button, Box, Tooltip, IconButton } from "@mui/material";
+import { Card, CardContent, Typography, Button, Box, Tooltip, IconButton, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 import { motion } from "framer-motion";
+import { Language } from "../hooks/useLanguage";
 
 type Props = {
   qIndex: number;
@@ -10,6 +11,8 @@ type Props = {
   hint?: string;
   onAnswer: (val: number) => void;
   selected?: number;
+  language?: Language;
+  onLanguageChange?: (lang: Language) => void;
 };
 
 export default function QuestionCard({
@@ -19,6 +22,8 @@ export default function QuestionCard({
   hint,
   onAnswer,
   selected,
+  language = "en",
+  onLanguageChange,
 }: Props) {
   return (
     <motion.div
@@ -61,28 +66,77 @@ export default function QuestionCard({
           >
             <Box
               sx={{
-                display: "inline-flex",
-                px: 3,
-                py: 1,
-                borderRadius: 0,
-                background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
                 mb: 3,
-                border: "1px solid rgba(0, 255, 255, 0.5)",
-                boxShadow: "0 0 20px rgba(0, 255, 255, 0.4)",
+                gap: 2,
               }}
             >
-              <Typography 
-                variant="h6" 
-                sx={{ 
-                  color: "#0a0e27",
-                  fontWeight: 900,
-                  fontSize: "0.9rem",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
+              <Box
+                sx={{
+                  display: "inline-flex",
+                  px: 3,
+                  py: 1,
+                  borderRadius: 0,
+                  background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
+                  border: "1px solid rgba(0, 255, 255, 0.5)",
+                  boxShadow: "0 0 20px rgba(0, 255, 255, 0.4)",
                 }}
               >
-                Question {qIndex + 1}
-              </Typography>
+                <Typography 
+                  variant="h6" 
+                  sx={{ 
+                    color: "#0a0e27",
+                    fontWeight: 900,
+                    fontSize: "0.9rem",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                  }}
+                >
+                  Question {qIndex + 1}
+                </Typography>
+              </Box>
+              {onLanguageChange && (
+                <ToggleButtonGroup
+                  value={language}
+                  exclusive
+                  onChange={(_, newLang) => {
+                    if (newLang !== null) {
+                      onLanguageChange(newLang);
+                    }
+                  }}
+                  size="small"
+                  sx={{
+                    "& .MuiToggleButton-root": {
+                      color: "#00ffff",
+                      borderColor: "rgba(0, 255, 255, 0.3)",
+                      bgcolor: "rgba(0, 255, 255, 0.1)",
+                      px: 1.5,
+                      py: 0.5,
+                      fontSize: "0.75rem",
+                      fontWeight: 600,
+                      textTransform: "none",
+                      borderRadius: 0,
+                      "&.Mui-selected": {
+                        bgcolor: "rgba(0, 255, 255, 0.3)",
+                        color: "#0a0e27",
+                        borderColor: "rgba(0, 255, 255, 0.6)",
+                        "&:hover": {
+                          bgcolor: "rgba(0, 255, 255, 0.4)",
+                        },
+                      },
+                      "&:hover": {
+                        bgcolor: "rgba(0, 255, 255, 0.2)",
+                        borderColor: "rgba(0, 255, 255, 0.5)",
+                      },
+                    },
+                  }}
+                >
+                  <ToggleButton value="en">EN</ToggleButton>
+                  <ToggleButton value="hi">HI</ToggleButton>
+                </ToggleButtonGroup>
+              )}
             </Box>
           </motion.div>
           <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1, my: 3 }}>

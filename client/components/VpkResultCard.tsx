@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -9,6 +9,7 @@ import {
   Collapse,
   IconButton,
   Tooltip,
+  Grid,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -16,6 +17,10 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import LockIcon from "@mui/icons-material/Lock";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import SectionProgress from "./SectionProgress";
+import StatsDashboard from "./StatsDashboard";
+import ParticleExplosion from "./ParticleExplosion";
+import AchievementBadge from "./AchievementBadge";
 
 // Enhanced type definitions
 type DoshaCounts = {
@@ -295,6 +300,32 @@ const getPrimaryElement = (elements: ElementKind[]): ElementKind | null => {
   return elements[0] || null;
 };
 
+// Map code to display type name (Aero/Pyro/Geo)
+const getTypeNameForCode = (code?: string): string | null => {
+  if (!code) return null;
+  
+  const prefix = code[0];
+  const n = parseInt(code.slice(1), 10);
+  if (Number.isNaN(n)) return null;
+
+  // V0 → no clear imbalance → return null
+  if (prefix === "V" && n === 0) return null;
+
+  const elements = getElementsForCode(code);
+  const primary = getPrimaryElement(elements);
+  
+  switch (primary) {
+    case "air":
+      return "Aero";
+    case "fire":
+      return "Pyro";
+    case "earth":
+      return "Geo";
+    default:
+      return null;
+  }
+};
+
 // Truncate text to approximately 2-3 lines (roughly 200 characters)
 const TRUNCATE_LENGTH = 200;
 
@@ -377,6 +408,39 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
 
   const [cursorElement, setCursorElement] = useState<ElementKind | null>(null);
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(null);
+  const [showParticles, setShowParticles] = useState(false);
+  const [sectionChangeTrigger, setSectionChangeTrigger] = useState(0);
+  const bodyVideoRef = React.useRef<HTMLVideoElement>(null);
+  const dnaVideoRef = React.useRef<HTMLVideoElement>(null);
+
+  // Trigger particles on section change
+  useEffect(() => {
+    if (sectionChangeTrigger > 0) {
+      setShowParticles(true);
+      const timer = setTimeout(() => setShowParticles(false), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [currentSection, sectionChangeTrigger]);
+
+  // Ensure videos play when section changes
+  useEffect(() => {
+    if (currentSection === 0 && bodyVideoRef.current) {
+      bodyVideoRef.current.play().catch((err) => console.log("Body video play error:", err));
+    }
+    if (currentSection === 1 && dnaVideoRef.current) {
+      dnaVideoRef.current.play().catch((err) => console.log("DNA video play error:", err));
+    }
+  }, [currentSection]);
+
+  const handleNextWithParticles = () => {
+    setSectionChangeTrigger((prev) => prev + 1);
+    handleNext();
+  };
+
+  const handleBackWithParticles = () => {
+    setSectionChangeTrigger((prev) => prev + 1);
+    handleBack();
+  };
 
   const makeSectionMouseHandlers = (elements: ElementKind[]) => {
     const primary = getPrimaryElement(elements);
@@ -411,12 +475,17 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
     }
   };
 
+  // Get counts for stats dashboard
+  const statsCounts = snapshot.prakritiDetailed?.countsB || snapshot.bodyTypeDetailed?.countsA || snapshot.vikritiDetailed?.countsC;
+
   return (
     <Box
       sx={{
         position: "relative",
       }}
     >
+      <ParticleExplosion trigger={showParticles} />
+      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -437,30 +506,128 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
         >
           Body Detected
         </Typography> */}
-        <Typography
-          variant="h5"
-          component="h2"
-          sx={{
-            textAlign: "center",
-            fontWeight: 700,
-            letterSpacing: "0.12em",
-            textTransform: "uppercase",
-            fontSize: { xs: "1.1rem", md: "1.4rem" },
-            mb: 2,
-            background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 50%, #00ffff 100%)",
-            backgroundSize: "200% 200%",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-            animation: "gradient 3s ease infinite",
-            textShadow: "0 0 40px rgba(0, 255, 255, 0.35)",
-          }}
-        >
-          {currentSection === 0 && "BODY TYPE OVERVIEW"}
-          {currentSection === 1 && "PRAKRITI (CONSTITUTION) OVERVIEW"}
-          {currentSection === 2 && "VIKRITI (IMBALANCE) OVERVIEW"}
-        </Typography>
+        <Box sx={{ textAlign: "center", mb: 2 }}>
+          <Typography
+            variant="h5"
+            component="h2"
+            sx={{
+              fontWeight: 700,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              fontSize: { xs: "1.1rem", md: "1.4rem" },
+              mb: 1,
+              background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 50%, #00ffff 100%)",
+              backgroundSize: "200% 200%",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              animation: "gradient 3s ease infinite",
+              textShadow: "0 0 40px rgba(0, 255, 255, 0.35)",
+              fontFamily: "monospace",
+            }}
+          >
+            {currentSection === 0 && "BODY TYPE OVERVIEW"}
+            {currentSection === 1 && "PRAKRITI (CONSTITUTION) OVERVIEW"}
+            {currentSection === 2 && "VIKRITI (IMBALANCE) OVERVIEW"}
+          </Typography>
+          {(() => {
+            const currentCode = currentSection === 0 ? snapshot.bodyCode : 
+                               currentSection === 1 ? snapshot.prakritiCode : 
+                               snapshot.vikritiCode;
+            const typeName = getTypeNameForCode(currentCode);
+            if (!typeName) return null;
+            
+            // Get color based on type
+            const getTypeColor = (type: string) => {
+              switch (type) {
+                case "Aero":
+                  return { color: "#38bdf8", border: "rgba(56, 189, 248, 0.3)", bg: "rgba(56, 189, 248, 0.1)" };
+                case "Pyro":
+                  return { color: "#f87171", border: "rgba(248, 113, 113, 0.3)", bg: "rgba(248, 113, 113, 0.1)" };
+                case "Geo":
+                  return { color: "#10b981", border: "rgba(16, 185, 129, 0.3)", bg: "rgba(16, 185, 129, 0.1)" };
+                default:
+                  return { color: "#00ff00", border: "rgba(0, 255, 0, 0.3)", bg: "rgba(0, 255, 0, 0.1)" };
+              }
+            };
+            
+            const colors = getTypeColor(typeName);
+            
+            return (
+              <Typography
+                variant="caption"
+                sx={{
+                  color: colors.color,
+                  fontFamily: "monospace",
+                  display: "inline-block",
+                  px: 2,
+                  py: 0.5,
+                  background: colors.bg,
+                  border: `1px solid ${colors.border}`,
+                  borderRadius: 1,
+                  letterSpacing: "0.1em",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                }}
+              >
+                TYPE: {typeName}
+              </Typography>
+            );
+          })()}
+        </Box>
       </motion.div>
+
+      {/* Progress Tracker */}
+      <SectionProgress currentSection={currentSection} totalSections={3} />
+
+      {/* Stats Dashboard - Hidden */}
+      {/* {statsCounts && <StatsDashboard counts={statsCounts} />} */}
+
+      {/* Achievement Badges */}
+      <Grid container spacing={2} sx={{ mb: 4 }}>
+        <Grid item xs={6} sm={4}>
+          <AchievementBadge
+            title="Body Detected"
+            description="Primary type identified"
+            unlocked={currentSection >= 0}
+            icon="🔍"
+            onClick={() => {
+              if (onSectionChange) {
+                setSectionChangeTrigger((prev) => prev + 1);
+                onSectionChange(0);
+              }
+            }}
+          />
+        </Grid>
+        <Grid item xs={6} sm={4}>
+          <AchievementBadge
+            title="Constitution Analyzed"
+            description="Prakriti decoded"
+            unlocked={currentSection >= 1}
+            icon="🧬"
+            onClick={() => {
+              if (onSectionChange) {
+                setSectionChangeTrigger((prev) => prev + 1);
+                onSectionChange(1);
+              }
+            }}
+          />
+        </Grid>
+        <Grid item xs={6} sm={4}>
+          <AchievementBadge
+            title="Imbalance Detected"
+            description="Vikriti analysis complete"
+            unlocked={currentSection >= 2}
+            icon="⚡"
+            onClick={() => {
+              if (onSectionChange) {
+                setSectionChangeTrigger((prev) => prev + 1);
+                onSectionChange(2);
+              }
+            }}
+          />
+        </Grid>
+      </Grid>
 
       {/* Body Type Section */}
       {currentSection === 0 && (
@@ -507,7 +674,78 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
             }}
             {...makeSectionMouseHandlers(bodyElements)}
           >
-            <ElementAura elements={bodyElements} />
+            {/* Background Video - Human Body Structure */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                zIndex: 0,
+                overflow: "hidden",
+              }}
+            >
+              <video
+                ref={bodyVideoRef}
+                autoPlay
+                loop
+                muted
+                playsInline
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  opacity: 0.4,
+                  filter: "grayscale(0.25) brightness(0.45) contrast(1.2) saturate(0.9)",
+                  transition: "opacity 0.8s ease-in-out",
+                  pointerEvents: "none",
+                }}
+                onLoadedData={(e) => {
+                  // Ensure video plays
+                  const video = e.target as HTMLVideoElement;
+                  if (video) {
+                    video.play().catch((err) => console.log("Body video play error:", err));
+                  }
+                }}
+              >
+                <source src="/video/Human Body Structure LV.mp4" type="video/mp4" />
+              </video>
+            </Box>
+            
+            {/* Elegant overlay gradient for better text readability */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                background: "linear-gradient(135deg, rgba(10, 14, 39, 0.65) 0%, rgba(15, 23, 42, 0.55) 50%, rgba(10, 14, 39, 0.65) 100%)",
+                zIndex: 1,
+                pointerEvents: "none",
+                "&::before": {
+                  content: '""',
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  background: "radial-gradient(circle at 50% 50%, transparent 0%, rgba(10, 14, 39, 0.25) 100%)",
+                },
+              }}
+            />
+            
+            {/* ElementAura positioned relative to parent container */}
+            <Box sx={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none" }}>
+              <ElementAura elements={bodyElements} />
+            </Box>
+            
+            {/* Content wrapper with relative positioning */}
+            <Box sx={{ position: "relative", zIndex: 2 }}>
 
             {/* Intro paragraph, common feeling, tip, and distribution removed for Body Type */}
 
@@ -650,6 +888,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                 </Box>
               </Box>
             )}
+            </Box>
           </Box>
         </Box>
       </motion.div>
@@ -700,7 +939,78 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
             }}
             {...makeSectionMouseHandlers(prakritiElements)}
           >
-            <ElementAura elements={prakritiElements} />
+            {/* Background Video - Human DNA */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                zIndex: 0,
+                overflow: "hidden",
+              }}
+            >
+              <video
+                ref={dnaVideoRef}
+                autoPlay
+                loop
+                muted
+                playsInline
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  opacity: 0.4,
+                  filter: "grayscale(0.25) brightness(0.45) contrast(1.2) saturate(0.9)",
+                  transition: "opacity 0.8s ease-in-out",
+                  pointerEvents: "none",
+                }}
+                onLoadedData={(e) => {
+                  // Ensure video plays
+                  const video = e.target as HTMLVideoElement;
+                  if (video) {
+                    video.play().catch((err) => console.log("DNA video play error:", err));
+                  }
+                }}
+              >
+                <source src="/video/Human DNA LV.mp4" type="video/mp4" />
+              </video>
+            </Box>
+            
+            {/* Elegant overlay gradient for better text readability */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                background: "linear-gradient(135deg, rgba(10, 14, 39, 0.65) 0%, rgba(15, 23, 42, 0.55) 50%, rgba(10, 14, 39, 0.65) 100%)",
+                zIndex: 1,
+                pointerEvents: "none",
+                "&::before": {
+                  content: '""',
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  background: "radial-gradient(circle at 50% 50%, transparent 0%, rgba(10, 14, 39, 0.25) 100%)",
+                },
+              }}
+            />
+            
+            {/* ElementAura positioned relative to parent container */}
+            <Box sx={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none" }}>
+              <ElementAura elements={prakritiElements} />
+            </Box>
+            
+            {/* Content wrapper with relative positioning */}
+            <Box sx={{ position: "relative", zIndex: 2 }}>
 
             {/* Strengths removed as per updated report requirements */}
 
@@ -858,6 +1168,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                 </Box>
               </Box>
             )}
+            </Box>
           </Box>
         </Box>
       </motion.div>
@@ -1069,7 +1380,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
         <Button
           variant="outlined"
           startIcon={<ArrowBackIcon />}
-          onClick={handleBack}
+          onClick={handleBackWithParticles}
           disabled={currentSection === 0}
           sx={{
             color: "#00ffff",
@@ -1124,7 +1435,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
         <Button
           variant="contained"
           endIcon={<ArrowForwardIcon />}
-          onClick={handleNext}
+          onClick={handleNextWithParticles}
           disabled={currentSection === 2}
           sx={{
             background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",

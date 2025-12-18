@@ -5,6 +5,28 @@ import { Container, Typography, Box, CircularProgress } from "@mui/material";
 import VpkResultCard from "../../components/VpkResultCard";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
+import HackingSequenceLoader from "../../components/HackingSequenceLoader";
+import MatrixBackground, { FilmGrainOverlay } from "../../components/MatrixBackground";
+import TerminalTypingText from "../../components/TerminalTypingText";
+
+// Shared audio unlock - unlock audio when page loads (navigation is user interaction)
+const AUDIO_FILE_PATH = "/audio/techy-sound.mp3";
+let audioUnlocked = false;
+
+const unlockAudio = async () => {
+  if (audioUnlocked) return;
+  try {
+    const testAudio = new Audio(AUDIO_FILE_PATH);
+    testAudio.volume = 0.01;
+    await testAudio.play();
+    console.log("✅ Audio unlocked on page load");
+    audioUnlocked = true;
+    testAudio.pause();
+    testAudio.currentTime = 0;
+  } catch (error) {
+    console.log("⚠️ Audio unlock on page load failed, will unlock on click");
+  }
+};
 
 export default function ResultPage() {
   const router = useRouter();
@@ -14,6 +36,13 @@ export default function ResultPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentSection, setCurrentSection] = useState(0); // 0: Body Type, 1: Prakriti, 2: Vikriti
+  const [showHackingLoader, setShowHackingLoader] = useState(true);
+  const [dataReady, setDataReady] = useState(false);
+
+  // Unlock audio immediately when page loads (navigation is user interaction)
+  useEffect(() => {
+    unlockAudio();
+  }, []);
 
   useEffect(() => {
     if (!id) return;
@@ -34,14 +63,21 @@ export default function ResultPage() {
               // Continue without merged report
             });
         }
-        setLoading(false);
+        setDataReady(true);
+        // Keep loading true until hacking sequence completes
       })
       .catch((err) => {
         console.error(err);
         setError("Failed to load result");
         setLoading(false);
+        setShowHackingLoader(false);
       });
   }, [id]);
+
+  const handleHackingComplete = () => {
+    setShowHackingLoader(false);
+    setLoading(false);
+  };
 
   const snapshot = result?.snapshot;
 
@@ -54,6 +90,17 @@ export default function ResultPage() {
         position: "relative",
       }}
     >
+      {/* Hacking Sequence Loader */}
+      {showHackingLoader && dataReady && (
+        <HackingSequenceLoader onComplete={handleHackingComplete} />
+      )}
+
+      {/* Matrix Background */}
+      <MatrixBackground />
+
+      {/* Film Grain Overlay */}
+      <FilmGrainOverlay />
+
       {/* Animated grid background */}
       <Box
         sx={{
@@ -169,9 +216,14 @@ export default function ResultPage() {
                     letterSpacing: "-0.03em",
                     textShadow: "0 0 40px rgba(0, 255, 255, 0.35)",
                     mb: 1.5,
+                    fontFamily: "monospace",
                   }}
                 >
-                  BODY DETECTION COMPLETED
+                  {!showHackingLoader ? (
+                    "BODY DETECTION COMPLETED"
+                  ) : (
+                    <TerminalTypingText text="BODY DETECTION COMPLETED" speed={100} />
+                  )}
                 </Typography>
                 <Typography
                   variant="h6"
@@ -181,9 +233,10 @@ export default function ResultPage() {
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
                     fontSize: { xs: "0.85rem", md: "0.95rem" },
+                    fontFamily: "monospace",
                   }}
                 >
-                  Know your body
+                  {!showHackingLoader && "> Know your body"}
                 </Typography>
               </Box>
 

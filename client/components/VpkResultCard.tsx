@@ -862,56 +862,53 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
             {mergedReport?.bodyCodeReport && (
               <Box sx={{ mt: 2, pt: 2, borderTop: "2px solid rgba(99, 102, 241, 0.2)" }}>
                 <Typography
-                  variant="h4"
+                  variant="h5"
                   sx={{
                     fontWeight: 800,
                     color: "#00ffff",
-                    mb: 1,
-                    fontSize: { xs: "1.5rem", md: "1.75rem" },
-                    letterSpacing: "0.02em",
+                    mb: 0.75,
+                    fontSize: { xs: "1.3rem", md: "1.5rem" },
+                    letterSpacing: "0.01em",
                     lineHeight: 1.3,
                   }}
                 >
                   {mergedReport.bodyCodeReport.title}
                 </Typography>
                 <Typography
-                  variant="body1"
+                  variant="body2"
                   sx={{
-                    color: "rgba(226, 232, 240, 0.75)",
-                    mb: 2.5,
+                    color: "rgba(148, 163, 184, 0.7)",
+                    mb: 2,
                     fontStyle: "italic",
-                    fontSize: "1rem",
-                    lineHeight: 1.6,
+                    fontSize: "0.875rem",
+                    lineHeight: 1.5,
                   }}
                 >
                   {mergedReport.bodyCodeReport.subtitle}
                 </Typography>
 
-                <Box sx={{ mb: 2.5 }}>
+                <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     sx={{ 
                       fontWeight: 700, 
-                      mb: 1.25, 
+                      mb: 0.75, 
                       color: "#ffffff", 
                       letterSpacing: "0.01em", 
-                      fontSize: { xs: "1.15rem", md: "1.3rem" },
-                      lineHeight: 1.4,
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                      lineHeight: 1.3,
                     }}
                   >
                     This is how your body feels, day to day
                   </Typography>
                   <Typography
-                    variant="body1"
+                    variant="body2"
                     sx={{ 
-                      lineHeight: 1.85, 
+                      lineHeight: 1.65, 
                       mb: 0, 
-                      color: "rgba(226, 232, 240, 0.92)", 
-                      fontSize: "1rem", 
+                      color: "rgba(148, 163, 184, 0.85)", 
+                      fontSize: "0.875rem", 
                       whiteSpace: "pre-line",
-                      "& + &": {
-                        mt: 1.5,
-                      },
                     }}
                   >
                     {mergedReport.bodyCodeReport.howYourBodyLives}
@@ -919,27 +916,27 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                 </Box>
 
                 {(mergedReport.bodyCodeReport.howYourMindMoves || mergedReport.bodyCodeReport.howYourMindWorks) && (
-                  <Box sx={{ mb: 2.5 }}>
+                  <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
                     <Typography
-                      variant="h5"
+                      variant="h6"
                       sx={{ 
                         fontWeight: 700, 
-                        mb: 1.25, 
+                        mb: 0.75, 
                         color: "#ffffff", 
                         letterSpacing: "0.01em", 
-                        fontSize: { xs: "1.15rem", md: "1.3rem" },
-                        lineHeight: 1.4,
+                        fontSize: { xs: "1rem", md: "1.1rem" },
+                        lineHeight: 1.3,
                       }}
                     >
                       This is how your mind usually works
                     </Typography>
                     <Typography
-                      variant="body1"
+                      variant="body2"
                       sx={{ 
-                        lineHeight: 1.85, 
+                        lineHeight: 1.65, 
                         mb: 0, 
-                        color: "rgba(226, 232, 240, 0.92)", 
-                        fontSize: "1rem", 
+                        color: "rgba(148, 163, 184, 0.85)", 
+                        fontSize: "0.875rem", 
                         whiteSpace: "pre-line",
                       }}
                     >
@@ -949,27 +946,27 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                 )}
 
                 {mergedReport.bodyCodeReport.whatQuietlyDrainsYou && (
-                  <Box sx={{ mb: 2.5 }}>
+                  <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
                     <Typography
-                      variant="h5"
+                      variant="h6"
                       sx={{ 
                         fontWeight: 700, 
-                        mb: 1.25, 
+                        mb: 0.75, 
                         color: "#ffffff", 
                         letterSpacing: "0.01em", 
-                        fontSize: { xs: "1.15rem", md: "1.3rem" },
-                        lineHeight: 1.4,
+                        fontSize: { xs: "1rem", md: "1.1rem" },
+                        lineHeight: 1.3,
                       }}
                     >
                       What quietly drains you
                     </Typography>
                     <Typography
-                      variant="body1"
+                      variant="body2"
                       sx={{ 
-                        lineHeight: 1.85, 
+                        lineHeight: 1.65, 
                         mb: 0, 
-                        color: "rgba(226, 232, 240, 0.92)", 
-                        fontSize: "1rem", 
+                        color: "rgba(148, 163, 184, 0.85)", 
+                        fontSize: "0.875rem", 
                         whiteSpace: "pre-line",
                       }}
                     >
@@ -978,27 +975,27 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                   </Box>
                 )}
 
-                <Box sx={{ mb: 2.5 }}>
+                <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     sx={{ 
                       fontWeight: 700, 
-                      mb: 1.25, 
+                      mb: 0.75, 
                       color: "#ffffff", 
                       letterSpacing: "0.01em", 
-                      fontSize: { xs: "1.15rem", md: "1.3rem" },
-                      lineHeight: 1.4,
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                      lineHeight: 1.3,
                     }}
                   >
                     How stress shows up physically
                   </Typography>
                   <Typography
-                    variant="body1"
+                    variant="body2"
                     sx={{ 
-                      lineHeight: 1.85, 
+                      lineHeight: 1.65, 
                       mb: 0, 
-                      color: "rgba(226, 232, 240, 0.92)", 
-                      fontSize: "1rem", 
+                      color: "rgba(148, 163, 184, 0.85)", 
+                      fontSize: "0.875rem", 
                       whiteSpace: "pre-line",
                     }}
                   >
@@ -1006,29 +1003,29 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                   </Typography>
                 </Box>
 
-                <Box sx={{ mb: 2.5 }}>
+                <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     sx={{ 
                       fontWeight: 700, 
-                      mb: 1.25, 
+                      mb: 0.75, 
                       color: "#ffffff", 
                       letterSpacing: "0.01em", 
-                      fontSize: { xs: "1.15rem", md: "1.3rem" },
-                      lineHeight: 1.4,
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                      lineHeight: 1.3,
                     }}
                   >
                     Early signs your body gives
                   </Typography>
-                  <Box component="ul" sx={{ pl: 2.5, m: 0, mt: 1 }}>
+                  <Box component="ul" sx={{ pl: 2, m: 0, mt: 0.5 }}>
                     {mergedReport.bodyCodeReport.earlySignals.map((signal, idx) => (
-                      <li key={idx} style={{ marginBottom: "0.75rem" }}>
+                      <li key={idx} style={{ marginBottom: "0.5rem" }}>
                         <Typography
-                          variant="body1"
+                          variant="body2"
                           sx={{ 
-                            lineHeight: 1.75, 
-                            color: "rgba(226, 232, 240, 0.92)", 
-                            fontSize: "1rem" 
+                            lineHeight: 1.6, 
+                            color: "rgba(148, 163, 184, 0.85)", 
+                            fontSize: "0.875rem" 
                           }}
                         >
                           {signal}
@@ -1038,30 +1035,30 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                   </Box>
                 </Box>
 
-                <Box sx={{ mb: 2.5 }}>
+                <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     sx={{ 
                       fontWeight: 700, 
-                      mb: 1.25, 
+                      mb: 0.75, 
                       color: "#ffffff", 
                       letterSpacing: "0.01em", 
-                      fontSize: { xs: "1.15rem", md: "1.3rem" },
-                      lineHeight: 1.4,
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                      lineHeight: 1.3,
                     }}
                   >
                     What can help you immediately
                   </Typography>
-                  <Box component="ul" sx={{ pl: 3, m: 0, mt: 1 }}>
+                  <Box component="ul" sx={{ pl: 2, m: 0, mt: 0.5 }}>
                     {mergedReport.bodyCodeReport.dailyAnchors.map((anchor, idx) => (
-                      <li key={idx} style={{ marginBottom: "0.75rem" }}>
+                      <li key={idx} style={{ marginBottom: "0.5rem" }}>
                         <Typography
-                          variant="body1"
+                          variant="body2"
                           sx={{
-                            lineHeight: 1.85,
+                            lineHeight: 1.6,
                             fontWeight: 500,
-                            color: "rgba(226, 232, 240, 0.95)",
-                            fontSize: "1rem",
+                            color: "rgba(148, 163, 184, 0.9)",
+                            fontSize: "0.875rem",
                           }}
                         >
                           ✔ {anchor}
@@ -1073,21 +1070,21 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
 
                 <Box
                   sx={{
-                    mt: 4,
-                    p: 2.5,
-                    bgcolor: "rgba(0, 255, 255, 0.08)",
-                    borderRadius: 2,
-                    borderLeft: "4px solid #00ffff",
+                    mt: 2.5,
+                    p: 2,
+                    bgcolor: "rgba(0, 255, 255, 0.06)",
+                    borderRadius: 1.5,
+                    borderLeft: "3px solid #00ffff",
                   }}
                 >
                   <Typography
-                    variant="body1"
+                    variant="body2"
                     sx={{
-                      lineHeight: 1.85,
+                      lineHeight: 1.65,
                       fontStyle: "italic",
-                      color: "rgba(226, 232, 240, 0.95)",
+                      color: "rgba(148, 163, 184, 0.9)",
                       whiteSpace: "pre-line",
-                      fontSize: "1rem",
+                      fontSize: "0.875rem",
                     }}
                   >
                     {mergedReport.bodyCodeReport.closingMessage}
@@ -1227,52 +1224,52 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
             {mergedReport?.prakritiCodeReport && (
               <Box sx={{ mt: 2, pt: 2, borderTop: "2px solid rgba(236, 72, 153, 0.2)" }}>
                 <Typography
-                  variant="h4"
+                  variant="h5"
                   sx={{
                     fontWeight: 800,
                     color: "#ff9de6",
-                    mb: 1,
-                    fontSize: { xs: "1.5rem", md: "1.75rem" },
-                    letterSpacing: "0.02em",
+                    mb: 0.75,
+                    fontSize: { xs: "1.3rem", md: "1.5rem" },
+                    letterSpacing: "0.01em",
                     lineHeight: 1.3,
                   }}
                 >
                   {mergedReport.prakritiCodeReport.title}
                 </Typography>
                 <Typography
-                  variant="body1"
+                  variant="body2"
                   sx={{
-                    color: "rgba(226, 232, 240, 0.75)",
-                    mb: 2.5,
+                    color: "rgba(148, 163, 184, 0.7)",
+                    mb: 2,
                     fontStyle: "italic",
-                    fontSize: "1rem",
-                    lineHeight: 1.6,
+                    fontSize: "0.875rem",
+                    lineHeight: 1.5,
                   }}
                 >
                   {mergedReport.prakritiCodeReport.subtitle}
                 </Typography>
 
-                <Box sx={{ mb: 2.5 }}>
+                <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     sx={{ 
                       fontWeight: 700, 
-                      mb: 1.25, 
+                      mb: 0.75, 
                       color: "#ffffff", 
                       letterSpacing: "0.01em", 
-                      fontSize: { xs: "1.15rem", md: "1.3rem" },
-                      lineHeight: 1.4,
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                      lineHeight: 1.3,
                     }}
                   >
                     This is how your inner world feels, day to day
                   </Typography>
                   <Typography
-                    variant="body1"
+                    variant="body2"
                     sx={{ 
-                      lineHeight: 1.85, 
+                      lineHeight: 1.65, 
                       mb: 0, 
-                      color: "rgba(226, 232, 240, 0.92)", 
-                      fontSize: "1rem", 
+                      color: "rgba(148, 163, 184, 0.85)", 
+                      fontSize: "0.875rem", 
                       whiteSpace: "pre-line",
                     }}
                   >
@@ -1280,27 +1277,27 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                   </Typography>
                 </Box>
 
-                <Box sx={{ mb: 2.5 }}>
+                <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     sx={{ 
                       fontWeight: 700, 
-                      mb: 1.25, 
+                      mb: 0.75, 
                       color: "#ffffff", 
                       letterSpacing: "0.01em", 
-                      fontSize: { xs: "1.15rem", md: "1.3rem" },
-                      lineHeight: 1.4,
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                      lineHeight: 1.3,
                     }}
                   >
                     This is how you naturally think
                   </Typography>
                   <Typography
-                    variant="body1"
+                    variant="body2"
                     sx={{ 
-                      lineHeight: 1.85, 
+                      lineHeight: 1.65, 
                       mb: 0, 
-                      color: "rgba(226, 232, 240, 0.92)", 
-                      fontSize: "1rem", 
+                      color: "rgba(148, 163, 184, 0.85)", 
+                      fontSize: "0.875rem", 
                       whiteSpace: "pre-line",
                     }}
                   >
@@ -1308,27 +1305,27 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                   </Typography>
                 </Box>
 
-                <Box sx={{ mb: 2.5 }}>
+                <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     sx={{ 
                       fontWeight: 700, 
-                      mb: 1.25, 
+                      mb: 0.75, 
                       color: "#ffffff", 
                       letterSpacing: "0.01em", 
-                      fontSize: { xs: "1.15rem", md: "1.3rem" },
-                      lineHeight: 1.4,
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                      lineHeight: 1.3,
                     }}
                   >
                     What quietly drains you
                   </Typography>
                   <Typography
-                    variant="body1"
+                    variant="body2"
                     sx={{ 
-                      lineHeight: 1.85, 
+                      lineHeight: 1.65, 
                       mb: 0, 
-                      color: "rgba(226, 232, 240, 0.92)", 
-                      fontSize: "1rem", 
+                      color: "rgba(148, 163, 184, 0.85)", 
+                      fontSize: "0.875rem", 
                       whiteSpace: "pre-line",
                     }}
                   >
@@ -1336,27 +1333,27 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                   </Typography>
                 </Box>
 
-                <Box sx={{ mb: 2.5 }}>
+                <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     sx={{ 
                       fontWeight: 700, 
-                      mb: 1.25, 
+                      mb: 0.75, 
                       color: "#ffffff", 
                       letterSpacing: "0.01em", 
-                      fontSize: { xs: "1.15rem", md: "1.3rem" },
-                      lineHeight: 1.4,
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                      lineHeight: 1.3,
                     }}
                   >
                     How stress shows up in your behavior
                   </Typography>
                   <Typography
-                    variant="body1"
+                    variant="body2"
                     sx={{ 
-                      lineHeight: 1.85, 
+                      lineHeight: 1.65, 
                       mb: 0, 
-                      color: "rgba(226, 232, 240, 0.92)", 
-                      fontSize: "1rem", 
+                      color: "rgba(148, 163, 184, 0.85)", 
+                      fontSize: "0.875rem", 
                       whiteSpace: "pre-line",
                     }}
                   >
@@ -1364,27 +1361,27 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                   </Typography>
                 </Box>
 
-                <Box sx={{ mb: 2.5 }}>
+                <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     sx={{ 
                       fontWeight: 700, 
-                      mb: 1.25, 
+                      mb: 0.75, 
                       color: "#ffffff", 
                       letterSpacing: "0.01em", 
-                      fontSize: { xs: "1.15rem", md: "1.3rem" },
-                      lineHeight: 1.4,
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                      lineHeight: 1.3,
                     }}
                   >
                     Early signs your mind gives
                   </Typography>
                   <Typography
-                    variant="body1"
+                    variant="body2"
                     sx={{ 
-                      lineHeight: 1.85, 
+                      lineHeight: 1.65, 
                       mb: 0, 
-                      color: "rgba(226, 232, 240, 0.92)", 
-                      fontSize: "1rem", 
+                      color: "rgba(148, 163, 184, 0.85)", 
+                      fontSize: "0.875rem", 
                       whiteSpace: "pre-line",
                     }}
                   >
@@ -1392,44 +1389,44 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                   </Typography>
                 </Box>
 
-                <Box sx={{ mb: 2.5 }}>
+                <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     sx={{ 
                       fontWeight: 700, 
-                      mb: 1.25, 
+                      mb: 0.75, 
                       color: "#ffffff", 
                       letterSpacing: "0.01em", 
-                      fontSize: { xs: "1.15rem", md: "1.3rem" },
-                      lineHeight: 1.4,
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                      lineHeight: 1.3,
                     }}
                   >
                     What helps you feel stable quickly
                   </Typography>
                   {mergedReport.prakritiCodeReport.anchorsIntro && (
                     <Typography
-                      variant="body1"
+                      variant="body2"
                       sx={{ 
-                        lineHeight: 1.85, 
-                        mb: 1.25, 
-                        color: "rgba(226, 232, 240, 0.92)", 
-                        fontSize: "1rem", 
+                        lineHeight: 1.65, 
+                        mb: 0.75, 
+                        color: "rgba(148, 163, 184, 0.85)", 
+                        fontSize: "0.875rem", 
                         whiteSpace: "pre-line",
                       }}
                     >
                       {mergedReport.prakritiCodeReport.anchorsIntro}
                     </Typography>
                   )}
-                  <Box component="ul" sx={{ pl: 3, m: 0, mt: 1 }}>
+                  <Box component="ul" sx={{ pl: 2, m: 0, mt: 0.5 }}>
                     {mergedReport.prakritiCodeReport.anchors.map((anchor, idx) => (
-                      <li key={idx} style={{ marginBottom: "0.75rem" }}>
+                      <li key={idx} style={{ marginBottom: "0.5rem" }}>
                         <Typography
-                          variant="body1"
+                          variant="body2"
                           sx={{
-                            lineHeight: 1.85,
+                            lineHeight: 1.6,
                             fontWeight: 500,
-                            color: "rgba(226, 232, 240, 0.95)",
-                            fontSize: "1rem",
+                            color: "rgba(148, 163, 184, 0.9)",
+                            fontSize: "0.875rem",
                           }}
                         >
                           ✔ {anchor}
@@ -1441,21 +1438,21 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
 
                 <Box
                   sx={{
-                    mt: 4,
-                    p: 2.5,
-                    bgcolor: "rgba(236, 72, 153, 0.1)",
-                    borderRadius: 2,
-                    borderLeft: "4px solid #ff9de6",
+                    mt: 2.5,
+                    p: 2,
+                    bgcolor: "rgba(236, 72, 153, 0.06)",
+                    borderRadius: 1.5,
+                    borderLeft: "3px solid #ff9de6",
                   }}
                 >
                   <Typography
-                    variant="body1"
+                    variant="body2"
                     sx={{
-                      lineHeight: 1.85,
+                      lineHeight: 1.65,
                       fontStyle: "italic",
-                      color: "rgba(226, 232, 240, 0.95)",
+                      color: "rgba(148, 163, 184, 0.9)",
                       whiteSpace: "pre-line",
-                      fontSize: "1rem",
+                      fontSize: "0.875rem",
                     }}
                   >
                     {mergedReport.prakritiCodeReport.closingMessage}
@@ -1595,108 +1592,108 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
             {mergedReport?.vikritiCodeReport && (
               <Box sx={{ mt: 2, pt: 2, borderTop: "2px solid rgba(16, 185, 129, 0.2)" }}>
                 <Typography
-                  variant="h4"
+                  variant="h5"
                   sx={{
                     fontWeight: 800,
                     color: "#4ade80",
-                    mb: 1,
-                    fontSize: { xs: "1.5rem", md: "1.75rem" },
-                    letterSpacing: "0.02em",
+                    mb: 0.75,
+                    fontSize: { xs: "1.3rem", md: "1.5rem" },
+                    letterSpacing: "0.01em",
                     lineHeight: 1.3,
                   }}
                 >
                   {mergedReport.vikritiCodeReport.title}
                 </Typography>
                 <Typography
-                  variant="body1"
+                  variant="body2"
                   sx={{
-                    color: "rgba(226, 232, 240, 0.75)",
-                    mb: 2.5,
+                    color: "rgba(148, 163, 184, 0.7)",
+                    mb: 2,
                     fontStyle: "italic",
-                    fontSize: "1rem",
-                    lineHeight: 1.6,
+                    fontSize: "0.875rem",
+                    lineHeight: 1.5,
                   }}
                 >
                   {mergedReport.vikritiCodeReport.subtitle}
                 </Typography>
 
-                <Box sx={{ mb: 2.5 }}>
+                <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     sx={{ 
                       fontWeight: 700, 
-                      mb: 1.25, 
+                      mb: 0.75, 
                       color: "#ffffff", 
                       letterSpacing: "0.01em", 
-                      fontSize: { xs: "1.15rem", md: "1.3rem" },
-                      lineHeight: 1.4,
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                      lineHeight: 1.3,
                     }}
                   >
                     What's Happening in Your System Right Now
                   </Typography>
                   <Typography
-                    variant="body1"
+                    variant="body2"
                     sx={{ 
-                      lineHeight: 1.85, 
+                      lineHeight: 1.65, 
                       mb: 0, 
-                      color: "rgba(226, 232, 240, 0.92)", 
-                      fontSize: "1rem",
+                      color: "rgba(148, 163, 184, 0.85)", 
+                      fontSize: "0.875rem",
                     }}
                   >
                     {mergedReport.vikritiCodeReport.whatsHappening}
                   </Typography>
                 </Box>
 
-                <Box sx={{ mb: 2.5 }}>
+                <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     sx={{ 
                       fontWeight: 700, 
-                      mb: 1.25, 
+                      mb: 0.75, 
                       color: "#ffffff", 
                       letterSpacing: "0.01em", 
-                      fontSize: { xs: "1.15rem", md: "1.3rem" },
-                      lineHeight: 1.4,
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                      lineHeight: 1.3,
                     }}
                   >
                     Why You May Be Feeling Like This
                   </Typography>
                   <Typography
-                    variant="body1"
+                    variant="body2"
                     sx={{ 
-                      lineHeight: 1.85, 
+                      lineHeight: 1.65, 
                       mb: 0, 
-                      color: "rgba(226, 232, 240, 0.92)", 
-                      fontSize: "1rem",
+                      color: "rgba(148, 163, 184, 0.85)", 
+                      fontSize: "0.875rem",
                     }}
                   >
                     {mergedReport.vikritiCodeReport.whyFeelingLikeThis}
                   </Typography>
                 </Box>
 
-                <Box sx={{ mb: 2.5 }}>
+                <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     sx={{ 
                       fontWeight: 700, 
-                      mb: 1.25, 
+                      mb: 0.75, 
                       color: "#ffffff", 
                       letterSpacing: "0.01em", 
-                      fontSize: { xs: "1.15rem", md: "1.3rem" },
-                      lineHeight: 1.4,
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                      lineHeight: 1.3,
                     }}
                   >
                     Common Symptoms You Might Notice
                   </Typography>
-                  <Box component="ul" sx={{ pl: 2.5, m: 0, mt: 1 }}>
+                  <Box component="ul" sx={{ pl: 2, m: 0, mt: 0.5 }}>
                     {mergedReport.vikritiCodeReport.commonSymptoms.map((symptom, idx) => (
-                      <li key={idx} style={{ marginBottom: "0.75rem" }}>
+                      <li key={idx} style={{ marginBottom: "0.5rem" }}>
                         <Typography
-                          variant="body1"
+                          variant="body2"
                           sx={{ 
-                            lineHeight: 1.75, 
-                            color: "rgba(226, 232, 240, 0.92)",
-                            fontSize: "1rem",
+                            lineHeight: 1.6, 
+                            color: "rgba(148, 163, 184, 0.85)",
+                            fontSize: "0.875rem",
                           }}
                         >
                           {symptom}
@@ -1706,57 +1703,57 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                   </Box>
                 </Box>
 
-                <Box sx={{ mb: 2.5 }}>
+                <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     sx={{ 
                       fontWeight: 700, 
-                      mb: 1.25, 
+                      mb: 0.75, 
                       color: "#ffffff", 
                       letterSpacing: "0.01em", 
-                      fontSize: { xs: "1.15rem", md: "1.3rem" },
-                      lineHeight: 1.4,
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                      lineHeight: 1.3,
                     }}
                   >
                     {mergedReport.vikritiCodeReport.earlyWarningsTitle}
                   </Typography>
                   <Typography
-                    variant="body1"
+                    variant="body2"
                     sx={{ 
-                      lineHeight: 1.85, 
+                      lineHeight: 1.65, 
                       mb: 0, 
-                      color: "rgba(226, 232, 240, 0.92)", 
-                      fontSize: "1rem",
+                      color: "rgba(148, 163, 184, 0.85)", 
+                      fontSize: "0.875rem",
                     }}
                   >
                     {mergedReport.vikritiCodeReport.earlyWarnings}
                   </Typography>
                 </Box>
 
-                <Box sx={{ mb: 2.5 }}>
+                <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
                   <Typography
-                    variant="h5"
+                    variant="h6"
                     sx={{ 
                       fontWeight: 700, 
-                      mb: 1.25, 
+                      mb: 0.75, 
                       color: "#ffffff", 
                       letterSpacing: "0.01em", 
-                      fontSize: { xs: "1.15rem", md: "1.3rem" },
-                      lineHeight: 1.4,
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                      lineHeight: 1.3,
                     }}
                   >
                     What Your Body Needs Immediately
                   </Typography>
-                  <Box component="ul" sx={{ pl: 3, m: 0, mt: 1 }}>
+                  <Box component="ul" sx={{ pl: 2, m: 0, mt: 0.5 }}>
                     {mergedReport.vikritiCodeReport.whatYourBodyNeeds.map((need, idx) => (
-                      <li key={idx} style={{ marginBottom: "0.75rem" }}>
+                      <li key={idx} style={{ marginBottom: "0.5rem" }}>
                         <Typography
-                          variant="body1"
+                          variant="body2"
                           sx={{
-                            lineHeight: 1.85,
+                            lineHeight: 1.6,
                             fontWeight: 500,
-                            color: "rgba(226, 232, 240, 0.95)",
-                            fontSize: "1rem",
+                            color: "rgba(148, 163, 184, 0.9)",
+                            fontSize: "0.875rem",
                           }}
                         >
                           ✔ {need}
@@ -1768,20 +1765,20 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
 
                 <Box
                   sx={{
-                    mt: 4,
-                    p: 2.5,
-                    bgcolor: "rgba(34, 197, 94, 0.1)",
-                    borderRadius: 2,
-                    borderLeft: "4px solid #4ade80",
+                    mt: 2.5,
+                    p: 2,
+                    bgcolor: "rgba(34, 197, 94, 0.06)",
+                    borderRadius: 1.5,
+                    borderLeft: "3px solid #4ade80",
                   }}
                 >
                   <Typography
-                    variant="body1"
+                    variant="body2"
                     sx={{
-                      lineHeight: 1.85,
+                      lineHeight: 1.65,
                       fontStyle: "italic",
-                      color: "rgba(226, 232, 240, 0.95)",
-                      fontSize: "1rem",
+                      color: "rgba(148, 163, 184, 0.9)",
+                      fontSize: "0.875rem",
                     }}
                   >
                     {mergedReport.vikritiCodeReport.closingMessage}
@@ -1971,13 +1968,109 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 1.5 }}>
-            <Box sx={{ flex: 1, minWidth: 200 }}>
-              <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5, fontSize: "1rem" }}>
-                What actually needed to be done?
+            <Box sx={{ flex: 1, minWidth: { xs: "100%", sm: 200 } }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.8, fontSize: { xs: "0.95rem", sm: "1rem" }, lineHeight: 1.3 }}>
+                Need Expert Guidance for Healthier Body and Mind
               </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.9, fontSize: "0.8rem" }}>
-                We've created a personalized 14-day plan that includes: Food plan • Movement plan • Sleep guidance • Daily routine • What your body is REALLY trying to tell you
-              </Typography>
+              <Box 
+                sx={{ 
+                  display: "grid", 
+                  gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)" },
+                  gap: { xs: 0.3, sm: 0.4 },
+                  fontSize: { xs: "0.75rem", sm: "0.8rem" }
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                  <Box
+                    sx={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      backgroundColor: "white",
+                      mt: 0.5,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <Typography variant="body2" sx={{ opacity: 0.95, fontSize: "inherit", lineHeight: 1.4 }}>
+                    <strong>Diet Plan</strong> – tailored to your needs
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                  <Box
+                    sx={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      backgroundColor: "white",
+                      mt: 0.5,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <Typography variant="body2" sx={{ opacity: 0.95, fontSize: "inherit", lineHeight: 1.4 }}>
+                    <strong>Workout Plan</strong> – safe, effective movement
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                  <Box
+                    sx={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      backgroundColor: "white",
+                      mt: 0.5,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <Typography variant="body2" sx={{ opacity: 0.95, fontSize: "inherit", lineHeight: 1.4 }}>
+                    <strong>Sleep Scheduling</strong> – deep, quality sleep
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                  <Box
+                    sx={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      backgroundColor: "white",
+                      mt: 0.5,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <Typography variant="body2" sx={{ opacity: 0.95, fontSize: "inherit", lineHeight: 1.4 }}>
+                    <strong>Emotional Training</strong> – calm, healthy mind
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                  <Box
+                    sx={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      backgroundColor: "white",
+                      mt: 0.5,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <Typography variant="body2" sx={{ opacity: 0.95, fontSize: "inherit", lineHeight: 1.4 }}>
+                    <strong>Daily Routine Mapping</strong> – habit alignment
+                  </Typography>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                  <Box
+                    sx={{
+                      width: 6,
+                      height: 6,
+                      borderRadius: "50%",
+                      backgroundColor: "white",
+                      mt: 0.5,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <Typography variant="body2" sx={{ opacity: 0.95, fontSize: "inherit", lineHeight: 1.4 }}>
+                    <strong>Medication & Supplements</strong> – faster recovery
+                  </Typography>
+                </Box>
+              </Box>
             </Box>
             <Button
               variant="contained"

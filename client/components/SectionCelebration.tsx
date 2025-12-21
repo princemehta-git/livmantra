@@ -275,16 +275,18 @@ export default function SectionCelebration({
       <Box
         sx={{
           position: "relative",
-          width: "90%",
+          width: { xs: "95%", sm: "90%" },
           maxWidth: 600,
           background: "linear-gradient(135deg, rgba(10, 14, 39, 0.95) 0%, rgba(20, 25, 50, 0.95) 100%)",
           border: "2px solid rgba(0, 255, 255, 0.5)",
-          borderRadius: 4,
+          borderRadius: { xs: 2, sm: 4 },
           boxShadow: "0 0 50px rgba(0, 255, 255, 0.5), inset 0 0 30px rgba(138, 43, 226, 0.2)",
-          p: 6,
+          p: { xs: 3, sm: 6 },
           textAlign: "center",
           overflow: "hidden",
           zIndex: 1300,
+          maxHeight: { xs: "90vh", sm: "auto" },
+          overflowY: { xs: "auto", sm: "visible" },
         }}
       >
         {/* Confetti */}
@@ -322,10 +324,10 @@ export default function SectionCelebration({
           >
             <EmojiEvents
               sx={{
-                fontSize: 120,
+                fontSize: { xs: 80, sm: 120 },
                 color: "#ffd700",
                 filter: "drop-shadow(0 0 20px rgba(255, 215, 0, 0.8))",
-                mb: 2,
+                mb: { xs: 1, sm: 2 },
               }}
             />
           </motion.div>
@@ -366,10 +368,11 @@ export default function SectionCelebration({
               variant="h5"
               sx={{
                 color: "rgba(255, 255, 255, 0.8)",
-                mb: 4,
+                mb: { xs: 2, sm: 4 },
                 fontWeight: 600,
                 textTransform: "uppercase",
                 letterSpacing: "0.1em",
+                fontSize: { xs: "1rem", sm: "1.5rem" },
               }}
             >
               {sectionName}
@@ -400,7 +403,7 @@ export default function SectionCelebration({
               >
                 <Star
                   sx={{
-                    fontSize: 40,
+                    fontSize: { xs: 28, sm: 40 },
                     color: "#ffd700",
                     filter: "drop-shadow(0 0 10px rgba(255, 215, 0, 0.8))",
                   }}
@@ -418,8 +421,8 @@ export default function SectionCelebration({
             >
               <Box
                 sx={{
-                  mt: 3,
-                  p: 3,
+                  mt: { xs: 2, sm: 3 },
+                  p: { xs: 2, sm: 3 },
                   borderRadius: 2,
                   background: `linear-gradient(135deg, ${hintColor}15, ${hintColor}05)`,
                   border: `2px solid ${hintColor}40`,
@@ -428,7 +431,7 @@ export default function SectionCelebration({
               >
                 <AutoAwesome
                   sx={{
-                    fontSize: 32,
+                    fontSize: { xs: 24, sm: 32 },
                     color: hintColor,
                     mb: 1,
                     filter: `drop-shadow(0 0 10px ${hintColor}80)`,
@@ -442,6 +445,7 @@ export default function SectionCelebration({
                     mb: 1,
                     textTransform: "uppercase",
                     letterSpacing: "0.1em",
+                    fontSize: { xs: "0.9rem", sm: "1.25rem" },
                   }}
                 >
                   Hint Unlocked!
@@ -451,6 +455,7 @@ export default function SectionCelebration({
                   sx={{
                     color: "rgba(255, 255, 255, 0.9)",
                     fontWeight: 500,
+                    fontSize: { xs: "0.85rem", sm: "1rem" },
                   }}
                 >
                   {hintText}
@@ -471,10 +476,10 @@ export default function SectionCelebration({
               size="large"
               disabled={isLastSection && !allQuestionsAnswered}
               sx={{
-                mt: 4,
-                px: 6,
-                py: 2,
-                fontSize: "1.1rem",
+                mt: { xs: 2, sm: 4 },
+                px: { xs: 4, sm: 6 },
+                py: { xs: 1.5, sm: 2 },
+                fontSize: { xs: "0.9rem", sm: "1.1rem" },
                 fontWeight: 700,
                 background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
                 color: "#0a0e27",
@@ -483,6 +488,7 @@ export default function SectionCelebration({
                 boxShadow: "0 0 30px rgba(0, 255, 255, 0.5)",
                 textTransform: "uppercase",
                 letterSpacing: "0.1em",
+                width: { xs: "100%", sm: "auto" },
                 "&:hover": {
                   background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
                   boxShadow: "0 0 50px rgba(0, 255, 255, 0.8)",

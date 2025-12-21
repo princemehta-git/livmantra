@@ -19,6 +19,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import FeedbackIcon from "@mui/icons-material/Feedback";
 import ShareIcon from "@mui/icons-material/Share";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import SectionProgress from "./SectionProgress";
 import StatsDashboard from "./StatsDashboard";
 import ParticleExplosion from "./ParticleExplosion";
@@ -78,6 +79,7 @@ type MergedReport = {
     howYourBodyLives: string;
     howYourMindMoves?: string;
     howYourMindWorks?: string;
+    whatQuietlyDrainsYou?: string;
     howStressShowsUp: string;
     earlySignals: string[];
     dailyAnchors: string[];
@@ -89,10 +91,13 @@ type MergedReport = {
     yourNaturalNature: string;
     howYouThinkAndRespond: string;
     yourSuperpowers: string[];
-    whenThisGetsTooMuch: string;
+    whatQuietlyDrainsYou: string;
+    howStressShowsUpInBehavior: string;
+    earlySignsYourMindGives: string;
     lifeStageAndSeasonSensitivity: string;
     anchors: string[];
     anchorsTitle: string;
+    anchorsIntro?: string;
     closingMessage: string;
   } | null;
   vikritiCodeReport: {
@@ -495,15 +500,87 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
   // Use merged report if available, otherwise fallback to basic display
   const useMergedReport = mergedReport !== null && mergedReport !== undefined;
 
-  const handleCTAClick = () => {
-    // TODO: Implement payment flow
-    if (snapshot.reportId) {
-      console.log("CTA clicked for reportId:", snapshot.reportId);
-      // Navigate to payment page or open payment modal
-      alert(`Unlock full report for ₹99 (Report ID: ${snapshot.reportId})`);
-    } else {
-      alert("Full report not available for this result.");
+  const handleContactUs = () => {
+    // Helper function to map dosha to Aero/Pyro/Geo
+    const doshaToType = (dosha: string): string => {
+      const doshaLower = dosha.toLowerCase();
+      if (doshaLower.includes("vata")) return "Aero";
+      if (doshaLower.includes("pitta")) return "Pyro";
+      if (doshaLower.includes("kapha")) return "Geo";
+      return dosha;
+    };
+    
+    // Helper function to map body type to Aero/Pyro/Geo
+    const bodyTypeToType = (bodyType: string): string => {
+      const bodyTypeLower = bodyType.toLowerCase();
+      if (bodyTypeLower.includes("ectomorph")) return "Aero";
+      if (bodyTypeLower.includes("mesomorph")) return "Pyro";
+      if (bodyTypeLower.includes("endomorph")) return "Geo";
+      return bodyType;
+    };
+    
+    // Get body type in Aero/Pyro/Geo format
+    const bodyTypeName = getTypeNameForCode(snapshot.bodyCode) || 
+                        (snapshot.bodyType ? bodyTypeToType(snapshot.bodyType) : null) ||
+                        snapshot.bodyType || 
+                        "Unknown";
+    
+    // Get natural nature (prakriti) in Aero/Pyro/Geo format
+    const naturalNatureName = getTypeNameForCode(snapshot.prakritiCode) || 
+                              (snapshot.prakriti ? doshaToType(snapshot.prakriti) : null) ||
+                              snapshot.prakriti || 
+                              "Unknown";
+    
+    // Determine imbalance - check if it's dual imbalance
+    let imbalanceText = "Unknown";
+    if (snapshot.vikritiDetailed?.imbalances && snapshot.vikritiDetailed.imbalances.length > 0) {
+      const imbalances = snapshot.vikritiDetailed.imbalances;
+      if (imbalances.length > 1) {
+        // Dual imbalance - combine the dosha names
+        const doshaNames = imbalances.map(imb => doshaToType(imb.dosha));
+        imbalanceText = doshaNames.join("-") + " Dual Imbalance";
+      } else if (imbalances.length === 1) {
+        // Single imbalance
+        imbalanceText = doshaToType(imbalances[0].dosha);
+      }
+    } else if (snapshot.vikritiCode) {
+      // Fallback to vikritiCode if detailed not available
+      // Check if it's a dual imbalance code (codes with multiple elements)
+      const elements = getElementsForCode(snapshot.vikritiCode);
+      if (elements.length > 1) {
+        const elementNames = elements.map(el => 
+          el === "air" ? "Aero" : el === "fire" ? "Pyro" : "Geo"
+        );
+        imbalanceText = elementNames.join("-") + " Dual Imbalance";
+      } else if (elements.length === 1) {
+        imbalanceText = elements[0] === "air" ? "Aero" : elements[0] === "fire" ? "Pyro" : "Geo";
+      } else {
+        // Try to get from vikriti summary string
+        const vikritiName = getTypeNameForCode(snapshot.vikritiCode);
+        if (vikritiName) {
+          imbalanceText = vikritiName;
+        } else if (snapshot.vikriti) {
+          imbalanceText = doshaToType(snapshot.vikriti);
+        }
+      }
+    } else if (snapshot.vikriti) {
+      // Last fallback - use vikriti string directly
+      imbalanceText = doshaToType(snapshot.vikriti);
     }
+    
+    // Build WhatsApp message
+    const message = `Hi, I gave my test, my body type is ${bodyTypeName}, my natural nature is ${naturalNatureName} & my imbalance is ${imbalanceText}. So please provide me detailed diet plan, and exercise and 14 days body reset plan.`;
+    
+    // Encode message for URL
+    const encodedMessage = encodeURIComponent(message);
+    
+    // WhatsApp number - update this with your actual WhatsApp business number
+    // Format: country code + number without + or 0 (e.g., 919876543210 for +91 9876543210)
+    const whatsappNumber = "918055079055"; // TODO: Replace with actual WhatsApp number
+    
+    // Open WhatsApp
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+    window.open(whatsappUrl, "_blank");
   };
 
   // Get counts for stats dashboard
@@ -535,7 +612,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
             textShadow: "0 0 30px rgba(0, 255, 255, 0.3)",
           }}
         >
-          Body Detected
+          Body Type Detected
         </Typography> */}
         <Box sx={{ textAlign: "center", mb: 1.5 }}>
           <Typography
@@ -558,8 +635,8 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
             }}
           >
             {currentSection === 0 && "BODY TYPE OVERVIEW"}
-            {currentSection === 1 && "PRAKRITI (CONSTITUTION) OVERVIEW"}
-            {currentSection === 2 && "VIKRITI (IMBALANCE) OVERVIEW"}
+            {currentSection === 1 && "Innate Constitution OVERVIEW"}
+            {currentSection === 2 && "Current Imbalance Overview"}
           </Typography>
           {(() => {
             const currentCode = currentSection === 0 ? snapshot.bodyCode : 
@@ -614,11 +691,11 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
       {/* Stats Dashboard - Hidden */}
       {/* {statsCounts && <StatsDashboard counts={statsCounts} />} */}
 
-      {/* Achievement Badges */}
-      <Grid container spacing={1.5} sx={{ mb: 1.5 }}>
-        <Grid item xs={6} sm={4}>
+      {/* Achievement Badges - Tabs Layout */}
+      <Grid container spacing={{ xs: 0.5, sm: 1.5 }} sx={{ mb: 1.5 }}>
+        <Grid item xs={4} sm={4}>
           <AchievementBadge
-            title="Body Detected"
+            title="Body Type Detected"
             description="Primary type identified"
             unlocked={currentSection >= 0}
             isActive={currentSection === 0}
@@ -631,7 +708,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
             }}
           />
         </Grid>
-        <Grid item xs={6} sm={4}>
+        <Grid item xs={4} sm={4}>
           <AchievementBadge
             title="Constitution Analyzed"
             description="Natural Nature decoded"
@@ -646,7 +723,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
             }}
           />
         </Grid>
-        <Grid item xs={6} sm={4}>
+        <Grid item xs={4} sm={4}>
           <AchievementBadge
             title="Imbalance Detected"
             description="Imbalance analysis complete"
@@ -814,11 +891,11 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                     variant="h6"
                     sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
-                    How Your Body Lives
+                    This is how your body feels, day to day
                   </Typography>
                   <Typography
                     variant="body1"
-                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem" }}
+                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem", whiteSpace: "pre-line" }}
                   >
                     {mergedReport.bodyCodeReport.howYourBodyLives}
                   </Typography>
@@ -830,13 +907,30 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       variant="h6"
                       sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                     >
-                      How Your Mind {mergedReport.bodyCodeReport.howYourMindMoves ? "Moves" : "Works"}
+                      This is how your mind usually works
                     </Typography>
                     <Typography
                       variant="body1"
-                      sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem" }}
+                      sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem", whiteSpace: "pre-line" }}
                     >
                       {mergedReport.bodyCodeReport.howYourMindMoves || mergedReport.bodyCodeReport.howYourMindWorks}
+                    </Typography>
+                  </Box>
+                )}
+
+                {mergedReport.bodyCodeReport.whatQuietlyDrainsYou && (
+                  <Box sx={{ mb: 1.5 }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
+                    >
+                      What quietly drains you
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem", whiteSpace: "pre-line" }}
+                    >
+                      {mergedReport.bodyCodeReport.whatQuietlyDrainsYou}
                     </Typography>
                   </Box>
                 )}
@@ -846,11 +940,11 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                     variant="h6"
                     sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
-                    How Stress Shows Up {mergedReport.bodyCodeReport.howYourMindMoves ? "for You" : "in You"}
+                    How stress shows up physically
                   </Typography>
                   <Typography
                     variant="body1"
-                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem" }}
+                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem", whiteSpace: "pre-line" }}
                   >
                     {mergedReport.bodyCodeReport.howStressShowsUp}
                   </Typography>
@@ -861,7 +955,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                     variant="h6"
                     sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
-                    Your Body's Early Signals
+                    Early signs your body gives
                   </Typography>
                   <Box component="ul" sx={{ pl: 2, m: 0 }}>
                     {mergedReport.bodyCodeReport.earlySignals.map((signal, idx) => (
@@ -882,7 +976,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                     variant="h6"
                     sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
-                    Daily Anchors
+                    What can help you immediately
                   </Typography>
                   <Box component="ul" sx={{ pl: 3, m: 0 }}>
                     {mergedReport.bodyCodeReport.dailyAnchors.map((anchor, idx) => (
@@ -917,6 +1011,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       lineHeight: 1.8,
                       fontStyle: "italic",
                       color: "rgba(226, 232, 240, 0.95)",
+                      whiteSpace: "pre-line",
                     }}
                   >
                     {mergedReport.bodyCodeReport.closingMessage}
@@ -1081,11 +1176,11 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                     variant="h6"
                     sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
-                    Your Natural Nature
+                    This is how your inner world feels, day to day
                   </Typography>
                   <Typography
                     variant="body1"
-                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem" }}
+                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem", whiteSpace: "pre-line" }}
                   >
                     {mergedReport.prakritiCodeReport.yourNaturalNature}
                   </Typography>
@@ -1096,11 +1191,11 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                     variant="h6"
                     sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
-                    How You Think & Respond
+                    This is how you naturally think
                   </Typography>
                   <Typography
                     variant="body1"
-                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem" }}
+                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem", whiteSpace: "pre-line" }}
                   >
                     {mergedReport.prakritiCodeReport.howYouThinkAndRespond}
                   </Typography>
@@ -1132,13 +1227,43 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                     variant="h6"
                     sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
-                    When This Gets Too Much
+                    What quietly drains you
                   </Typography>
                   <Typography
                     variant="body1"
-                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem" }}
+                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem", whiteSpace: "pre-line" }}
                   >
-                    {mergedReport.prakritiCodeReport.whenThisGetsTooMuch}
+                    {mergedReport.prakritiCodeReport.whatQuietlyDrainsYou}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ mb: 1.5 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
+                  >
+                    How stress shows up in your behavior
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem", whiteSpace: "pre-line" }}
+                  >
+                    {mergedReport.prakritiCodeReport.howStressShowsUpInBehavior}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ mb: 1.5 }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
+                  >
+                    Early signs your mind gives
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem", whiteSpace: "pre-line" }}
+                  >
+                    {mergedReport.prakritiCodeReport.earlySignsYourMindGives}
                   </Typography>
                 </Box>
 
@@ -1162,8 +1287,16 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                     variant="h6"
                     sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
-                    {mergedReport.prakritiCodeReport.anchorsTitle}
+                    What helps you feel stable quickly
                   </Typography>
+                  {mergedReport.prakritiCodeReport.anchorsIntro && (
+                    <Typography
+                      variant="body1"
+                      sx={{ lineHeight: 1.6, mb: 1, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem", whiteSpace: "pre-line" }}
+                    >
+                      {mergedReport.prakritiCodeReport.anchorsIntro}
+                    </Typography>
+                  )}
                   <Box component="ul" sx={{ pl: 3, m: 0 }}>
                     {mergedReport.prakritiCodeReport.anchors.map((anchor, idx) => (
                       <li key={idx}>
@@ -1197,6 +1330,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       lineHeight: 1.8,
                       fontStyle: "italic",
                       color: "rgba(226, 232, 240, 0.95)",
+                      whiteSpace: "pre-line",
                     }}
                   >
                     {mergedReport.prakritiCodeReport.closingMessage}
@@ -1489,15 +1623,16 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
         <Button
           variant="outlined"
           size="small"
-          startIcon={<ArrowBackIcon />}
+          startIcon={<ArrowBackIcon sx={{ fontSize: { xs: "1rem", sm: "1.25rem" } }} />}
           onClick={handleBackWithParticles}
           disabled={currentSection === 0}
           sx={{
             color: "#00ffff",
             borderColor: "#00ffff",
-            px: 2,
-            py: 1,
-            fontSize: "0.85rem",
+            px: { xs: 1.5, sm: 2 },
+            py: { xs: 0.75, sm: 1 },
+            fontSize: { xs: "0.7rem", sm: "0.85rem" },
+            minWidth: { xs: "auto", sm: "auto" },
             "&:hover": {
               borderColor: "#00ffff",
               backgroundColor: "rgba(0, 255, 255, 0.1)",
@@ -1536,9 +1671,10 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
           <Typography
             variant="body2"
             sx={{
-              ml: 2,
+              ml: { xs: 1, sm: 2 },
               color: "rgba(255, 255, 255, 0.7)",
               fontWeight: 500,
+              fontSize: { xs: "0.7rem", sm: "0.875rem" },
             }}
           >
             {currentSection + 1} / 3
@@ -1548,16 +1684,17 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
         <Button
           variant="contained"
           size="small"
-          endIcon={<ArrowForwardIcon />}
+          endIcon={<ArrowForwardIcon sx={{ fontSize: { xs: "1rem", sm: "1.25rem" } }} />}
           onClick={handleNextWithParticles}
           disabled={currentSection === 2}
           sx={{
             background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
             color: "#0a0e27",
             fontWeight: 700,
-            px: 2,
-            py: 1,
-            fontSize: "0.85rem",
+            px: { xs: 1.5, sm: 2 },
+            py: { xs: 0.75, sm: 1 },
+            fontSize: { xs: "0.7rem", sm: "0.85rem" },
+            minWidth: { xs: "auto", sm: "auto" },
             "&:hover": {
               background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
               boxShadow: "0 0 20px rgba(0, 255, 255, 0.5)",
@@ -1650,19 +1787,17 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 1.5 }}>
             <Box sx={{ flex: 1, minWidth: 200 }}>
               <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5, fontSize: "1rem" }}>
-                Unlock full report for ₹99
+                What actually needed to be done?
               </Typography>
               <Typography variant="body2" sx={{ opacity: 0.9, fontSize: "0.8rem" }}>
-                {useMergedReport && mergedReport?.paidPreviewText
-                  ? mergedReport.paidPreviewText
-                  : "72-hour reset plan • 14-day meal plan • 14-day movement plan"}
+                We've created a personalized 14-day plan that includes: Food plan • Movement plan • Sleep guidance • Daily routine • What your body is REALLY trying to tell you
               </Typography>
             </Box>
             <Button
               variant="contained"
               size="medium"
-              onClick={handleCTAClick}
-              startIcon={<LockIcon />}
+              onClick={handleContactUs}
+              startIcon={<WhatsAppIcon />}
               sx={{
                 backgroundColor: "white",
                 color: "#0f172a",
@@ -1675,7 +1810,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                 },
               }}
             >
-              Get Full Report
+              Contact Us
             </Button>
           </Box>
         </Paper>

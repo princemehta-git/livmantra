@@ -24,7 +24,7 @@ type Props = {
   onClose: () => void;
 };
 
-const shareText = "Hi! I just tried the Body Checking Test and it's completely free! You should definitely try it too - it's an amazing way to discover your body type, understand your natural constitution, and identify energy imbalances. It's insightful and totally worth checking out!";
+const shareText = "Hi! I just tried the body type analysis test and it's completely free! You should definitely try it too - it's an amazing way to discover your body type, understand your natural constitution, and identify energy imbalances. It's insightful and totally worth checking out!";
 
 const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 

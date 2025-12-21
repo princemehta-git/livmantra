@@ -44,6 +44,7 @@ export type Templates = {
       howYourBodyLives: string;
       howYourMindMoves?: string;
       howYourMindWorks?: string;
+      whatQuietlyDrainsYou?: string;
       howStressShowsUp: string;
       earlySignals: string[];
       dailyAnchors: string[];
@@ -57,10 +58,13 @@ export type Templates = {
       yourNaturalNature: string;
       howYouThinkAndRespond: string;
       yourSuperpowers: string[];
-      whenThisGetsTooMuch: string;
+      whatQuietlyDrainsYou: string;
+      howStressShowsUpInBehavior: string;
+      earlySignsYourMindGives: string;
       lifeStageAndSeasonSensitivity: string;
       anchors: string[];
       anchorsTitle: string;
+      anchorsIntro?: string;
       closingMessage: string;
     };
   };
@@ -139,6 +143,7 @@ export function mergeReportWithTemplates(result: any): {
     howYourBodyLives: string;
     howYourMindMoves?: string;
     howYourMindWorks?: string;
+    whatQuietlyDrainsYou?: string;
     howStressShowsUp: string;
     earlySignals: string[];
     dailyAnchors: string[];
@@ -150,7 +155,9 @@ export function mergeReportWithTemplates(result: any): {
     yourNaturalNature: string;
     howYouThinkAndRespond: string;
     yourSuperpowers: string[];
-    whenThisGetsTooMuch: string;
+    whatQuietlyDrainsYou: string;
+    howStressShowsUpInBehavior: string;
+    earlySignsYourMindGives: string;
     lifeStageAndSeasonSensitivity: string;
     anchors: string[];
     anchorsTitle: string;

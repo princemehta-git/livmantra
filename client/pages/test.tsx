@@ -377,7 +377,7 @@ export default function TestPage() {
             linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
             linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px)
           `,
-          backgroundSize: "50px 50px",
+          backgroundSize: { xs: "30px 30px", md: "50px 50px" },
           opacity: 0.4,
           zIndex: 0,
           pointerEvents: "none",
@@ -390,8 +390,8 @@ export default function TestPage() {
           position: "fixed",
           top: "20%",
           left: "10%",
-          width: "400px",
-          height: "400px",
+          width: { xs: "200px", md: "400px" },
+          height: { xs: "200px", md: "400px" },
           background: "radial-gradient(circle, rgba(0, 255, 255, 0.15) 0%, transparent 70%)",
           borderRadius: "50%",
           filter: "blur(60px)",
@@ -405,8 +405,8 @@ export default function TestPage() {
           position: "fixed",
           bottom: "20%",
           right: "10%",
-          width: "500px",
-          height: "500px",
+          width: { xs: "250px", md: "500px" },
+          height: { xs: "250px", md: "500px" },
           background: "radial-gradient(circle, rgba(138, 43, 226, 0.15) 0%, transparent 70%)",
           borderRadius: "50%",
           filter: "blur(80px)",
@@ -417,7 +417,7 @@ export default function TestPage() {
       />
 
       <Header />
-      <Container maxWidth="md" sx={{ py: 3, position: "relative", zIndex: 1 }}>
+      <Container maxWidth="md" sx={{ py: { xs: 2, md: 3 }, px: { xs: 1.5, sm: 2, md: 3 }, position: "relative", zIndex: 1 }}>
         <UserModal
           open={openModal}
           onClose={(u) => {
@@ -480,7 +480,7 @@ export default function TestPage() {
                   mb: 1,
                 }}
               >
-                Bio Check MODE
+                KNOW YOUR BODY
               </Typography>
             </motion.div>
             <motion.div
@@ -509,7 +509,7 @@ export default function TestPage() {
                   fontSize: { xs: "0.8rem", md: "0.9rem" },
                 }}
               >
-                Discover your body type and dosha constitution
+                Discover your body type and natural constitution
               </Typography>
             </motion.div>
           </Box>
@@ -530,13 +530,13 @@ export default function TestPage() {
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.8 }}
             >
-              <Box sx={{ mt: 2, mb: 2, textAlign: "center" }}>
+              <Box sx={{ mt: 2, mb: 2, textAlign: "center", px: { xs: 1, sm: 0 } }}>
                 <Typography 
                   variant="body2" 
                   sx={{
                     display: "inline-block",
-                    px: 2.5,
-                    py: 1,
+                    px: { xs: 1.5, sm: 2.5 },
+                    py: { xs: 0.75, sm: 1 },
                     borderRadius: 0,
                     bgcolor: "rgba(0, 255, 255, 0.1)",
                     border: "1px solid rgba(0, 255, 255, 0.3)",
@@ -544,8 +544,9 @@ export default function TestPage() {
                     fontWeight: 700,
                     textTransform: "uppercase",
                     letterSpacing: "0.1em",
-                    fontSize: "0.8rem",
+                    fontSize: { xs: "0.65rem", sm: "0.8rem" },
                     boxShadow: "0 0 15px rgba(0, 255, 255, 0.2)",
+                    lineHeight: 1.4,
                   }}
                 >
                   Mission Phase:{" "}
@@ -592,25 +593,26 @@ export default function TestPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
             >
-              <Box sx={{ display: "flex", gap: 2, mt: 2, flexWrap: "wrap", justifyContent: "center" }}>
+              <Box sx={{ display: "flex", gap: { xs: 1, sm: 2 }, mt: 2, flexWrap: "wrap", justifyContent: "center", px: { xs: 1, sm: 0 } }}>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 variant="outlined"
                 disabled={index === 0}
                 onClick={() => setIndex(Math.max(0, index - 1))}
                 sx={{
-                  px: 4,
-                  py: 1.5,
+                  px: { xs: 1.5, sm: 4 },
+                  py: { xs: 0.75, sm: 1.5 },
                   borderRadius: 0,
-                  borderWidth: 2,
+                  borderWidth: { xs: 1.5, sm: 2 },
                   borderColor: "rgba(0, 255, 255, 0.3)",
                   color: "#00ffff",
                   fontWeight: 700,
                   textTransform: "uppercase",
                   letterSpacing: "0.1em",
-                  fontSize: "0.9rem",
+                  fontSize: { xs: "0.65rem", sm: "0.9rem" },
+                  minWidth: { xs: "70px", sm: "auto" },
                   "&:hover": {
-                    borderWidth: 2,
+                    borderWidth: { xs: 1.5, sm: 2 },
                     borderColor: "rgba(0, 255, 255, 0.6)",
                     bgcolor: "rgba(0, 255, 255, 0.1)",
                     boxShadow: "0 0 20px rgba(0, 255, 255, 0.3)",
@@ -631,18 +633,19 @@ export default function TestPage() {
                 disabled={index === total - 1}
                 onClick={() => setIndex(Math.min(total - 1, index + 1))}
                 sx={{
-                  px: 4,
-                  py: 1.5,
+                  px: { xs: 1.5, sm: 4 },
+                  py: { xs: 0.75, sm: 1.5 },
                   borderRadius: 0,
-                  borderWidth: 2,
+                  borderWidth: { xs: 1.5, sm: 2 },
                   borderColor: "rgba(0, 255, 255, 0.3)",
                   color: "#00ffff",
                   fontWeight: 700,
                   textTransform: "uppercase",
                   letterSpacing: "0.1em",
-                  fontSize: "0.9rem",
+                  fontSize: { xs: "0.65rem", sm: "0.9rem" },
+                  minWidth: { xs: "70px", sm: "auto" },
                   "&:hover": {
-                    borderWidth: 2,
+                    borderWidth: { xs: 1.5, sm: 2 },
                     borderColor: "rgba(0, 255, 255, 0.6)",
                     bgcolor: "rgba(0, 255, 255, 0.1)",
                     boxShadow: "0 0 20px rgba(0, 255, 255, 0.3)",
@@ -663,17 +666,18 @@ export default function TestPage() {
                 onClick={onSubmit}
                 disabled={submitting || answers.some((a) => a === 0)}
                 sx={{
-                  px: 5,
-                  py: 1.5,
+                  px: { xs: 2, sm: 5 },
+                  py: { xs: 0.9, sm: 1.5 },
                   borderRadius: 0,
-                  fontSize: "1rem",
+                  fontSize: { xs: "0.7rem", sm: "1rem" },
                   fontWeight: 700,
                   background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
                   color: "#0a0e27",
-                  border: "2px solid #00ffff",
+                  border: { xs: "1.5px solid #00ffff", sm: "2px solid #00ffff" },
                   boxShadow: "0 0 30px rgba(0, 255, 255, 0.5), inset 0 0 20px rgba(138, 43, 226, 0.2)",
                   textTransform: "uppercase",
                   letterSpacing: "0.1em",
+                  width: { xs: "100%", sm: "auto" },
                   "&:hover": {
                     background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
                     boxShadow: "0 0 50px rgba(0, 255, 255, 0.8), inset 0 0 30px rgba(138, 43, 226, 0.3)",

@@ -58,7 +58,7 @@ export default function QuestionCard({
           transition: "all 0.3s ease",
         }}
       >
-        <CardContent sx={{ p: 3 }}>
+        <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -67,17 +67,18 @@ export default function QuestionCard({
             <Box
               sx={{
                 display: "flex",
-                alignItems: "center",
+                flexDirection: { xs: "column", sm: "row" },
+                alignItems: { xs: "flex-start", sm: "center" },
                 justifyContent: "space-between",
                 mb: 2,
-                gap: 2,
+                gap: { xs: 1.5, sm: 2 },
               }}
             >
               <Box
                 sx={{
                   display: "inline-flex",
-                  px: 3,
-                  py: 1,
+                  px: { xs: 2, sm: 3 },
+                  py: { xs: 0.75, sm: 1 },
                   borderRadius: 0,
                   background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
                   border: "1px solid rgba(0, 255, 255, 0.5)",
@@ -89,7 +90,7 @@ export default function QuestionCard({
                   sx={{ 
                     color: "#0a0e27",
                     fontWeight: 900,
-                    fontSize: "0.9rem",
+                    fontSize: { xs: "0.75rem", sm: "0.9rem" },
                     textTransform: "uppercase",
                     letterSpacing: "0.1em",
                   }}
@@ -112,9 +113,9 @@ export default function QuestionCard({
                       color: "#00ffff",
                       borderColor: "rgba(0, 255, 255, 0.3)",
                       bgcolor: "rgba(0, 255, 255, 0.1)",
-                      px: 1.5,
-                      py: 0.5,
-                      fontSize: "0.75rem",
+                      px: { xs: 1, sm: 1.5 },
+                      py: { xs: 0.4, sm: 0.5 },
+                      fontSize: { xs: "0.7rem", sm: "0.75rem" },
                       fontWeight: 600,
                       textTransform: "none",
                       borderRadius: 0,
@@ -226,17 +227,19 @@ export default function QuestionCard({
                     sx={{
                       textAlign: "left",
                       justifyContent: "flex-start",
-                      px: 2.5,
-                      py: 1.8,
+                      px: { xs: 1.5, sm: 2.5 },
+                      py: { xs: 1.1, sm: 1.8 },
                       borderRadius: 0,
-                      fontSize: "0.95rem",
+                      fontSize: { xs: "0.75rem", sm: "0.95rem" },
                       fontWeight: 600,
                       textTransform: "none",
+                      lineHeight: { xs: 1.3, sm: 1.5 },
+                      minHeight: { xs: "44px", sm: "auto" },
                       ...(selected === val
                         ? {
                             background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
                             color: "#0a0e27",
-                            border: "2px solid #00ffff",
+                            border: { xs: "1.5px solid #00ffff", sm: "2px solid #00ffff" },
                             boxShadow: "0 0 25px rgba(0, 255, 255, 0.5), inset 0 0 15px rgba(138, 43, 226, 0.2)",
                             "&:hover": {
                               background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
@@ -247,13 +250,13 @@ export default function QuestionCard({
                         : {
                             borderColor: "rgba(0, 255, 255, 0.3)",
                             color: "rgba(255, 255, 255, 0.8)",
-                            borderWidth: 2,
+                            borderWidth: { xs: 1.5, sm: 2 },
                             bgcolor: "rgba(0, 255, 255, 0.05)",
                             "&:hover": {
                               borderColor: "rgba(0, 255, 255, 0.6)",
                               bgcolor: "rgba(0, 255, 255, 0.15)",
                               boxShadow: "0 0 20px rgba(0, 255, 255, 0.3)",
-                              borderWidth: 2,
+                              borderWidth: { xs: 1.5, sm: 2 },
                               color: "#00ffff",
                             },
                           }),

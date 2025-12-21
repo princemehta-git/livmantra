@@ -22,7 +22,7 @@ export default function ProgressXP({
       <Box 
         sx={{ 
           mb: 2,
-          p: 2.5,
+          p: { xs: 1.5, sm: 2.5 },
           borderRadius: 0,
           background: "rgba(10, 14, 39, 0.6)",
           border: "1px solid rgba(0, 255, 255, 0.2)",
@@ -42,7 +42,7 @@ export default function ProgressXP({
           },
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2, alignItems: "center", flexWrap: "wrap", gap: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, justifyContent: "space-between", mb: 2, alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: { xs: 1, sm: 2 } }}>
           <Typography 
             variant="h6" 
             sx={{ 
@@ -74,7 +74,7 @@ export default function ProgressXP({
                   background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
                   color: "#0a0e27",
                   fontWeight: 900,
-                  fontSize: "0.85rem",
+                  fontSize: { xs: "0.7rem", sm: "0.85rem" },
                   borderRadius: 0,
                   border: "1px solid rgba(0, 255, 255, 0.5)",
                   boxShadow: "0 0 20px rgba(0, 255, 255, 0.4)",

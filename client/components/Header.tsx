@@ -27,7 +27,7 @@ export default function Header() {
       }}
     >
       <Container maxWidth="lg">
-        <Toolbar sx={{ justifyContent: "space-between", py: 1 }}>
+        <Toolbar sx={{ justifyContent: "space-between", py: { xs: 0.5, sm: 1 }, px: { xs: 1, sm: 2 } }}>
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -52,8 +52,8 @@ export default function Header() {
               >
                 <AutoAwesome 
                   sx={{ 
-                    mr: 1, 
-                    fontSize: "2rem",
+                    mr: { xs: 0.5, sm: 1 }, 
+                    fontSize: { xs: "1.5rem", sm: "2rem" },
                     color: "#00ffff",
                     filter: "drop-shadow(0 0 10px rgba(0, 255, 255, 0.5))",
                   }} 
@@ -63,7 +63,7 @@ export default function Header() {
                   component="div"
                   sx={{
                     fontWeight: 900,
-                    fontSize: "1.5rem",
+                    fontSize: { xs: "1.1rem", sm: "1.5rem" },
                     letterSpacing: "0.1em",
                   }}
                 >
@@ -72,20 +72,21 @@ export default function Header() {
               </Box>
             </Box>
           </motion.div>
-          <Box sx={{ display: "flex", gap: 2 }}>
+          <Box sx={{ display: "flex", gap: { xs: 1, sm: 2 } }}>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 onClick={() => router.push("/test")}
                 sx={{
                   color: "#00ffff",
                   fontWeight: 600,
-                  px: 3,
-                  py: 1,
+                  px: { xs: 1.5, sm: 3 },
+                  py: { xs: 0.5, sm: 1 },
                   borderRadius: 0,
                   border: "1px solid rgba(0, 255, 255, 0.3)",
                   textTransform: "uppercase",
                   letterSpacing: "0.1em",
-                  fontSize: "0.85rem",
+                  fontSize: { xs: "0.7rem", sm: "0.85rem" },
+                  display: { xs: "none", sm: "inline-flex" },
                   "&:hover": { 
                     bgcolor: "rgba(0, 255, 255, 0.1)",
                     borderColor: "rgba(0, 255, 255, 0.5)",
@@ -108,14 +109,14 @@ export default function Header() {
                   background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
                   color: "#0a0e27",
                   fontWeight: 700,
-                  px: 4,
-                  py: 1,
+                  px: { xs: 2, sm: 4 },
+                  py: { xs: 0.5, sm: 1 },
                   borderRadius: 0,
                   border: "1px solid #00ffff",
                   boxShadow: "0 0 20px rgba(0, 255, 255, 0.4)",
                   textTransform: "uppercase",
                   letterSpacing: "0.1em",
-                  fontSize: "0.85rem",
+                  fontSize: { xs: "0.7rem", sm: "0.85rem" },
                   "&:hover": { 
                     background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
                     boxShadow: "0 0 30px rgba(0, 255, 255, 0.6)",

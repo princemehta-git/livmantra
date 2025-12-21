@@ -114,7 +114,7 @@ export default function ResultReveal({ snapshot }: Props) {
             mb: 2,
           }}
         >
-          Body Detected
+          Body Type Detected
         </Typography> */}
       </motion.div>
 
@@ -178,7 +178,7 @@ export default function ResultReveal({ snapshot }: Props) {
                 mb: 1,
               }}
             >
-              Prakriti (Constitution)
+              Innate Constitution
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
               <Typography
@@ -217,7 +217,7 @@ export default function ResultReveal({ snapshot }: Props) {
                 mb: 1,
               }}
             >
-              Vikriti (Imbalance)
+              Current Imbalance
             </Typography>
             {snapshot.vikritiDetailed ? (
               <Box>

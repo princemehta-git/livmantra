@@ -47,3 +47,5 @@ export default function TerminalTypingText({ text, speed = 50, onComplete, class
     </Box>
   );
 }
+
+

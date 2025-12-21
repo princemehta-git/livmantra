@@ -74,6 +74,7 @@ export type Templates = {
       earlyWarningsTitle: string;
       earlyWarnings: string;
       whatYourBodyNeeds: string[];
+      whatNotToDo?: string[];
       closingMessage: string;
     };
   };
@@ -164,6 +165,7 @@ export function mergeReportWithTemplates(result: any): {
     earlyWarningsTitle: string;
     earlyWarnings: string;
     whatYourBodyNeeds: string[];
+    whatNotToDo?: string[];
     closingMessage: string;
   } | null;
 } {
@@ -235,7 +237,7 @@ export function mergeReportWithTemplates(result: any): {
     prakritiCodeReport = templates.prakritiCodeReports[prakritiCode];
   }
 
-  // Vikriti code report (V0-V9)
+  // Vikriti code report (V0 for balanced, I1-I9 for imbalances)
   let vikritiCodeReport = null;
   const vikritiCode = result.vikritiCode;
   if (vikritiCode && templates.vikritiCodeReports && templates.vikritiCodeReports[vikritiCode]) {

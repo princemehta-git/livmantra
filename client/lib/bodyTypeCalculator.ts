@@ -28,12 +28,12 @@ function computeCounts(arr: number[]): DoshaCounts {
 }
 
 /**
- * Determine body type from Section A (questions 1-5)
+ * Determine body type from Section A (questions 1-6)
  */
 export function calculateBodyType(answers: number[]): BodyTypeResult | null {
-  if (answers.length < 5) return null;
+  if (answers.length < 6) return null;
   
-  const sectionA = answers.slice(0, 5);
+  const sectionA = answers.slice(0, 6);
   // Check if all questions are answered
   if (sectionA.some(a => a === 0)) return null;
   
@@ -69,12 +69,12 @@ export function calculateBodyType(answers: number[]): BodyTypeResult | null {
 }
 
 /**
- * Determine prakriti from Section B (questions 6-20)
+ * Determine prakriti from Section B (questions 7-18)
  */
 export function calculatePrakriti(answers: number[]): PrakritiResult | null {
-  if (answers.length < 20) return null;
+  if (answers.length < 18) return null;
   
-  const sectionB = answers.slice(5, 20);
+  const sectionB = answers.slice(6, 18);
   // Check if all questions are answered
   if (sectionB.some(a => a === 0)) return null;
   

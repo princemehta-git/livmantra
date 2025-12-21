@@ -130,6 +130,78 @@ const getDoshaColor = (dosha: string): string => {
   }
 };
 
+// Convert technical body type terms to simple language
+const getSimpleBodyTypeDescription = (bodyType: string, modifier: string | null): string => {
+  let description = "";
+  
+  switch (bodyType) {
+    case "Ectomorph":
+      description = "thin and light";
+      break;
+    case "Mesomorph":
+      description = "athletic and balanced";
+      break;
+    case "Endomorph":
+      description = "heavier and grounded";
+      break;
+    default:
+      description = "balanced";
+  }
+  
+  // Add modifier description if present (using simple terms)
+  if (modifier) {
+    switch (modifier) {
+      case "Vata":
+        description += " with some lightness";
+        break;
+      case "Pitta":
+        description += " with some intensity";
+        break;
+      case "Kapha":
+        description += " with some steadiness";
+        break;
+    }
+  }
+  
+  return description;
+};
+
+// Convert technical dosha terms to simple language
+const getSimpleDoshaDescription = (dosha: string, modifier: string | null): string => {
+  let description = "";
+  
+  switch (dosha) {
+    case "Vata":
+      description = "light and active";
+      break;
+    case "Pitta":
+      description = "focused and driven";
+      break;
+    case "Kapha":
+      description = "calm and steady";
+      break;
+    default:
+      description = "balanced";
+  }
+  
+  // Add modifier description if present (using simple terms)
+  if (modifier) {
+    switch (modifier) {
+      case "Vata":
+        description += " with some quickness";
+        break;
+      case "Pitta":
+        description += " with some intensity";
+        break;
+      case "Kapha":
+        description += " with some steadiness";
+        break;
+    }
+  }
+  
+  return description;
+};
+
 export default function SectionCelebration({
   open,
   onClose,
@@ -178,9 +250,9 @@ export default function SectionCelebration({
   }, [open, onClose]);
 
   const hintText = bodyTypeHint
-    ? `Your body type appears to be ${bodyTypeHint.primary}${bodyTypeHint.modifier ? ` with ${bodyTypeHint.modifier} influence` : ""}`
+    ? `Your body appears to be ${getSimpleBodyTypeDescription(bodyTypeHint.primary, bodyTypeHint.modifier)}`
     : prakritiHint
-    ? `Your constitution appears to be ${prakritiHint.primary}${prakritiHint.modifier ? ` with ${prakritiHint.modifier} influence` : ""}`
+    ? `Your nature appears to be ${getSimpleDoshaDescription(prakritiHint.primary, prakritiHint.modifier)}`
     : null;
 
   const hintColor = bodyTypeHint

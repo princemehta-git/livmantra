@@ -160,7 +160,7 @@ export default function ResultPage() {
         sx={{
           position: "relative",
           zIndex: 1,
-          py: { xs: 6, md: 10 },
+          py: { xs: 3, md: 4 },
         }}
       >
         <Container maxWidth="lg">
@@ -199,13 +199,13 @@ export default function ResultPage() {
 
           {!loading && snapshot && (
             <>
-              <Box sx={{ textAlign: "center", mb: 6 }}>
+              <Box sx={{ textAlign: "center", mb: 3 }}>
                 <Typography
                   variant="h2"
                   component="h1"
                   sx={{
                     fontWeight: 900,
-                    fontSize: { xs: "2.4rem", md: "3.4rem" },
+                    fontSize: { xs: "2rem", md: "2.8rem" },
                     background:
                       "linear-gradient(135deg, #00ffff 0%, #8a2be2 50%, #00ffff 100%)",
                     backgroundSize: "200% 200%",
@@ -215,7 +215,7 @@ export default function ResultPage() {
                     animation: "gradient 3s ease infinite",
                     letterSpacing: "-0.03em",
                     textShadow: "0 0 40px rgba(0, 255, 255, 0.35)",
-                    mb: 1.5,
+                    mb: 1,
                     fontFamily: "monospace",
                   }}
                 >
@@ -232,7 +232,7 @@ export default function ResultPage() {
                     fontWeight: 300,
                     letterSpacing: "0.12em",
                     textTransform: "uppercase",
-                    fontSize: { xs: "0.85rem", md: "0.95rem" },
+                    fontSize: { xs: "0.8rem", md: "0.9rem" },
                     fontFamily: "monospace",
                   }}
                 >
@@ -246,6 +246,8 @@ export default function ResultPage() {
                   mergedReport={mergedReport}
                   currentSection={currentSection}
                   onSectionChange={setCurrentSection}
+                  resultId={result?.id}
+                  userId={result?.userId}
                 />
               </Container>
             </>

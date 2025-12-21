@@ -33,7 +33,7 @@ export default function QuestionCard({
     >
       <Card 
         sx={{ 
-          mb: 3,
+          mb: 2,
           background: "rgba(10, 14, 39, 0.6)",
           backdropFilter: "blur(10px)",
           border: "1px solid rgba(0, 255, 255, 0.2)",
@@ -58,7 +58,7 @@ export default function QuestionCard({
           transition: "all 0.3s ease",
         }}
       >
-        <CardContent sx={{ p: 4 }}>
+        <CardContent sx={{ p: 3 }}>
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -69,7 +69,7 @@ export default function QuestionCard({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                mb: 3,
+                mb: 2,
                 gap: 2,
               }}
             >
@@ -139,15 +139,15 @@ export default function QuestionCard({
               )}
             </Box>
           </motion.div>
-          <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1, my: 3 }}>
+          <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1, my: 2 }}>
             <Typography 
               variant="h5" 
               sx={{ 
                 fontWeight: 600,
                 color: "#ffffff",
-                lineHeight: 1.6,
+                lineHeight: 1.5,
                 flex: 1,
-                fontSize: { xs: "1.25rem", md: "1.5rem" },
+                fontSize: { xs: "1.1rem", md: "1.3rem" },
               }}
             >
               {text}
@@ -210,58 +210,61 @@ export default function QuestionCard({
             )}
           </Box>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {[1, 2, 3].map((val) => (
-              <motion.div
-                key={val}
-                whileHover={{ scale: 1.02, x: 4 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              >
-                <Button
-                  variant={selected === val ? "contained" : "outlined"}
-                  onClick={() => onAnswer(val)}
-                  fullWidth
-                  sx={{
-                    textAlign: "left",
-                    justifyContent: "flex-start",
-                    px: 3,
-                    py: 2.5,
-                    borderRadius: 0,
-                    fontSize: "1rem",
-                    fontWeight: 600,
-                    textTransform: "none",
-                    ...(selected === val
-                      ? {
-                          background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
-                          color: "#0a0e27",
-                          border: "2px solid #00ffff",
-                          boxShadow: "0 0 25px rgba(0, 255, 255, 0.5), inset 0 0 15px rgba(138, 43, 226, 0.2)",
-                          "&:hover": {
-                            background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
-                            boxShadow: "0 0 35px rgba(0, 255, 255, 0.7), inset 0 0 20px rgba(138, 43, 226, 0.3)",
-                            transform: "translateY(-2px)",
-                          },
-                        }
-                      : {
-                          borderColor: "rgba(0, 255, 255, 0.3)",
-                          color: "rgba(255, 255, 255, 0.8)",
-                          borderWidth: 2,
-                          bgcolor: "rgba(0, 255, 255, 0.05)",
-                          "&:hover": {
-                            borderColor: "rgba(0, 255, 255, 0.6)",
-                            bgcolor: "rgba(0, 255, 255, 0.15)",
-                            boxShadow: "0 0 20px rgba(0, 255, 255, 0.3)",
-                            borderWidth: 2,
-                            color: "#00ffff",
-                          },
-                        }),
-                    transition: "all 0.3s ease",
-                  }}
+            {options.map((option, idx) => {
+              const val = idx + 1; // Option values are 1-indexed (1, 2, 3, or 4)
+              return (
+                <motion.div
+                  key={val}
+                  whileHover={{ scale: 1.02, x: 4 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
-                  {options[val - 1] || `Option ${val}`}
-                </Button>
-              </motion.div>
-            ))}
+                  <Button
+                    variant={selected === val ? "contained" : "outlined"}
+                    onClick={() => onAnswer(val)}
+                    fullWidth
+                    sx={{
+                      textAlign: "left",
+                      justifyContent: "flex-start",
+                      px: 2.5,
+                      py: 1.8,
+                      borderRadius: 0,
+                      fontSize: "0.95rem",
+                      fontWeight: 600,
+                      textTransform: "none",
+                      ...(selected === val
+                        ? {
+                            background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
+                            color: "#0a0e27",
+                            border: "2px solid #00ffff",
+                            boxShadow: "0 0 25px rgba(0, 255, 255, 0.5), inset 0 0 15px rgba(138, 43, 226, 0.2)",
+                            "&:hover": {
+                              background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
+                              boxShadow: "0 0 35px rgba(0, 255, 255, 0.7), inset 0 0 20px rgba(138, 43, 226, 0.3)",
+                              transform: "translateY(-2px)",
+                            },
+                          }
+                        : {
+                            borderColor: "rgba(0, 255, 255, 0.3)",
+                            color: "rgba(255, 255, 255, 0.8)",
+                            borderWidth: 2,
+                            bgcolor: "rgba(0, 255, 255, 0.05)",
+                            "&:hover": {
+                              borderColor: "rgba(0, 255, 255, 0.6)",
+                              bgcolor: "rgba(0, 255, 255, 0.15)",
+                              boxShadow: "0 0 20px rgba(0, 255, 255, 0.3)",
+                              borderWidth: 2,
+                              color: "#00ffff",
+                            },
+                          }),
+                      transition: "all 0.3s ease",
+                    }}
+                  >
+                    {option}
+                  </Button>
+                </motion.div>
+              );
+            })}
           </Box>
         </CardContent>
       </Card>

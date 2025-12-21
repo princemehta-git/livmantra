@@ -15,23 +15,38 @@ model User {
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
   tests     TestResponse[]
+  feedbacks Feedback[]
 
   @@map("user")
 }
 
 model TestResponse {
-  id          String   @id @default(cuid())
-  user        User     @relation(fields: [userId], references: [id])
+  id          String    @id @default(cuid())
+  user        User      @relation(fields: [userId], references: [id])
   userId      String
   type        String
   answers     Json
   score       Float?
   snapshot    Json
-  status      String   @default("submitted")
+  status      String    @default("submitted")
   reportUrl   String?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
+  feedbacks   Feedback[]
 
   @@map("testresponse")
+}
+
+model Feedback {
+  id          String        @id @default(cuid())
+  user        User          @relation(fields: [userId], references: [id])
+  userId      String
+  testResponse TestResponse @relation(fields: [resultId], references: [id])
+  resultId    String
+  rating      Int
+  comment     String?
+  createdAt   DateTime      @default(now())
+
+  @@map("feedback")
 }
 
 

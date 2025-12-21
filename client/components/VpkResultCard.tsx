@@ -17,10 +17,15 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import LockIcon from "@mui/icons-material/Lock";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import FeedbackIcon from "@mui/icons-material/Feedback";
+import ShareIcon from "@mui/icons-material/Share";
 import SectionProgress from "./SectionProgress";
 import StatsDashboard from "./StatsDashboard";
 import ParticleExplosion from "./ParticleExplosion";
 import AchievementBadge from "./AchievementBadge";
+import FeedbackDialog from "./FeedbackDialog";
+import ShareDialog from "./ShareDialog";
+import { submitFeedback } from "../lib/api";
 
 // Enhanced type definitions
 type DoshaCounts = {
@@ -99,6 +104,7 @@ type MergedReport = {
     earlyWarningsTitle: string;
     earlyWarnings: string;
     whatYourBodyNeeds: string[];
+    whatNotToDo?: string[];
     closingMessage: string;
   } | null;
 };
@@ -125,6 +131,8 @@ type Props = {
   mergedReport?: MergedReport | null;
   currentSection?: number; // 0: Body Type, 1: Prakriti, 2: Vikriti
   onSectionChange?: (section: number) => void;
+  resultId?: string;
+  userId?: string;
 };
 
 const getLevelColor = (level: "dominant" | "secondary" | "mild"): string => {
@@ -381,7 +389,7 @@ function ExpandableParagraph({
   );
 }
 
-export default function VpkResultCard({ snapshot, mergedReport, currentSection = 0, onSectionChange }: Props) {
+export default function VpkResultCard({ snapshot, mergedReport, currentSection = 0, onSectionChange, resultId, userId }: Props) {
   const hasEnhancedData =
     snapshot.bodyTypeDetailed || snapshot.prakritiDetailed || snapshot.vikritiDetailed;
 
@@ -410,8 +418,12 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(null);
   const [showParticles, setShowParticles] = useState(false);
   const [sectionChangeTrigger, setSectionChangeTrigger] = useState(0);
+  const [showFeedbackDialog, setShowFeedbackDialog] = useState(false);
+  const [showShareDialog, setShowShareDialog] = useState(false);
+  const [feedbackShown, setFeedbackShown] = useState(false);
   const bodyVideoRef = React.useRef<HTMLVideoElement>(null);
   const dnaVideoRef = React.useRef<HTMLVideoElement>(null);
+  const energyVideoRef = React.useRef<HTMLVideoElement>(null);
 
   // Trigger particles on section change
   useEffect(() => {
@@ -430,7 +442,26 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
     if (currentSection === 1 && dnaVideoRef.current) {
       dnaVideoRef.current.play().catch((err) => console.log("DNA video play error:", err));
     }
+    if (currentSection === 2 && energyVideoRef.current) {
+      energyVideoRef.current.play().catch((err) => console.log("Energy video play error:", err));
+    }
   }, [currentSection]);
+
+  // Auto-show feedback popup after 20 seconds when user reaches the last section
+  useEffect(() => {
+    if (!feedbackShown && currentSection === 2) {
+      // User has seen all three reports (currentSection is 2, meaning they're on the last one)
+      // Wait 20 seconds after reaching the last section, then show feedback popup
+      const timer = setTimeout(() => {
+        if (!feedbackShown) {
+          setShowFeedbackDialog(true);
+          setFeedbackShown(true);
+        }
+      }, 20000); // 20 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentSection, feedbackShown]);
 
   const handleNextWithParticles = () => {
     setSectionChangeTrigger((prev) => prev + 1);
@@ -506,7 +537,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
         >
           Body Detected
         </Typography> */}
-        <Box sx={{ textAlign: "center", mb: 2 }}>
+        <Box sx={{ textAlign: "center", mb: 1.5 }}>
           <Typography
             variant="h5"
             component="h2"
@@ -514,8 +545,8 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
               fontWeight: 700,
               letterSpacing: "0.12em",
               textTransform: "uppercase",
-              fontSize: { xs: "1.1rem", md: "1.4rem" },
-              mb: 1,
+              fontSize: { xs: "1rem", md: "1.2rem" },
+              mb: 0.75,
               background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 50%, #00ffff 100%)",
               backgroundSize: "200% 200%",
               WebkitBackgroundClip: "text",
@@ -584,12 +615,13 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
       {/* {statsCounts && <StatsDashboard counts={statsCounts} />} */}
 
       {/* Achievement Badges */}
-      <Grid container spacing={2} sx={{ mb: 4 }}>
+      <Grid container spacing={1.5} sx={{ mb: 1.5 }}>
         <Grid item xs={6} sm={4}>
           <AchievementBadge
             title="Body Detected"
             description="Primary type identified"
             unlocked={currentSection >= 0}
+            isActive={currentSection === 0}
             icon="🔍"
             onClick={() => {
               if (onSectionChange) {
@@ -602,8 +634,9 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
         <Grid item xs={6} sm={4}>
           <AchievementBadge
             title="Constitution Analyzed"
-            description="Prakriti decoded"
+            description="Natural Nature decoded"
             unlocked={currentSection >= 1}
+            isActive={currentSection === 1}
             icon="🧬"
             onClick={() => {
               if (onSectionChange) {
@@ -616,8 +649,9 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
         <Grid item xs={6} sm={4}>
           <AchievementBadge
             title="Imbalance Detected"
-            description="Vikriti analysis complete"
+            description="Imbalance analysis complete"
             unlocked={currentSection >= 2}
+            isActive={currentSection === 2}
             icon="⚡"
             onClick={() => {
               if (onSectionChange) {
@@ -639,19 +673,19 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
       >
         <Box
           sx={{
-            p: { xs: 3, md: 4 },
-            mt: 3,
+            p: { xs: 2, md: 2.5 },
+            mt: 2,
             position: "relative",
           }}
         >
           <Box
             sx={{
-              mb: 3,
+              mb: 2,
               position: "relative",
               borderRadius: 2,
               overflow: "hidden",
-              px: { xs: 2.5, md: 3 },
-              py: { xs: 2.5, md: 3 },
+              px: { xs: 2, md: 2.5 },
+              py: { xs: 2, md: 2.5 },
               background: "rgba(15, 23, 42, 0.92)",
               border: "1px solid rgba(148, 163, 184, 0.25)",
               ...(bodyElements.includes("air") && {
@@ -751,13 +785,14 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
 
             {/* Body Code Report (B1-B9) */}
             {mergedReport?.bodyCodeReport && (
-              <Box sx={{ mt: 4, pt: 4, borderTop: "2px solid rgba(99, 102, 241, 0.2)" }}>
+              <Box sx={{ mt: 2, pt: 2, borderTop: "2px solid rgba(99, 102, 241, 0.2)" }}>
                 <Typography
-                  variant="h5"
+                  variant="h6"
                   sx={{
                     fontWeight: 700,
                     color: "#00ffff",
-                    mb: 1,
+                    mb: 0.75,
+                    fontSize: "1.1rem",
                   }}
                 >
                   {mergedReport.bodyCodeReport.title}
@@ -766,73 +801,74 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                   variant="body2"
                   sx={{
                     color: "rgba(226, 232, 240, 0.7)",
-                    mb: 3,
+                    mb: 1.5,
                     fontStyle: "italic",
+                    fontSize: "0.9rem",
                   }}
                 >
                   {mergedReport.bodyCodeReport.subtitle}
                 </Typography>
 
-                <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 1.5 }}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                    sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
                     How Your Body Lives
                   </Typography>
                   <Typography
                     variant="body1"
-                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem" }}
                   >
                     {mergedReport.bodyCodeReport.howYourBodyLives}
                   </Typography>
                 </Box>
 
                 {(mergedReport.bodyCodeReport.howYourMindMoves || mergedReport.bodyCodeReport.howYourMindWorks) && (
-                  <Box sx={{ mb: 3 }}>
+                  <Box sx={{ mb: 1.5 }}>
                     <Typography
                       variant="h6"
-                      sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                      sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                     >
                       How Your Mind {mergedReport.bodyCodeReport.howYourMindMoves ? "Moves" : "Works"}
                     </Typography>
                     <Typography
                       variant="body1"
-                      sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                      sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem" }}
                     >
                       {mergedReport.bodyCodeReport.howYourMindMoves || mergedReport.bodyCodeReport.howYourMindWorks}
                     </Typography>
                   </Box>
                 )}
 
-                <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 1.5 }}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                    sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
                     How Stress Shows Up {mergedReport.bodyCodeReport.howYourMindMoves ? "for You" : "in You"}
                   </Typography>
                   <Typography
                     variant="body1"
-                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem" }}
                   >
                     {mergedReport.bodyCodeReport.howStressShowsUp}
                   </Typography>
                 </Box>
 
-                <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 1.5 }}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                    sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
                     Your Body's Early Signals
                   </Typography>
-                  <Box component="ul" sx={{ pl: 3, m: 0 }}>
+                  <Box component="ul" sx={{ pl: 2, m: 0 }}>
                     {mergedReport.bodyCodeReport.earlySignals.map((signal, idx) => (
                       <li key={idx}>
                         <Typography
                           variant="body1"
-                          sx={{ lineHeight: 1.8, color: "rgba(226, 232, 240, 0.9)" }}
+                          sx={{ lineHeight: 1.6, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem" }}
                         >
                           {signal}
                         </Typography>
@@ -841,10 +877,10 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                   </Box>
                 </Box>
 
-                <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 1.5 }}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                    sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
                     Daily Anchors
                   </Typography>
@@ -904,19 +940,19 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
       >
         <Box
           sx={{
-            p: { xs: 3, md: 4 },
-            mt: 3,
+            p: { xs: 2, md: 2.5 },
+            mt: 2,
             position: "relative",
           }}
         >
           <Box
             sx={{
-              mb: 3,
+              mb: 2,
               position: "relative",
               borderRadius: 2,
               overflow: "hidden",
-              px: { xs: 2.5, md: 3 },
-              py: { xs: 2.5, md: 3 },
+              px: { xs: 2, md: 2.5 },
+              py: { xs: 2, md: 2.5 },
               background: "rgba(15, 23, 42, 0.92)",
               border: "1px solid rgba(148, 163, 184, 0.25)",
               ...(prakritiElements.includes("air") && {
@@ -1018,7 +1054,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
 
             {/* Prakriti Code Report (P1-P9) */}
             {mergedReport?.prakritiCodeReport && (
-              <Box sx={{ mt: 4, pt: 4, borderTop: "2px solid rgba(236, 72, 153, 0.2)" }}>
+              <Box sx={{ mt: 2, pt: 2, borderTop: "2px solid rgba(236, 72, 153, 0.2)" }}>
                 <Typography
                   variant="h5"
                   sx={{
@@ -1033,47 +1069,47 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                   variant="body2"
                   sx={{
                     color: "rgba(226, 232, 240, 0.7)",
-                    mb: 3,
+                    mb: 2,
                     fontStyle: "italic",
                   }}
                 >
                   {mergedReport.prakritiCodeReport.subtitle}
                 </Typography>
 
-                <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 1.5 }}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                    sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
                     Your Natural Nature
                   </Typography>
                   <Typography
                     variant="body1"
-                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem" }}
                   >
                     {mergedReport.prakritiCodeReport.yourNaturalNature}
                   </Typography>
                 </Box>
 
-                <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 1.5 }}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                    sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
                     How You Think & Respond
                   </Typography>
                   <Typography
                     variant="body1"
-                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem" }}
                   >
                     {mergedReport.prakritiCodeReport.howYouThinkAndRespond}
                   </Typography>
                 </Box>
 
-                <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 1.5 }}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                    sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
                     Your Superpowers
                   </Typography>
@@ -1091,40 +1127,40 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                   </Box>
                 </Box>
 
-                <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 1.5 }}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                    sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
                     When This Gets Too Much
                   </Typography>
                   <Typography
                     variant="body1"
-                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem" }}
                   >
                     {mergedReport.prakritiCodeReport.whenThisGetsTooMuch}
                   </Typography>
                 </Box>
 
-                <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 1.5 }}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                    sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
                     Life-Stage & Season Sensitivity
                   </Typography>
                   <Typography
                     variant="body1"
-                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem" }}
                   >
                     {mergedReport.prakritiCodeReport.lifeStageAndSeasonSensitivity}
                   </Typography>
                 </Box>
 
-                <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 1.5 }}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                    sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
                     {mergedReport.prakritiCodeReport.anchorsTitle}
                   </Typography>
@@ -1184,18 +1220,19 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
       >
         <Box
           sx={{
-            p: { xs: 3, md: 4 },
-            mt: 3,
+            p: { xs: 2, md: 2.5 },
+            mt: 2,
             position: "relative",
           }}
         >
           <Box
             sx={{
+              mb: 2,
               position: "relative",
               borderRadius: 2,
               overflow: "hidden",
-              px: { xs: 2.5, md: 3 },
-              py: { xs: 2.5, md: 3 },
+              px: { xs: 2, md: 2.5 },
+              py: { xs: 2, md: 2.5 },
               background: "rgba(15, 23, 42, 0.92)",
               border: "1px solid rgba(148, 163, 184, 0.25)",
               ...(vikritiElements.includes("air") && {
@@ -1218,15 +1255,86 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
             }}
             {...makeSectionMouseHandlers(vikritiElements)}
           >
-            <ElementAura elements={vikritiElements} />
+            {/* Background Video - Energy Imbalance Human Body */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                zIndex: 0,
+                overflow: "hidden",
+              }}
+            >
+              <video
+                ref={energyVideoRef}
+                autoPlay
+                loop
+                muted
+                playsInline
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  opacity: 0.4,
+                  filter: "grayscale(0.25) brightness(0.45) contrast(1.2) saturate(0.9)",
+                  transition: "opacity 0.8s ease-in-out",
+                  pointerEvents: "none",
+                }}
+                onLoadedData={(e) => {
+                  // Ensure video plays
+                  const video = e.target as HTMLVideoElement;
+                  if (video) {
+                    video.play().catch((err) => console.log("Energy video play error:", err));
+                  }
+                }}
+              >
+                <source src="/video/energy imbalance human body LV.mp4" type="video/mp4" />
+              </video>
+            </Box>
+            
+            {/* Elegant overlay gradient for better text readability */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                background: "linear-gradient(135deg, rgba(10, 14, 39, 0.65) 0%, rgba(15, 23, 42, 0.55) 50%, rgba(10, 14, 39, 0.65) 100%)",
+                zIndex: 1,
+                pointerEvents: "none",
+                "&::before": {
+                  content: '""',
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  background: "radial-gradient(circle at 50% 50%, transparent 0%, rgba(10, 14, 39, 0.25) 100%)",
+                },
+              }}
+            />
+            
+            {/* ElementAura positioned relative to parent container */}
+            <Box sx={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none" }}>
+              <ElementAura elements={vikritiElements} />
+            </Box>
+            
+            {/* Content wrapper with relative positioning */}
+            <Box sx={{ position: "relative", zIndex: 2 }}>
 
             {/* Imbalance levels removed as per updated report requirements */}
 
             {/* Intro paragraph, quick tip, and distribution removed for Vikriti */}
 
-            {/* Vikriti Code Report (V0-V9) */}
+            {/* Vikriti Code Report (V0 for balanced, I1-I9 for imbalances) */}
             {mergedReport?.vikritiCodeReport && (
-              <Box sx={{ mt: 4, pt: 4, borderTop: "2px solid rgba(16, 185, 129, 0.2)" }}>
+              <Box sx={{ mt: 2, pt: 2, borderTop: "2px solid rgba(16, 185, 129, 0.2)" }}>
                 <Typography
                   variant="h5"
                   sx={{
@@ -1241,47 +1349,47 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                   variant="body2"
                   sx={{
                     color: "rgba(226, 232, 240, 0.7)",
-                    mb: 3,
+                    mb: 2,
                     fontStyle: "italic",
                   }}
                 >
                   {mergedReport.vikritiCodeReport.subtitle}
                 </Typography>
 
-                <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 1.5 }}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                    sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
                     What's Happening in Your System Right Now
                   </Typography>
                   <Typography
                     variant="body1"
-                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem" }}
                   >
                     {mergedReport.vikritiCodeReport.whatsHappening}
                   </Typography>
                 </Box>
 
-                <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 1.5 }}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                    sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
                     Why You May Be Feeling Like This
                   </Typography>
                   <Typography
                     variant="body1"
-                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem" }}
                   >
                     {mergedReport.vikritiCodeReport.whyFeelingLikeThis}
                   </Typography>
                 </Box>
 
-                <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 1.5 }}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                    sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
                     Common Symptoms You Might Notice
                   </Typography>
@@ -1299,25 +1407,25 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                   </Box>
                 </Box>
 
-                <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 1.5 }}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                    sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
                     {mergedReport.vikritiCodeReport.earlyWarningsTitle}
                   </Typography>
                   <Typography
                     variant="body1"
-                    sx={{ lineHeight: 1.8, mb: 2, color: "rgba(226, 232, 240, 0.9)" }}
+                    sx={{ lineHeight: 1.6, mb: 1.5, color: "rgba(226, 232, 240, 0.9)", fontSize: "0.9rem" }}
                   >
                     {mergedReport.vikritiCodeReport.earlyWarnings}
                   </Typography>
                 </Box>
 
-                <Box sx={{ mb: 3 }}>
+                <Box sx={{ mb: 1.5 }}>
                   <Typography
                     variant="h6"
-                    sx={{ fontWeight: 600, mb: 1, color: "#e5e7eb", letterSpacing: "0.03em" }}
+                    sx={{ fontWeight: 600, mb: 0.75, color: "#e5e7eb", letterSpacing: "0.03em", fontSize: "1rem" }}
                   >
                     What Your Body Needs Immediately
                   </Typography>
@@ -1361,6 +1469,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                 </Box>
               </Box>
             )}
+            </Box>
           </Box>
         </Box>
       </motion.div>
@@ -1372,19 +1481,23 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          mt: 4,
-          gap: 2,
+          mt: 2,
+          gap: 1.5,
           flexWrap: "wrap",
         }}
       >
         <Button
           variant="outlined"
+          size="small"
           startIcon={<ArrowBackIcon />}
           onClick={handleBackWithParticles}
           disabled={currentSection === 0}
           sx={{
             color: "#00ffff",
             borderColor: "#00ffff",
+            px: 2,
+            py: 1,
+            fontSize: "0.85rem",
             "&:hover": {
               borderColor: "#00ffff",
               backgroundColor: "rgba(0, 255, 255, 0.1)",
@@ -1434,6 +1547,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
 
         <Button
           variant="contained"
+          size="small"
           endIcon={<ArrowForwardIcon />}
           onClick={handleNextWithParticles}
           disabled={currentSection === 2}
@@ -1441,6 +1555,9 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
             background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
             color: "#0a0e27",
             fontWeight: 700,
+            px: 2,
+            py: 1,
+            fontSize: "0.85rem",
             "&:hover": {
               background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
               boxShadow: "0 0 20px rgba(0, 255, 255, 0.5)",
@@ -1521,8 +1638,8 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
           sx={{
             position: "sticky",
             bottom: 0,
-            mt: 4,
-            p: 3,
+            mt: 2,
+            p: 2,
             background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
             color: "white",
             boxShadow:
@@ -1530,12 +1647,12 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
             zIndex: 1000,
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 1.5 }}>
             <Box sx={{ flex: 1, minWidth: 200 }}>
-              <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5 }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5, fontSize: "1rem" }}>
                 Unlock full report for ₹99
               </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.9 }}>
+              <Typography variant="body2" sx={{ opacity: 0.9, fontSize: "0.8rem" }}>
                 {useMergedReport && mergedReport?.paidPreviewText
                   ? mergedReport.paidPreviewText
                   : "72-hour reset plan • 14-day meal plan • 14-day movement plan"}
@@ -1543,13 +1660,16 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
             </Box>
             <Button
               variant="contained"
-              size="large"
+              size="medium"
               onClick={handleCTAClick}
               startIcon={<LockIcon />}
               sx={{
                 backgroundColor: "white",
                 color: "#0f172a",
                 fontWeight: 700,
+                px: 2.5,
+                py: 1,
+                fontSize: "0.9rem",
                 "&:hover": {
                   backgroundColor: "rgba(255, 255, 255, 0.9)",
                 },
@@ -1560,6 +1680,108 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
           </Box>
         </Paper>
       </motion.div>
+
+      {/* Feedback and Share Buttons */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 1 }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            gap: 2,
+            mt: 3,
+            mb: 2,
+            flexWrap: "wrap",
+            position: "relative",
+            zIndex: 1001,
+          }}
+        >
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button
+              variant="outlined"
+              startIcon={<FeedbackIcon />}
+              onClick={() => setShowFeedbackDialog(true)}
+              disabled={false}
+              sx={{
+                color: "#00ffff",
+                borderColor: "#00ffff",
+                px: 3,
+                py: 1.5,
+                fontSize: "0.9rem",
+                fontWeight: 600,
+                pointerEvents: "auto",
+                cursor: "pointer",
+                "&:hover": {
+                  borderColor: "#00ffff",
+                  backgroundColor: "rgba(0, 255, 255, 0.1)",
+                  boxShadow: "0 0 20px rgba(0, 255, 255, 0.3)",
+                },
+                "&.Mui-disabled": {
+                  borderColor: "rgba(0, 255, 255, 0.3)",
+                  color: "rgba(0, 255, 255, 0.3)",
+                },
+              }}
+            >
+              Feedback
+            </Button>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button
+              variant="outlined"
+              startIcon={<ShareIcon />}
+              onClick={() => setShowShareDialog(true)}
+              sx={{
+                color: "#8a2be2",
+                borderColor: "#8a2be2",
+                px: 3,
+                py: 1.5,
+                fontSize: "0.9rem",
+                fontWeight: 600,
+                "&:hover": {
+                  borderColor: "#8a2be2",
+                  backgroundColor: "rgba(138, 43, 226, 0.1)",
+                  boxShadow: "0 0 20px rgba(138, 43, 226, 0.3)",
+                },
+              }}
+            >
+              Share
+            </Button>
+          </motion.div>
+        </Box>
+      </motion.div>
+
+      {/* Feedback Dialog */}
+      <FeedbackDialog
+        open={showFeedbackDialog}
+        onClose={() => setShowFeedbackDialog(false)}
+        onSubmit={async (feedback) => {
+          if (!resultId || !userId) {
+            alert("Unable to submit feedback: Missing result ID or user ID");
+            return;
+          }
+          try {
+            await submitFeedback({
+              userId,
+              resultId,
+              rating: feedback.rating,
+              comment: feedback.comment,
+            });
+            alert("Thank you for your feedback!");
+          } catch (error: any) {
+            console.error("Error submitting feedback:", error);
+            alert(error.response?.data?.error || "Failed to submit feedback. Please try again.");
+          }
+        }}
+      />
+
+      {/* Share Dialog */}
+      <ShareDialog
+        open={showShareDialog}
+        onClose={() => setShowShareDialog(false)}
+      />
 
       {cursorElement && cursorPos && (
         <Box

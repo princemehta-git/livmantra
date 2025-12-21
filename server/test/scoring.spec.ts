@@ -68,58 +68,105 @@ describe("VPK Scoring Service", () => {
   });
 
   describe("determineVikritiDetailed", () => {
-    it("should identify balanced state", () => {
-      const countsC = { vata: 3, pitta: 3, kapha: 3 };
-      const result = determineVikritiDetailed(countsC);
+    // Helper function to create section array from counts (no D answers)
+    const createSectionFromCounts = (vata: number, pitta: number, kapha: number): number[] => {
+      return [
+        ...new Array(vata).fill(1),
+        ...new Array(pitta).fill(2),
+        ...new Array(kapha).fill(3),
+      ];
+    };
+
+    it("should identify balanced state when D_count >= half of questions", () => {
+      // 11 questions total, 6 are D (>= half) -> Balanced
+      const sectionC = [
+        ...new Array(6).fill(4), // 6 D answers
+        ...new Array(2).fill(1), // 2 Vata
+        ...new Array(2).fill(2), // 2 Pitta
+        ...new Array(1).fill(3), // 1 Kapha
+      ];
+      const countsC = { vata: 2, pitta: 2, kapha: 1 };
+      const result = determineVikritiDetailed(countsC, sectionC);
       expect(result.summary).toBe("Balanced");
       expect(result.imbalances).toHaveLength(0);
-      expect(result.reportId).toBeUndefined();
+      expect(result.countsC).toEqual({ vata: 0, pitta: 0, kapha: 0 });
     });
 
-    it("should identify Vata dominant (>=8)", () => {
-      const countsC = { vata: 9, pitta: 6, kapha: 3 };
-      const result = determineVikritiDetailed(countsC);
+    it("should identify balanced state when no D but low counts", () => {
+      // 11 questions, all low counts
+      const sectionC = createSectionFromCounts(3, 3, 5);
+      const countsC = { vata: 3, pitta: 3, kapha: 5 };
+      const result = determineVikritiDetailed(countsC, sectionC);
+      // With new logic, this should be Kapha single (5 > 3, and 3 < 5/2)
+      expect(result.summary).toBe("Kapha");
+    });
+
+    it("should identify Vata dominant (single imbalance)", () => {
+      // 11 questions: 5 D, 5 Vata, 1 Pitta -> exclude D, calculate from 6
+      const sectionC = [
+        ...new Array(5).fill(4), // 5 D
+        ...new Array(5).fill(1), // 5 Vata
+        ...new Array(1).fill(2), // 1 Pitta
+      ];
+      const countsC = { vata: 5, pitta: 1, kapha: 0 };
+      const result = determineVikritiDetailed(countsC, sectionC);
       expect(result.summary).toBe("Vata");
-      expect(result.imbalances).toHaveLength(2);
+      expect(result.imbalances).toHaveLength(1);
       expect(result.imbalances[0]).toEqual({
         dosha: "Vata",
-        count: 9,
+        count: 5,
         level: "dominant",
       });
-      expect(result.imbalances[1]).toEqual({
-        dosha: "Pitta",
-        count: 6,
-        level: "secondary",
-      });
     });
 
-    it("should identify dual dominant (both >=8)", () => {
-      const countsC = { vata: 8, pitta: 8, kapha: 2 };
-      const result = determineVikritiDetailed(countsC);
-      // Tie-break: Pitta > Vata, so Pitta comes first
+    it("should identify dual imbalance when second >= first", () => {
+      // 11 questions: 4 D, 4 Vata, 3 Pitta -> exclude D, calculate from 7
+      // 4 Vata, 3 Pitta -> second (3) >= first/2 (2) but < first (4) -> dual
+      const sectionC = [
+        ...new Array(4).fill(4), // 4 D
+        ...new Array(4).fill(1), // 4 Vata
+        ...new Array(3).fill(2), // 3 Pitta
+      ];
+      const countsC = { vata: 4, pitta: 3, kapha: 0 };
+      const result = determineVikritiDetailed(countsC, sectionC);
+      expect(result.summary).toBe("Vata-Pitta");
+      expect(result.imbalances.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it("should identify single imbalance when second < first/2", () => {
+      // 11 questions: 4 D, 5 Vata, 1 Pitta -> exclude D, calculate from 7
+      // 5 Vata, 1 Pitta -> second (1) < first/2 (2.5) -> single
+      const sectionC = [
+        ...new Array(4).fill(4), // 4 D
+        ...new Array(5).fill(1), // 5 Vata
+        ...new Array(1).fill(2), // 1 Pitta
+        ...new Array(1).fill(3), // 1 Kapha
+      ];
+      const countsC = { vata: 5, pitta: 1, kapha: 1 };
+      const result = determineVikritiDetailed(countsC, sectionC);
+      expect(result.summary).toBe("Vata");
+      expect(result.imbalances[0].dosha).toBe("Vata");
+    });
+
+    it("should identify dual imbalance when second >= first (equal counts)", () => {
+      // 11 questions: 3 D, 4 Vata, 4 Pitta -> exclude D, calculate from 8
+      // 4 Vata, 4 Pitta -> second (4) >= first (4) -> dual
+      const sectionC = [
+        ...new Array(3).fill(4), // 3 D
+        ...new Array(4).fill(1), // 4 Vata
+        ...new Array(4).fill(2), // 4 Pitta
+      ];
+      const countsC = { vata: 4, pitta: 4, kapha: 0 };
+      const result = determineVikritiDetailed(countsC, sectionC);
+      // Tie-break: Pitta > Vata
       expect(result.summary).toBe("Pitta-Vata");
-      expect(result.imbalances).toHaveLength(2);
-      expect(result.imbalances[0].level).toBe("dominant");
-      expect(result.imbalances[1].level).toBe("dominant");
-    });
-
-    it("should identify dual mild (both >=6, <8)", () => {
-      const countsC = { vata: 6, pitta: 6, kapha: 6 };
-      const result = determineVikritiDetailed(countsC);
-      expect(result.summary).toContain("(mild)");
-      expect(result.imbalances.length).toBeGreaterThan(0);
-    });
-
-    it("should identify mild imbalance (>=4, <6)", () => {
-      const countsC = { vata: 5, pitta: 7, kapha: 6 };
-      const result = determineVikritiDetailed(countsC);
-      // Pitta should be secondary (>=6), Vata mild (>=4)
-      expect(result.imbalances.some((i) => i.level === "mild")).toBe(true);
+      expect(result.imbalances.length).toBe(2);
     });
 
     it("should use tie-break order (Pitta > Vata > Kapha) for vikriti", () => {
-      const countsC = { vata: 8, pitta: 8, kapha: 2 };
-      const result = determineVikritiDetailed(countsC);
+      const sectionC = createSectionFromCounts(4, 4, 3);
+      const countsC = { vata: 4, pitta: 4, kapha: 3 };
+      const result = determineVikritiDetailed(countsC, sectionC);
       // With equal counts, Pitta should win due to tie-break
       expect(result.summary).toBe("Pitta-Vata");
     });
@@ -237,7 +284,7 @@ describe("VPK Scoring Service", () => {
 
     it("should validate answer values", () => {
       const invalid = new Array(35).fill(1);
-      invalid[0] = 4;
+      invalid[0] = 5;
       expect(() => scoreVPK(invalid)).toThrow("Invalid answer value");
     });
 

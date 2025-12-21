@@ -7,6 +7,7 @@ dotenv.config();
 import authRoutes from "./routes/auth";
 import testRoutes from "./routes/test";
 import { chatAssistant } from "./services/openai";
+import { initializeDatabase } from "./db";
 
 const app = express();
 
@@ -28,8 +29,17 @@ app.post("/api/chat", async (req, res) => {
 });
 
 const port = process.env.PORT || 4000;
-app.listen(port, () => {
-  console.log(`Server running on ${port}`);
-});
+
+// Initialize database tables on server start
+initializeDatabase()
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`Server running on ${port}`);
+    });
+  })
+  .catch((error) => {
+    console.error("Failed to initialize database:", error);
+    process.exit(1);
+  });
 
 

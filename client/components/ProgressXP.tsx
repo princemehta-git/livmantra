@@ -21,8 +21,8 @@ export default function ProgressXP({
     >
       <Box 
         sx={{ 
-          mb: 4,
-          p: 4,
+          mb: 2,
+          p: 2.5,
           borderRadius: 0,
           background: "rgba(10, 14, 39, 0.6)",
           border: "1px solid rgba(0, 255, 255, 0.2)",
@@ -42,7 +42,7 @@ export default function ProgressXP({
           },
         }}
       >
-        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3, alignItems: "center", flexWrap: "wrap", gap: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2, alignItems: "center", flexWrap: "wrap", gap: 2 }}>
           <Typography 
             variant="h6" 
             sx={{ 
@@ -112,7 +112,7 @@ export default function ProgressXP({
         <Typography 
           variant="caption" 
           sx={{ 
-            mt: 2, 
+            mt: 1.5, 
             display: "block", 
             textAlign: "right", 
             color: "rgba(255, 255, 255, 0.6)", 

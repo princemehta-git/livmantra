@@ -58,11 +58,12 @@ export type VPKResultSnapshot = {
   // Module codes
   bodyCode?: string; // B1-B9
   prakritiCode?: string; // P1-P9
-  vikritiCode?: string; // V0-V9
+  vikritiCode?: string; // V0 (balanced) or I1-I9 (imbalances)
 };
 
 /**
  * Compute counts of 1 (vata), 2 (pitta), 3 (kapha) in an array
+ * Note: Option 4 (D/balanced) is ignored in this function
  */
 export function computeCounts(arr: number[]): DoshaCounts {
   const counts: DoshaCounts = { vata: 0, pitta: 0, kapha: 0 };
@@ -70,8 +71,16 @@ export function computeCounts(arr: number[]): DoshaCounts {
     if (v === 1) counts.vata++;
     else if (v === 2) counts.pitta++;
     else if (v === 3) counts.kapha++;
+    // Note: v === 4 (option D) is ignored here
   });
   return counts;
+}
+
+/**
+ * Count option D (value 4) in an array
+ */
+function countD(arr: number[]): number {
+  return arr.filter((v) => v === 4).length;
 }
 
 /**
@@ -148,16 +157,39 @@ export function determinePrakritiWithModifier(
 
 /**
  * Determine detailed vikriti from Section C with levels and imbalances
+ * NEW LOGIC: 
+ * - If D_count >= half of Section C questions → Balanced Vikriti
+ * - If D_count < half, exclude D answers and calculate from remaining A/B/C
+ * - Use relative comparison: second >= first → dual, second < first/2 → single
  * Tie-break order for vikriti: Pitta > Vata > Kapha (deterministic)
  */
 export function determineVikritiDetailed(
-  countsC: DoshaCounts
+  countsC: DoshaCounts,
+  sectionC: number[]
 ): VikritiDetailed {
+  const totalQuestions = sectionC.length;
+  const dCount = countD(sectionC);
+  const halfQuestions = Math.ceil(totalQuestions / 2);
+
+  // Step 1: Check if D_count >= half of total questions → Balanced
+  if (dCount >= halfQuestions) {
+    return {
+      summary: "Balanced",
+      imbalances: [],
+      countsC: { vata: 0, pitta: 0, kapha: 0 },
+      report_recommendation: "Currently, no major imbalance detected. System is relatively stable.",
+    };
+  }
+
+  // Step 2: If imbalance exists (D_count < half), exclude D and calculate from remaining A/B/C
+  const filteredSectionC = sectionC.filter((v) => v !== 4);
+  const filteredCounts = computeCounts(filteredSectionC);
+
   // Sort with stable tie-break: Pitta > Vata > Kapha
   const sorted = [
-    { dosha: "Vata" as const, count: countsC.vata },
-    { dosha: "Pitta" as const, count: countsC.pitta },
-    { dosha: "Kapha" as const, count: countsC.kapha },
+    { dosha: "Vata" as const, count: filteredCounts.vata },
+    { dosha: "Pitta" as const, count: filteredCounts.pitta },
+    { dosha: "Kapha" as const, count: filteredCounts.kapha },
   ].sort((a, b) => {
     if (b.count !== a.count) return b.count - a.count;
     // Tie-break: Pitta > Vata > Kapha
@@ -173,53 +205,45 @@ export function determineVikritiDetailed(
   let summary: string;
   let report_recommendation: string;
 
-  // Determine levels for each dosha
-  const getLevel = (count: number): "dominant" | "secondary" | "mild" | null => {
-    if (count >= 8) return "dominant";
-    if (count >= 6) return "secondary";
-    if (count >= 4) return "mild";
+  // Determine levels for each dosha (based on filtered counts)
+  const getLevel = (count: number, isTop: boolean): "dominant" | "secondary" | "mild" | null => {
+    if (isTop && count > 0) return "dominant";
+    if (!isTop && count > 0 && count >= top.count / 2) return "secondary";
+    if (count > 0) return "mild";
     return null;
   };
 
   // Add imbalances with levels
-  sorted.forEach((item) => {
-    const level = getLevel(item.count);
-    if (level) {
+  sorted.forEach((item, index) => {
+    const level = getLevel(item.count, index === 0);
+    if (level && item.count > 0) {
       imbalances.push({ dosha: item.dosha, count: item.count, level });
     }
   });
 
-  // Determine summary and recommendation
-  if (top.count >= 8 && second.count >= 8) {
-    // Dual dominant
-    summary = `${top.dosha}-${second.dosha}`;
-    report_recommendation = `Strong dual imbalance: ${top.dosha} (${top.count}) and ${second.dosha} (${second.count}) both dominant`;
-  } else if (top.count >= 8) {
-    // Single dominant
-    summary = top.dosha;
-    report_recommendation = `Strong single imbalance: ${top.dosha} (${top.count}) dominant`;
-  } else if (top.count >= 6 && second.count >= 6) {
-    // Dual mild
-    summary = `${top.dosha}-${second.dosha} (mild)`;
-    report_recommendation = `Mild dual imbalance: ${top.dosha} (${top.count}) and ${second.dosha} (${second.count}) both secondary`;
-  } else if (top.count >= 6) {
-    // Single secondary (mild dominant)
-    summary = `${top.dosha} (mild)`;
-    report_recommendation = `Mild imbalance: ${top.dosha} (${top.count}) secondary`;
-  } else if (top.count >= 4) {
-    // Single mild
-    summary = `${top.dosha} (mild)`;
-    report_recommendation = `Very mild imbalance: ${top.dosha} (${top.count}) mild`;
-  } else {
-    // Balanced
+  // Step 3: Determine if single or dual imbalance using relative comparison
+  if (top.count === 0) {
+    // All filtered answers are zero (shouldn't happen, but handle it)
     summary = "Balanced";
-    report_recommendation = "All doshas within balanced range (all < 4)";
+    report_recommendation = "All doshas within balanced range";
+  } else if (second.count >= top.count) {
+    // Dual imbalance: second >= first
+    summary = `${top.dosha}-${second.dosha}`;
+    report_recommendation = `Dual imbalance: ${top.dosha} (${top.count}) and ${second.dosha} (${second.count}) both dominant`;
+  } else if (second.count >= top.count / 2) {
+    // Dual imbalance: second >= half of first (but < first)
+    summary = `${top.dosha}-${second.dosha}`;
+    report_recommendation = `Dual imbalance: ${top.dosha} (${top.count}) dominant with ${second.dosha} (${second.count}) secondary`;
+  } else {
+    // Single imbalance: second < half of first
+    summary = top.dosha;
+    report_recommendation = `Single imbalance: ${top.dosha} (${top.count}) dominant`;
   }
 
   return {
     summary,
     imbalances,
-    countsC,
+    countsC: filteredCounts, // Return filtered counts (excluding D)
     report_recommendation,
   };
 }
@@ -383,48 +407,79 @@ function tieBreakEarliestPrecedenceVikriti(
 }
 
 /**
- * Determine Vikriti code (V0-V9) based on counts
+ * Determine Vikriti code (V0 for balanced, I1-I9 for imbalances) based on counts
+ * NEW LOGIC: Uses the same D-check logic as determineVikritiDetailed
  */
 function determineVikritiCode(countsC: DoshaCounts, sectionC: number[]): string {
-  const V = countsC.vata;
-  const P = countsC.pitta;
-  const K = countsC.kapha;
+  const totalQuestions = sectionC.length;
+  const dCount = countD(sectionC);
+  const halfQuestions = Math.ceil(totalQuestions / 2);
 
-  // Rule 1: Single dosha >= 7 AND strictly highest
-  if (V >= 7 && V > P && V > K) return "V1";
-  if (P >= 7 && P > V && P > K) return "V2";
-  if (K >= 7 && K > V && K > P) return "V3";
-
-  // Rule 2: Two doshas >= 6 each
-  if (V >= 6 && P >= 6) {
-    if (V > P) return "V4";
-    if (P > V) return "V5";
-    // Tie: use tie-break
-    const dominant = tieBreakEarliestPrecedenceVikriti(sectionC, [1, 2], V);
-    return dominant === 1 ? "V4" : "V5";
-  }
-  if (P >= 6 && K >= 6) {
-    if (P > K) return "V6";
-    if (K > P) return "V7";
-    // Tie: use tie-break
-    const dominant = tieBreakEarliestPrecedenceVikriti(sectionC, [2, 3], P);
-    return dominant === 2 ? "V6" : "V7";
-  }
-  if (V >= 6 && K >= 6) {
-    if (V > K) return "V8";
-    if (K > V) return "V9";
-    // Tie: use tie-break
-    const dominant = tieBreakEarliestPrecedenceVikriti(sectionC, [1, 3], V);
-    return dominant === 1 ? "V8" : "V9";
+  // Step 1: Check if D_count >= half of total questions → Balanced (V0)
+  if (dCount >= halfQuestions) {
+    return "V0";
   }
 
-  // Rule 3: All doshas <= 5
-  if (V <= 5 && P <= 5 && K <= 5) return "V0";
+  // Step 2: If imbalance exists, exclude D and calculate from remaining A/B/C
+  const filteredSectionC = sectionC.filter((v) => v !== 4);
+  const filteredCounts = computeCounts(filteredSectionC);
 
-  // Fallback: Highest dosha
-  if (V >= P && V >= K) return "V1";
-  if (P >= V && P >= K) return "V2";
-  return "V3";
+  const V = filteredCounts.vata;
+  const P = filteredCounts.pitta;
+  const K = filteredCounts.kapha;
+
+  // Sort to find top and second
+  const sorted = [
+    { dosha: "Vata" as const, count: V, code: 1 as const },
+    { dosha: "Pitta" as const, count: P, code: 2 as const },
+    { dosha: "Kapha" as const, count: K, code: 3 as const },
+  ].sort((a, b) => {
+    if (b.count !== a.count) return b.count - a.count;
+    // Tie-break: Pitta > Vata > Kapha
+    const order: Record<string, number> = { Pitta: 0, Vata: 1, Kapha: 2 };
+    return order[a.dosha] - order[b.dosha];
+  });
+
+  const top = sorted[0];
+  const second = sorted[1];
+
+  // If no answers after filtering D, return V0
+  if (top.count === 0) {
+    return "V0";
+  }
+
+  // Step 3: Determine if single or dual imbalance
+  if (second.count >= top.count) {
+    // Dual imbalance: second >= first
+    if ((top.code === 1 && second.code === 2) || (top.code === 2 && second.code === 1)) {
+      // Vata-Pitta or Pitta-Vata
+      return top.code === 1 ? "I4" : "I5";
+    }
+    if ((top.code === 2 && second.code === 3) || (top.code === 3 && second.code === 2)) {
+      // Pitta-Kapha or Kapha-Pitta
+      return top.code === 2 ? "I6" : "I7";
+    }
+    if ((top.code === 1 && second.code === 3) || (top.code === 3 && second.code === 1)) {
+      // Vata-Kapha or Kapha-Vata
+      return top.code === 1 ? "I8" : "I9";
+    }
+  } else if (second.count >= top.count / 2) {
+    // Dual imbalance: second >= half of first (but < first)
+    if ((top.code === 1 && second.code === 2) || (top.code === 2 && second.code === 1)) {
+      return top.code === 1 ? "I4" : "I5";
+    }
+    if ((top.code === 2 && second.code === 3) || (top.code === 3 && second.code === 2)) {
+      return top.code === 2 ? "I6" : "I7";
+    }
+    if ((top.code === 1 && second.code === 3) || (top.code === 3 && second.code === 1)) {
+      return top.code === 1 ? "I8" : "I9";
+    }
+  }
+
+  // Single imbalance: second < half of first
+  if (top.code === 1) return "I1";
+  if (top.code === 2) return "I2";
+  return "I3";
 }
 
 /**
@@ -469,30 +524,32 @@ export function scoreVPK(answers: number[]): VPKResultSnapshot {
     throw new Error("answers must be length 35");
   }
 
-  // Validate values are 1, 2, or 3
+  // Validate values are 1, 2, 3, or 4 (some Section C questions have 4 options)
   for (let i = 0; i < answers.length; i++) {
-    if (answers[i] !== 1 && answers[i] !== 2 && answers[i] !== 3) {
-      throw new Error(`Invalid answer value at index ${i}: must be 1, 2, or 3`);
+    if (answers[i] !== 1 && answers[i] !== 2 && answers[i] !== 3 && answers[i] !== 4) {
+      throw new Error(`Invalid answer value at index ${i}: must be 1, 2, 3, or 4`);
     }
   }
 
   // Section segmentation
-  const sectionA = answers.slice(0, 5); // Body Type (Q1-Q5)
-  const sectionB = answers.slice(5, 20); // Prakriti (Q6-Q20)
-  const sectionC = answers.slice(20, 35); // Vikriti (Q21-Q35)
+  const sectionA = answers.slice(0, 6); // Body Type (Q1-Q6)
+  const sectionB = answers.slice(6, 18); // Prakriti (Q7-Q18)
+  const sectionC = answers.slice(18, 35); // Vikriti (Q19-Q35)
 
   // Compute counts
   const countsA = computeCounts(sectionA);
   const countsB = computeCounts(sectionB);
+  // For Vikriti, we need the raw sectionC array to check for D answers
   const countsC = computeCounts(sectionC);
 
   // Determine results
   const bodyTypeResult = determineBodyTypeWithModifier(countsA);
   const prakritiResult = determinePrakritiWithModifier(countsB);
-  const vikritiDetailed = determineVikritiDetailed(countsC);
+  // Pass sectionC array to determineVikritiDetailed to handle D option logic
+  const vikritiDetailed = determineVikritiDetailed(countsC, sectionC);
 
-  // Map to report ID
-  const reportId = mapVikritiToReportId(vikritiDetailed.summary, countsC);
+  // Map to report ID (use filtered counts from vikritiDetailed, which excludes D answers)
+  const reportId = mapVikritiToReportId(vikritiDetailed.summary, vikritiDetailed.countsC);
 
   // Compute score
   const { score, rawImbalance } = computeBalanceScore(countsC);

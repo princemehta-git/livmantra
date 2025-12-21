@@ -2,9 +2,9 @@
  * Report Generator for 35-question VPK Test
  * 
  * Sections:
- * - Body Type: Q1-Q5 (indices 0-4)
- * - Prakriti: Q6-Q20 (indices 5-19)
- * - Vikriti: Q21-Q35 (indices 20-34)
+ * - Body Type: Q1-Q6 (indices 0-5)
+ * - Prakriti: Q7-Q18 (indices 6-17)
+ * - Vikriti: Q19-Q35 (indices 18-34)
  */
 
 export type DoshaCode = 1 | 2 | 3; // 1=Vata, 2=Pitta, 3=Kapha
@@ -29,7 +29,7 @@ export type ReportOutput = {
     counts: DoshaCounts;
   };
   vikriti: {
-    code: string; // V0-V9
+    code: string; // V0 (balanced) or I1-I9 (imbalances)
     counts: DoshaCounts;
   };
 };
@@ -166,7 +166,7 @@ function mapPrakritiToCode(primary: DoshaCode, modifier: DoshaCode | null): stri
 }
 
 /**
- * Determine Vikriti code (V0-V9) based on counts
+ * Determine Vikriti code (V0 for balanced, I1-I9 for imbalances) based on counts
  */
 function determineVikritiCode(
   counts: DoshaCounts,
@@ -177,40 +177,40 @@ function determineVikritiCode(
   const K = counts.K;
 
   // Rule 1: Single dosha >= 7 AND strictly highest
-  if (V >= 7 && V > P && V > K) return "V1";
-  if (P >= 7 && P > V && P > K) return "V2";
-  if (K >= 7 && K > V && K > P) return "V3";
+  if (V >= 7 && V > P && V > K) return "I1";
+  if (P >= 7 && P > V && P > K) return "I2";
+  if (K >= 7 && K > V && K > P) return "I3";
 
   // Rule 2: Two doshas >= 6 each
   if (V >= 6 && P >= 6) {
-    if (V > P) return "V4";
-    if (P > V) return "V5";
+    if (V > P) return "I4";
+    if (P > V) return "I5";
     // Tie: use tie-break
     const dominant = tieBreakEarliestPrecedence(section, [1, 2], V);
-    return dominant === 1 ? "V4" : "V5";
+    return dominant === 1 ? "I4" : "I5";
   }
   if (P >= 6 && K >= 6) {
-    if (P > K) return "V6";
-    if (K > P) return "V7";
+    if (P > K) return "I6";
+    if (K > P) return "I7";
     // Tie: use tie-break
     const dominant = tieBreakEarliestPrecedence(section, [2, 3], P);
-    return dominant === 2 ? "V6" : "V7";
+    return dominant === 2 ? "I6" : "I7";
   }
   if (V >= 6 && K >= 6) {
-    if (V > K) return "V8";
-    if (K > V) return "V9";
+    if (V > K) return "I8";
+    if (K > V) return "I9";
     // Tie: use tie-break
     const dominant = tieBreakEarliestPrecedence(section, [1, 3], V);
-    return dominant === 1 ? "V8" : "V9";
+    return dominant === 1 ? "I8" : "I9";
   }
 
   // Rule 3: All doshas <= 5
   if (V <= 5 && P <= 5 && K <= 5) return "V0";
 
   // Fallback: Highest dosha
-  if (V >= P && V >= K) return "V1";
-  if (P >= V && P >= K) return "V2";
-  return "V3";
+  if (V >= P && V >= K) return "I1";
+  if (P >= V && P >= K) return "I2";
+  return "I3";
 }
 
 /**
@@ -222,10 +222,10 @@ export function generateReport(answers: number[]): ReportOutput {
     throw new Error("answers must be an array of exactly 35 integers");
   }
 
-  // Validate all values are 1, 2, or 3
+  // Validate all values are 1, 2, 3, or 4 (some Section C questions have 4 options)
   for (let i = 0; i < answers.length; i++) {
-    if (answers[i] !== 1 && answers[i] !== 2 && answers[i] !== 3) {
-      throw new Error(`Invalid answer value at index ${i}: must be 1, 2, or 3`);
+    if (answers[i] !== 1 && answers[i] !== 2 && answers[i] !== 3 && answers[i] !== 4) {
+      throw new Error(`Invalid answer value at index ${i}: must be 1, 2, 3, or 4`);
     }
   }
 
@@ -233,9 +233,9 @@ export function generateReport(answers: number[]): ReportOutput {
   const answersTyped = answers as DoshaCode[];
 
   // Section segmentation
-  const bodySection = answersTyped.slice(0, 5); // Q1-Q5 (indices 0-4)
-  const prakritiSection = answersTyped.slice(5, 20); // Q6-Q20 (indices 5-19)
-  const vikritiSection = answersTyped.slice(20, 35); // Q21-Q35 (indices 20-34)
+  const bodySection = answersTyped.slice(0, 6); // Q1-Q6 (indices 0-5)
+  const prakritiSection = answersTyped.slice(6, 18); // Q7-Q18 (indices 6-17)
+  const vikritiSection = answersTyped.slice(18, 35); // Q19-Q35 (indices 18-34)
 
   // Compute counts
   const bodyCounts = computeCounts(bodySection);

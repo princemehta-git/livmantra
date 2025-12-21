@@ -119,11 +119,11 @@ export default function HackingSequenceLoader({ onComplete }: Props) {
   const messages = [
     "> INITIALIZING SCAN...",
     "> ACCESSING BIOSYSTEM DATABASE...",
-    "> ANALYZING DOSHA MATRICES...",
+    "> ANALYZING BODYCODES...",
     "> DECRYPTING BODY CODE...",
-    "> CALCULATING PRAKRITI SIGNATURE...",
-    "> DETECTING VIKRITI ANOMALIES...",
-    "> COMPILING REPORT...",
+    "> CALCULATING BODY TYPE SIGNATURE...",
+    "> DETECTING BODY TYPE ANOMALIES...",
+    "> COMPILING BODY TYPE REPORT...",
     "> ACCESS GRANTED ✓",
   ];
 

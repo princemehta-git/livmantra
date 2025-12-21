@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import UserModal from "../components/UserModal";
+import DisclaimerModal from "../components/DisclaimerModal";
 import QuestionCard from "../components/QuestionCard";
 import ProgressXP from "../components/ProgressXP";
 import Header from "../components/Header";
@@ -13,185 +14,185 @@ import { useLanguage } from "../hooks/useLanguage";
 import { QUESTIONS_HINDI } from "../data/translations";
 
 // VPK Test Questions - 35 Questions total
-// Section A: Body Type (1-5), Section B: Constitution (6-20), Section C: Current Imbalance (21-35)
+// Section A: Body Type (1-6), Section B: Constitution (7-18), Section C: Current Imbalance (19-35)
 const QUESTIONS_DATA = [
-  // Section A: Body Type (1-5)
+  // Section A: Body Type (1-6)
   {
-    text: "What is your natural body frame? (outward overall look)",
+    text: "When I look in the mirror, my body looks:",
     hint: "Your overall shape — slim, medium, or broad",
-    options: ["Slim or light", "Medium or athletic", "Broad or sturdy or solid build"],
+    options: ["Lean & slim", "Average & balanced", "Broad & heavy-set"],
   },
   {
-    text: "How do your muscles naturally feel or look?",
+    text: "When I touch or feel my muscles, they feel:",
     hint: "Muscle bulk & firmness — lean, toned, or soft",
-    options: ["Lean, less bulky", "Firm, toned and well-built", "Soft, more rounded"],
+    options: ["Lean, not very muscular", "Firm and toned", "Soft but bulky"],
   },
   {
-    text: "How does your body store fat typically?",
+    text: "My weight through life has been:",
     hint: "Do you easily gain fat or stay lean?",
-    options: ["I gain very little fat", "Fat is stored evenly all over the body", "I put on fat easily, especially around belly or hips"],
+    options: ["Hard to gain weight", "Easy to gain and lose", "Very easy to gain"],
   },
   {
-    text: "What is your bone structure like? (inner bony structure)",
-    hint: "Wrist/ankle size, bone heaviness — small, medium, or heavy bones",
-    options: ["Small/light", "Medium", "Large/heavy"],
-  },
-  {
-    text: "How would you describe your natural strength/stamina?",
+    text: "My body burns energy:",
     hint: "Quick energy vs sustained endurance",
-    options: ["Quick but gets tired fast", "Strong and steady", "Slow but lasts long"],
-  },
-  // Section B: Constitution (6-20)
-  {
-    text: "How does your natural weight behave?",
-    hint: "Long-term tendency — gain easily or stay lean?",
-    options: ["Even if I eat well, I don't gain weight easily", "My weight can change up or down quite easily", "I gain weight quickly and find it harder to lose"],
+    options: ["Very fast", "At a normal speed", "Slowly"],
   },
   {
-    text: "How is your digestion generally?",
-    hint: "Your long-term digestion pattern",
-    options: ["Easily get Gas/bloating", "Usually Strong, regular", "Digestion is Slow & usually feels heavy"],
-  },
-  {
-    text: "What is your natural appetite like?",
-    hint: "Irregular, strong, or mild?",
-    options: ["It changes a lot — sometimes strong, sometimes weak", "Strong and I feel hungry on time", "Mild and steady, not too strong"],
-  },
-  {
-    text: "What does your face shape look like naturally?",
+    text: "My face shape is mostly:",
     hint: "Narrow, sharp, or round?",
-    options: ["Narrow or longer face", "More Angular or defined face", "Round or softer face"],
+    options: ["Long and narrow", "Sharp or well-defined", "Round and soft"],
   },
   {
-    text: "How do you usually sleep (long-term)?",
+    text: "Fat in my body:",
+    hint: "Do you easily gain fat or stay lean?",
+    options: ["Is very little", "Is balanced", "Builds up easily (belly, hips, thighs)"],
+  },
+  // Section B: Constitution (7-18)
+  {
+    text: "My hunger is usually:",
+    hint: "Irregular, strong, or mild?",
+    options: ["Irregular — sometimes hungry, sometimes not", "Strong — I feel hungry on time", "Mild — I don't feel very hungry"],
+  },
+  {
+    text: "My digestion is usually:",
+    hint: "Your long-term digestion pattern",
+    options: ["Gassy or bloated", "Acidic or burning", "Slow and heavy"],
+  },
+  {
+    text: "My sleep is usually:",
     hint: "Light, normal, or deep sleeper?",
-    options: ["Light sleep — I wake up easily", "Mostly good and refreshing", "Deep longer sleep — can sleep even longer"],
+    options: ["Light and easily disturbed", "Normal and refreshing", "Deep and long"],
   },
   {
-    text: "How is your energy throughout the day?",
+    text: "My energy during the day is:",
     hint: "Variable, intense, or steady?",
-    options: ["Up and down — sometimes high, sometimes low", "High and focused", "Steady and calm, even if a bit slow"],
+    options: ["Up and down", "High and intense", "Slow but steady"],
   },
   {
-    text: "How does your skin feels naturally?",
+    text: "My skin is naturally:",
     hint: "Baseline skin type",
-    options: ["Dry/rough", "Warm/sensitive", "Oily/thick"],
+    options: ["Dry and rough", "Warm or sensitive", "Oily or thick"],
   },
   {
-    text: "How do you handle temperature naturally?",
+    text: "I usually feel:",
     hint: "Cold sensitive or heat sensitive?",
-    options: ["Feel cold quickly", "Feel hot quickly", "Mostly Comfortable in any temperature"],
+    options: ["Cold easily", "Hot easily", "Comfortable in most weather"],
   },
   {
-    text: "How do you naturally walk/talk?",
+    text: "My walking or talking style is:",
     hint: "Fast, confident, or slow?",
-    options: ["Fast or a bit restless", "Clear & confident", "Slow & relaxed"],
+    options: ["Fast and restless", "Clear and direct", "Slow and calm"],
   },
   {
-    text: "How do you generally react emotionally?",
+    text: "Emotionally, I am usually:",
     hint: "Worry, anger, or calmness?",
-    options: ["I worry or overthink", "I get irritated or angry quickly", "I stay calm and steady mostly"],
+    options: ["Worrying or overthinking", "Easily irritated", "Calm and patient"],
   },
   {
-    text: "What is your natural hair type?",
+    text: "My hair is usually:",
     hint: "Dry, soft, or thick?",
-    options: ["Dry, frizzy, or thin", "Straight and soft", "Thick, wavy, or a bit oily"],
+    options: ["Dry or frizzy", "Fine or straight", "Thick or oily"],
   },
   {
-    text: "How do you usually make decisions?",
+    text: "When making decisions, I am:",
     hint: "Confused, quick, or slow but sure?",
-    options: ["I take time — sometimes confused", "Quick and sharp decisions", "Slow but sure decisions"],
+    options: ["Confused or change my mind often", "Quick and sharp", "Slow but very sure"],
   },
   {
-    text: "How are your bowel movements generally?",
+    text: "My bowel habit is usually:",
     hint: "Constipation, loose, or regular?",
-    options: ["Hard or dry stools, constipation tendency", "Sometimes loose stools", "Regular and well-formed"],
+    options: ["Hard or dry", "Loose sometimes", "Regular and well-formed"],
   },
   {
-    text: "What is your natural thinking style?",
-    hint: "Creative, analytical, or stable?",
-    options: ["Creative, imaginative", "Logical, perfectionist", "Steady, practical"],
-  },
-  {
-    text: "How would you describe your long-term working style?",
+    text: "My work style is:",
     hint: "Ideas, goals, or consistency?",
-    options: ["Idea-oriented, Self-driven", "Goal or perfection-oriented, driven by purpose", "Consistent/steady worker following system"],
+    options: ["Creative and idea-based", "Goal-focused and perfectionist", "Steady and patient"],
   },
-  // Section C: Current Imbalance (21-35)
+  // Section C: Current Imbalance (19-35)
   {
-    text: "Recently, how has your mood been?",
+    text: "Recently, my mood has been:",
     hint: "Anxious? Irritated? Low?",
-    options: ["A bit anxious or fidgety", "Easily irritated or angry", "Low energy or not motivated"],
+    options: ["Anxious or restless", "Irritated or angry", "Low or dull", "No major issues"],
   },
   {
-    text: "Recently, how has your digestion felt?",
+    text: "My digestion recently feels:",
     hint: "Gas, acidity, or heaviness?",
-    options: ["Gas/bloating", "Burning/acidity", "Heavy/slow"],
+    options: ["Gassy or bloated", "Acidic or burning", "Heavy or constipated", "No major issues"],
   },
   {
-    text: "Lately, how has your sleep been?",
+    text: "My sleep recently has been:",
     hint: "Light, reduced, or heavy?",
-    options: ["Light sleep or waking up often", "Sleeping less with a heated feeling", "Sleeping more and feeling dull"],
+    options: ["Light or broken", "Less sleep or heat at night", "Too much sleep or dull", "No major issues"],
   },
   {
-    text: "Recently, how is your skin behaving?",
+    text: "My skin recently looks:",
     hint: "Dry, red, or oily?",
-    options: ["Dry or rough", "Red/sensitive, getting pimples", "Oily/ looking dull"],
+    options: ["Very dry or rough", "Red, irritated, or acne-prone", "Oily or dull", "No major issues"],
   },
   {
-    text: "Lately, how do you react under stress?",
+    text: "When stressed, I usually:",
     hint: "Overthink, anger, or withdrawal?",
-    options: ["I worry a lot or overthink", "I react quickly or get angry", "I withdraw and become quiet"],
+    options: ["Overthink or worry", "Get angry or react", "Shut down or withdraw"],
   },
   {
-    text: "Recently, how is your energy?",
+    text: "My energy right now feels:",
     hint: "Nervous, intense, or heavy?",
-    options: ["Nervous energy — up and down", "Intense but it burns out quickly", "Slow and heavy energy"],
+    options: ["Nervous or unstable", "Strong but burns out fast", "Slow or heavy"],
   },
   {
-    text: "Recently, how are your bowel movements?",
+    text: "My bowel movements recently are:",
     hint: "Dry? Loose? Heavy?",
-    options: ["Dry/irregular", "Loose/urgent", "Heavy/sluggish"],
+    options: ["Dry or irregular", "Loose or urgent", "Slow or heavy", "No major issues"],
   },
   {
-    text: "Lately, what foods do you crave most?",
+    text: "My food cravings are mostly for:",
     hint: "Dry, spicy, or sweet?",
-    options: ["Dry/cold", "Spicy/salty", "Sweet/heavy (oily or fried)"],
+    options: ["Cold or dry foods", "Spicy or salty foods", "Sweet or heavy foods"],
   },
   {
-    text: "In the past few days, what body feeling do you notice the most?",
+    text: "My body symptoms recently include:",
     hint: "Dryness, heat, or heaviness?",
-    options: ["Dry/stiff", "Heat/burning/irritation", "Heavy/mucus/swelling"],
+    options: ["Dryness or stiffness", "Heat or burning", "Mucus or heaviness", "No major issues"],
   },
   {
-    text: "Recently, how have your emotions felt?",
+    text: "Emotionally, I recently feel:",
     hint: "Overwhelmed, aggressive, or low?",
-    options: ["I feel overwhelmed or sensitive", "I react quickly or get aggressive", "I feel low or disconnected"],
+    options: ["Over-sensitive or overwhelmed", "Easily reactive", "Emotionally dull", "No major issues"],
   },
   {
-    text: "Recently, how is your focus?",
+    text: "My concentration recently is:",
     hint: "Too many thoughts, sharp but stressed, or foggy?",
-    options: ["Scattered. Hard to Focus, too many thoughts", "Sharp focus but bit stressed or tensed", "Slow thinking or brain fog"],
+    options: ["Distracted or jumpy", "Sharp but stressed", "Slow or foggy", "No major issues"],
   },
   {
-    text: "In the past few weeks, what physical changes have you noticed?",
+    text: "In the last 30 days, my body has:",
     hint: "Weight loss, heat, or weight gain?",
-    options: ["More Dryness/weight loss", "Feeling More heat in the body", "Heaviness/weight gain/water retention"],
+    options: ["Lost weight or become dry", "Felt overheated", "Gained weight or felt swollen", "No major changes"],
   },
   {
-    text: "Recently, where do you feel most discomfort?",
+    text: "I feel discomfort mostly in:",
     hint: "Joints, chest/stomach, or sinuses?",
-    options: ["Joints/nerves—dryness or stiffness", "Chest/stomach—burning or heat", "Sinus/heaviness—heaviness or mucus"],
+    options: ["Joints or nerves", "Stomach or chest (burning)", "Sinuses, chest, or heaviness", "No major issues"],
   },
   {
-    text: "Recently, how is your hunger?",
+    text: "My hunger in the last month has been:",
     hint: "Low, strong, or craving sweets?",
-    options: ["Low/irregular", "Strong", "Sweet cravings or emotional eating"],
+    options: ["Low or irregular", "Very strong", "Emotional or sweet-based", "Normal"],
   },
   {
-    text: "Lately, how is your motivation for work or life, in general?",
+    text: "My motivation right now feels:",
     hint: "Many ideas, urgency, or slow start?",
-    options: ["too Many ideas but hard to start", "Strong and competitive Urgency", "Low drive or very slow to start"],
+    options: ["Scattered", "Urgent or competitive", "Low or slow"],
+  },
+  {
+    text: "Weather affects me like this:",
+    hint: "How weather impacts your body",
+    options: ["I feel dry in winter", "I feel irritated in summer", "I feel heavy in rainy season"],
+  },
+  {
+    text: "My mind right now feels:",
+    hint: "Mental state and clarity",
+    options: ["Fast and jumping", "Sharp but heated", "Slow or stuck"],
   },
 ];
 
@@ -202,6 +203,8 @@ export default function TestPage() {
   const { language, changeLanguage } = useLanguage();
 
   const [openModal, setOpenModal] = useState(false);
+  const [showDisclaimer, setShowDisclaimer] = useState(false);
+  const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
   const [user, setUser] = useState<{
     name: string;
     email: string;
@@ -221,6 +224,8 @@ export default function TestPage() {
       setOpenModal(true);
     } else {
       setUser(JSON.parse(raw));
+      // Show disclaimer when user info exists
+      setShowDisclaimer(true);
     }
     const savedAnswers = localStorage.getItem("livmantra_answers");
     if (savedAnswers) {
@@ -240,10 +245,10 @@ export default function TestPage() {
     // Check if a section is completed
     const newIndex = index + 1;
     
-    // Section A completed (after question 5, index 4)
-    // Check that all questions in section A (0-4) are answered
-    if (index === 4 && !completedSections.has(1)) {
-      const sectionAComplete = nxt.slice(0, 5).every(a => a !== 0);
+    // Section A completed (after question 6, index 5)
+    // Check that all questions in section A (0-5) are answered
+    if (index === 5 && !completedSections.has(1)) {
+      const sectionAComplete = nxt.slice(0, 6).every(a => a !== 0);
       if (sectionAComplete) {
         setCompletedSections(new Set([...completedSections, 1]));
         setCelebrationLevel(1);
@@ -253,10 +258,10 @@ export default function TestPage() {
       }
     }
     
-    // Section B completed (after question 20, index 19)
-    // Check that all questions in section B (5-19) are answered
-    if (index === 19 && !completedSections.has(2)) {
-      const sectionBComplete = nxt.slice(5, 20).every(a => a !== 0);
+    // Section B completed (after question 18, index 17)
+    // Check that all questions in section B (6-17) are answered
+    if (index === 17 && !completedSections.has(2)) {
+      const sectionBComplete = nxt.slice(6, 18).every(a => a !== 0);
       if (sectionBComplete) {
         setCompletedSections(new Set([...completedSections, 2]));
         setCelebrationLevel(2);
@@ -267,9 +272,9 @@ export default function TestPage() {
     }
     
     // Section C completed (after question 35, index 34)
-    // Check that all questions in section C (20-34) are answered
+    // Check that all questions in section C (18-34) are answered
     if (index === 34 && !completedSections.has(3)) {
-      const sectionCComplete = nxt.slice(20, 35).every(a => a !== 0);
+      const sectionCComplete = nxt.slice(18, 35).every(a => a !== 0);
       if (sectionCComplete) {
         setCompletedSections(new Set([...completedSections, 3]));
         setCelebrationLevel(3);
@@ -412,13 +417,26 @@ export default function TestPage() {
       />
 
       <Header />
-      <Container maxWidth="md" sx={{ py: 6, position: "relative", zIndex: 1 }}>
+      <Container maxWidth="md" sx={{ py: 3, position: "relative", zIndex: 1 }}>
         <UserModal
           open={openModal}
           onClose={(u) => {
             setOpenModal(false);
-            if (u) setUser(u);
+            if (u) {
+              setUser(u);
+              // Show disclaimer after user info is submitted
+              setShowDisclaimer(true);
+            }
           }}
+        />
+        
+        <DisclaimerModal
+          open={showDisclaimer && !openModal}
+          onClose={() => {
+            setShowDisclaimer(false);
+            setDisclaimerAccepted(true);
+          }}
+          autoCloseTime={15}
         />
         
         <SectionCelebration
@@ -438,7 +456,7 @@ export default function TestPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <Box sx={{ mb: 6, textAlign: "center" }}>
+          <Box sx={{ mb: 2, textAlign: "center" }}>
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -450,7 +468,7 @@ export default function TestPage() {
                 gutterBottom
                 sx={{
                   fontWeight: 900,
-                  fontSize: { xs: "2.5rem", md: "4rem" },
+                  fontSize: { xs: "2rem", md: "3rem" },
                   background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 50%, #00ffff 100%)",
                   backgroundSize: "200% 200%",
                   WebkitBackgroundClip: "text",
@@ -459,7 +477,7 @@ export default function TestPage() {
                   animation: "gradient 3s ease infinite",
                   letterSpacing: "-0.03em",
                   textShadow: "0 0 40px rgba(0, 255, 255, 0.3)",
-                  mb: 2,
+                  mb: 1,
                 }}
               >
                 Bio Check MODE
@@ -477,8 +495,8 @@ export default function TestPage() {
                   fontWeight: 300,
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
-                  fontSize: { xs: "0.9rem", md: "1.1rem" },
-                  mb: 1,
+                  fontSize: { xs: "0.8rem", md: "0.95rem" },
+                  mb: 0.5,
                 }}
               >
                 NMBT Test
@@ -488,7 +506,7 @@ export default function TestPage() {
                 sx={{ 
                   color: "rgba(255, 255, 255, 0.5)",
                   fontWeight: 400,
-                  fontSize: { xs: "0.85rem", md: "1rem" },
+                  fontSize: { xs: "0.8rem", md: "0.9rem" },
                 }}
               >
                 Discover your body type and dosha constitution
@@ -497,74 +515,84 @@ export default function TestPage() {
           </Box>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-        >
-          <ProgressXP current={answers.filter(Boolean).length} total={total} />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-        >
-          <Box sx={{ mt: 4, mb: 4, textAlign: "center" }}>
-            <Typography 
-              variant="body2" 
-              sx={{
-                display: "inline-block",
-                px: 3,
-                py: 1.5,
-                borderRadius: 0,
-                bgcolor: "rgba(0, 255, 255, 0.1)",
-                border: "1px solid rgba(0, 255, 255, 0.3)",
-                color: "#00ffff",
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.1em",
-                fontSize: "0.85rem",
-                boxShadow: "0 0 15px rgba(0, 255, 255, 0.2)",
-              }}
+        {disclaimerAccepted && !showDisclaimer && (
+          <>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
             >
-              Mission Phase:{" "}
-              {index < 5
-                ? "Body Type Analysis (1-5)"
-                : index < 20
-                ? "Constitution Scan (6-20)"
-                : "Imbalance Detection (21-35)"}
-            </Typography>
-          </Box>
-        </motion.div>
+              <ProgressXP current={answers.filter(Boolean).length} total={total} />
+            </motion.div>
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.5, type: "spring", stiffness: 300, damping: 30 }}
-          >
-            <QuestionCard
-              qIndex={index}
-              text={translatedQ.text}
-              options={translatedQ.options}
-              hint={translatedQ.hint}
-              onAnswer={onAnswer}
-              selected={answers[index] || undefined}
-              language={language}
-              onLanguageChange={changeLanguage}
-            />
-          </motion.div>
-        </AnimatePresence>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+            >
+              <Box sx={{ mt: 2, mb: 2, textAlign: "center" }}>
+                <Typography 
+                  variant="body2" 
+                  sx={{
+                    display: "inline-block",
+                    px: 2.5,
+                    py: 1,
+                    borderRadius: 0,
+                    bgcolor: "rgba(0, 255, 255, 0.1)",
+                    border: "1px solid rgba(0, 255, 255, 0.3)",
+                    color: "#00ffff",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                    fontSize: "0.8rem",
+                    boxShadow: "0 0 15px rgba(0, 255, 255, 0.2)",
+                  }}
+                >
+                  Mission Phase:{" "}
+                  {index < 6
+                    ? "Body Type Analysis (1-6)"
+                    : index < 18
+                    ? "Constitution Scan (7-18)"
+                    : "Imbalance Detection (19-35)"}
+                </Typography>
+              </Box>
+            </motion.div>
+          </>
+        )}
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-        >
-          <Box sx={{ display: "flex", gap: 2, mt: 4, flexWrap: "wrap", justifyContent: "center" }}>
+        {disclaimerAccepted && !showDisclaimer && (
+          <>
+            <AnimatePresence mode="wait">
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.5, type: "spring", stiffness: 300, damping: 30 }}
+            >
+              <QuestionCard
+                qIndex={index}
+                text={translatedQ.text}
+                options={translatedQ.options}
+                hint={translatedQ.hint}
+                onAnswer={onAnswer}
+                selected={answers[index] || undefined}
+                language={language}
+                onLanguageChange={changeLanguage}
+              />
+            </motion.div>
+          </AnimatePresence>
+          </>
+        )}
+
+        {disclaimerAccepted && !showDisclaimer && (
+          <>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+            >
+              <Box sx={{ display: "flex", gap: 2, mt: 2, flexWrap: "wrap", justifyContent: "center" }}>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 variant="outlined"
@@ -660,8 +688,10 @@ export default function TestPage() {
                 {submitting ? "Submitting..." : "Submit Mission"}
               </Button>
             </motion.div>
-          </Box>
-        </motion.div>
+              </Box>
+            </motion.div>
+          </>
+        )}
 
       </Container>
     </Box>

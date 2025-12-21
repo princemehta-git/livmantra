@@ -10,8 +10,8 @@ export default function SectionProgress({ currentSection, totalSections }: Props
   const progress = ((currentSection + 1) / totalSections) * 100;
 
   return (
-    <Box sx={{ mb: 4 }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+    <Box sx={{ mb: 2 }}>
+      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
         <Typography variant="caption" sx={{ color: "#00ffff", fontFamily: "monospace", fontWeight: 600 }}>
           PROGRESS: {currentSection + 1}/{totalSections}
         </Typography>
@@ -43,3 +43,4 @@ export default function SectionProgress({ currentSection, totalSections }: Props
     </Box>
   );
 }
+

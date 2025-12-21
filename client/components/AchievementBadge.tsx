@@ -8,9 +8,10 @@ type Props = {
   unlocked: boolean;
   icon: string;
   onClick?: () => void;
+  isActive?: boolean;
 };
 
-export default function AchievementBadge({ title, description, unlocked, icon, onClick }: Props) {
+export default function AchievementBadge({ title, description, unlocked, icon, onClick, isActive = false }: Props) {
   const handleClick = () => {
     if (onClick) {
       onClick();
@@ -19,8 +20,8 @@ export default function AchievementBadge({ title, description, unlocked, icon, o
 
   return (
     <motion.div
-      initial={unlocked ? { scale: 0, rotate: -180 } : { opacity: 0.3 }}
-      animate={unlocked ? { scale: 1, rotate: 0 } : { opacity: 0.3 }}
+      initial={unlocked ? { scale: 0, rotate: -180 } : {}}
+      animate={unlocked ? { scale: 1, rotate: 0 } : {}}
       transition={{ type: "spring", stiffness: 200, damping: 15 }}
     >
       <Box
@@ -35,6 +36,7 @@ export default function AchievementBadge({ title, description, unlocked, icon, o
           transition: "all 0.3s ease",
           cursor: onClick ? "pointer" : "default",
           position: "relative",
+          opacity: isActive ? 1 : 0.5,
           "&:hover": onClick
             ? {
                 boxShadow: unlocked 

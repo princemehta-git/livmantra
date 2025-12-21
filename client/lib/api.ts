@@ -17,4 +17,6 @@ export const mergeReport = (snapshot: any) =>
 export const postChat = (payload: any) =>
   axios.post(`${API_BASE}/chat`, payload);
 
+export const submitFeedback = (payload: { userId: string; resultId: string; rating: number; comment?: string }) =>
+  axios.post(`${API_BASE}/test/feedback`, payload);
 

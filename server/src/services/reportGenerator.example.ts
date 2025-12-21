@@ -6,9 +6,9 @@ import { generateReport, generateHumanReadableReport } from "./reportGenerator";
 
 // Example: 35 answers
 const exampleAnswers = [
-  1, 2, 1, 2, 3, // Body section (Q1-Q5)
-  2, 2, 1, 2, 3, 1, 2, 3, 2, 1, // Prakriti section (Q6-Q20)
-  1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 2, 1 // Vikriti section (Q21-Q35)
+  1, 2, 1, 2, 3, 1, // Body section (Q1-Q6)
+  2, 2, 1, 2, 3, 1, 2, 3, 2, 1, 2, 3, // Prakriti section (Q7-Q18)
+  1, 1, 2, 1, 1, 2, 1, 2, 1, 1, 2, 1, 1, 2, 1, 1, 2 // Vikriti section (Q19-Q35)
 ];
 
 try {

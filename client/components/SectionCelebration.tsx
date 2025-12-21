@@ -281,12 +281,14 @@ export default function SectionCelebration({
           border: "2px solid rgba(0, 255, 255, 0.5)",
           borderRadius: { xs: 2, sm: 4 },
           boxShadow: "0 0 50px rgba(0, 255, 255, 0.5), inset 0 0 30px rgba(138, 43, 226, 0.2)",
-          p: { xs: 3, sm: 6 },
+          p: { xs: 2, sm: 4 },
           textAlign: "center",
           overflow: "hidden",
           zIndex: 1300,
-          maxHeight: { xs: "90vh", sm: "auto" },
-          overflowY: { xs: "auto", sm: "visible" },
+          maxHeight: "90vh",
+          overflowY: "hidden",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
         {/* Confetti */}
@@ -310,6 +312,15 @@ export default function SectionCelebration({
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", stiffness: 200, damping: 15 }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            flex: 1,
+            minHeight: 0,
+            overflow: "hidden",
+          }}
         >
           {/* Trophy Icon */}
           <motion.div
@@ -324,10 +335,10 @@ export default function SectionCelebration({
           >
             <EmojiEvents
               sx={{
-                fontSize: { xs: 80, sm: 120 },
+                fontSize: { xs: 50, sm: 80 },
                 color: "#ffd700",
                 filter: "drop-shadow(0 0 20px rgba(255, 215, 0, 0.8))",
-                mb: { xs: 1, sm: 2 },
+                mb: { xs: 0.5, sm: 1 },
               }}
             />
           </motion.div>
@@ -342,8 +353,8 @@ export default function SectionCelebration({
               variant="h3"
               sx={{
                 fontWeight: 900,
-                fontSize: { xs: "2rem", md: "3rem" },
-                mb: 1,
+                fontSize: { xs: "1.25rem", sm: "1.75rem", md: "2.25rem" },
+                mb: { xs: 0.5, sm: 1 },
                 background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 50%, #ffd700 100%)",
                 backgroundSize: "200% 200%",
                 WebkitBackgroundClip: "text",
@@ -352,6 +363,7 @@ export default function SectionCelebration({
                 animation: "gradient 2s ease infinite",
                 textTransform: "uppercase",
                 letterSpacing: "0.1em",
+                lineHeight: 1.2,
               }}
             >
               Level {level} Complete!
@@ -368,11 +380,12 @@ export default function SectionCelebration({
               variant="h5"
               sx={{
                 color: "rgba(255, 255, 255, 0.8)",
-                mb: { xs: 2, sm: 4 },
+                mb: { xs: 1, sm: 2 },
                 fontWeight: 600,
                 textTransform: "uppercase",
                 letterSpacing: "0.1em",
-                fontSize: { xs: "1rem", sm: "1.5rem" },
+                fontSize: { xs: "0.75rem", sm: "1rem", md: "1.25rem" },
+                lineHeight: 1.2,
               }}
             >
               {sectionName}
@@ -385,7 +398,7 @@ export default function SectionCelebration({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            sx={{ display: "flex", justifyContent: "center", gap: "8px", mb: 3 }}
+            sx={{ display: "flex", justifyContent: "center", gap: "6px", mb: { xs: 1.5, sm: 2 } }}
           >
             {[1, 2, 3].map((i) => (
               <motion.div
@@ -403,7 +416,7 @@ export default function SectionCelebration({
               >
                 <Star
                   sx={{
-                    fontSize: { xs: 28, sm: 40 },
+                    fontSize: { xs: 20, sm: 28 },
                     color: "#ffd700",
                     filter: "drop-shadow(0 0 10px rgba(255, 215, 0, 0.8))",
                   }}
@@ -421,8 +434,8 @@ export default function SectionCelebration({
             >
               <Box
                 sx={{
-                  mt: { xs: 2, sm: 3 },
-                  p: { xs: 2, sm: 3 },
+                  mt: { xs: 1, sm: 1.5 },
+                  p: { xs: 1.5, sm: 2 },
                   borderRadius: 2,
                   background: `linear-gradient(135deg, ${hintColor}15, ${hintColor}05)`,
                   border: `2px solid ${hintColor}40`,
@@ -431,9 +444,9 @@ export default function SectionCelebration({
               >
                 <AutoAwesome
                   sx={{
-                    fontSize: { xs: 24, sm: 32 },
+                    fontSize: { xs: 18, sm: 24 },
                     color: hintColor,
-                    mb: 1,
+                    mb: 0.5,
                     filter: `drop-shadow(0 0 10px ${hintColor}80)`,
                   }}
                 />
@@ -442,10 +455,11 @@ export default function SectionCelebration({
                   sx={{
                     color: hintColor,
                     fontWeight: 700,
-                    mb: 1,
+                    mb: 0.5,
                     textTransform: "uppercase",
                     letterSpacing: "0.1em",
-                    fontSize: { xs: "0.9rem", sm: "1.25rem" },
+                    fontSize: { xs: "0.7rem", sm: "0.9rem" },
+                    lineHeight: 1.2,
                   }}
                 >
                   Hint Unlocked!
@@ -455,7 +469,8 @@ export default function SectionCelebration({
                   sx={{
                     color: "rgba(255, 255, 255, 0.9)",
                     fontWeight: 500,
-                    fontSize: { xs: "0.85rem", sm: "1rem" },
+                    fontSize: { xs: "0.7rem", sm: "0.85rem" },
+                    lineHeight: 1.3,
                   }}
                 >
                   {hintText}
@@ -476,10 +491,10 @@ export default function SectionCelebration({
               size="large"
               disabled={isLastSection && !allQuestionsAnswered}
               sx={{
-                mt: { xs: 2, sm: 4 },
-                px: { xs: 4, sm: 6 },
-                py: { xs: 1.5, sm: 2 },
-                fontSize: { xs: "0.9rem", sm: "1.1rem" },
+                mt: { xs: 1, sm: 2 },
+                px: { xs: 3, sm: 5 },
+                py: { xs: 1, sm: 1.5 },
+                fontSize: { xs: "0.75rem", sm: "0.9rem" },
                 fontWeight: 700,
                 background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
                 color: "#0a0e27",

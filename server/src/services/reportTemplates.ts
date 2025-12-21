@@ -57,11 +57,9 @@ export type Templates = {
       subtitle: string;
       yourNaturalNature: string;
       howYouThinkAndRespond: string;
-      yourSuperpowers: string[];
       whatQuietlyDrainsYou: string;
       howStressShowsUpInBehavior: string;
       earlySignsYourMindGives: string;
-      lifeStageAndSeasonSensitivity: string;
       anchors: string[];
       anchorsTitle: string;
       anchorsIntro?: string;
@@ -154,13 +152,12 @@ export function mergeReportWithTemplates(result: any): {
     subtitle: string;
     yourNaturalNature: string;
     howYouThinkAndRespond: string;
-    yourSuperpowers: string[];
     whatQuietlyDrainsYou: string;
     howStressShowsUpInBehavior: string;
     earlySignsYourMindGives: string;
-    lifeStageAndSeasonSensitivity: string;
     anchors: string[];
     anchorsTitle: string;
+    anchorsIntro?: string;
     closingMessage: string;
   } | null;
   vikritiCodeReport: {

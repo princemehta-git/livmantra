@@ -30,169 +30,169 @@ const QUESTIONS_DATA = [
   {
     text: "My weight through life has been:",
     hint: "Do you easily gain fat or stay lean?",
-    options: ["Hard to gain weight", "Easy to gain and lose", "Very easy to gain"],
+    options: ["Hard to gain weight", "Easy to gain and lose", "Easy to gain but hard to lose"],
   },
   {
-    text: "My body burns energy:",
+    text: "My body burns energy or fat / my metabolism is:",
     hint: "Quick energy vs sustained endurance",
     options: ["Very fast", "At a normal speed", "Slowly"],
   },
   {
     text: "My face shape is mostly:",
     hint: "Narrow, sharp, or round?",
-    options: ["Long and narrow", "Sharp or well-defined", "Round and soft"],
+    options: ["Long and narrow", "Sharp or well-defined", "Round and soft."],
   },
   {
     text: "Fat in my body:",
     hint: "Do you easily gain fat or stay lean?",
-    options: ["Is very little", "Is balanced", "Builds up easily (belly, hips, thighs)"],
+    options: ["Is very little, skinny", "Is balanced or average", "Builds up easily (belly, hips, thighs)"],
   },
   // Section B: Constitution (7-18)
   {
     text: "My hunger is usually:",
     hint: "Irregular, strong, or mild?",
-    options: ["Irregular — sometimes hungry, sometimes not", "Strong — I feel hungry on time", "Mild — I don't feel very hungry"],
+    options: ["Irregular — sometimes hungry, sometimes not", "Strong — I feel hungry on time", "Mild — I don't feel very hungry any time of the day"],
   },
   {
     text: "My digestion is usually:",
     hint: "Your long-term digestion pattern",
-    options: ["Gassy or bloated", "Acidic or burning", "Slow and heavy"],
+    options: ["Gassy or bloated after meals", "Acidic or burning after meals or after long hour fasting", "Slow and heavy, feels heavy & lethargic after meals"],
   },
   {
     text: "My sleep is usually:",
     hint: "Light, normal, or deep sleeper?",
-    options: ["Light and easily disturbed", "Normal and refreshing", "Deep and long"],
+    options: ["Light and easily disturbed; and cannot sleep longer", "Normal, undisturbed and refreshing (feels fresh after getting up)", "Deep and long (I can sleep more than others), always refreshing"],
   },
   {
     text: "My energy during the day is:",
     hint: "Variable, intense, or steady?",
-    options: ["Up and down", "High and intense", "Slow but steady"],
+    options: ["Up and down, sometimes very energetic, other times totally drained and the circle continues.", "High and intense, very energetic throughout the day", "Slow but steady, work or move with slower pace but constant energy throughout the day"],
   },
   {
     text: "My skin is naturally:",
     hint: "Baseline skin type",
-    options: ["Dry and rough", "Warm or sensitive", "Oily or thick"],
+    options: ["Dry and rough, irrespective of seasons", "Warm or sensitive (triggered allergy or reactions very easily)", "Oily or thick (rarely face skin issues)"],
   },
   {
     text: "I usually feel:",
     hint: "Cold sensitive or heat sensitive?",
-    options: ["Cold easily", "Hot easily", "Comfortable in most weather"],
+    options: ["Cold easily, even when others feel normal", "Hot easily, even when others feel normal", "Comfortable in most weather"],
   },
   {
     text: "My walking or talking style is:",
     hint: "Fast, confident, or slow?",
-    options: ["Fast and restless", "Clear and direct", "Slow and calm"],
+    options: ["Fast and restless", "Clear and direct, confident", "Slow and calm"],
   },
   {
     text: "Emotionally, I am usually:",
     hint: "Worry, anger, or calmness?",
-    options: ["Worrying or overthinking", "Easily irritated", "Calm and patient"],
+    options: ["Worrying or overthinking, anxious over small matters", "Easily irritated angry or furious", "Calm and patient even in adverse situations, I rarely panic or express anger"],
   },
   {
-    text: "My hair is usually:",
+    text: "My hair is usually (irrespective of seasons):",
     hint: "Dry, soft, or thick?",
-    options: ["Dry or frizzy", "Fine or straight", "Thick or oily"],
+    options: ["Dry or frizzy, less shiny", "Fine-stranded, thin or straight", "Thick, dense or oily, shiny"],
   },
   {
     text: "When making decisions, I am:",
     hint: "Confused, quick, or slow but sure?",
-    options: ["Confused or change my mind often", "Quick and sharp", "Slow but very sure"],
+    options: ["Confused or change my mind often, difficult to reach any decision", "Quick and sharp, quite decisive", "Slow, take time to analyse situation and element of issues, but once conclude and decide on something, it's almost always permanent."],
   },
   {
-    text: "My bowel habit is usually:",
+    text: "My Toilet habit is usually:",
     hint: "Constipation, loose, or regular?",
-    options: ["Hard or dry", "Loose sometimes", "Regular and well-formed"],
+    options: ["Hard or dry, need to put pressure to pass stool", "Loose to semi solid, not so well-formed", "Regular and well-formed, pass easily"],
   },
   {
-    text: "My work style is:",
+    text: "My work style is / I work best with :",
     hint: "Ideas, goals, or consistency?",
-    options: ["Creative and idea-based", "Goal-focused and perfectionist", "Steady and patient"],
+    options: ["Creative and idea-based\n(I generate ideas from scratch and use creativity to design my own way of working.)", "Goal-focused and perfectionist\n(I focus on executing ideas efficiently and delivering the best possible results, with high\nquality and on time.)", "Steady and patient\n(I prefer using existing structures or systems and execute them consistently, calmly, and\nreliably to achieve results over time)"],
   },
   // Section C: Current Imbalance (19-35)
   {
-    text: "Recently, my mood has been:",
+    text: "Recently, my mood (emotional energy) has been:",
     hint: "Anxious? Irritated? Low?",
-    options: ["Anxious or restless", "Irritated or angry", "Low or dull", "No major issues"],
+    options: ["Anxious or restless on even small issues or matter", "Irritated or angry quite easily, even on things which I could have ignored earlier", "Low or dull, doesn't feel like doing anything or involving in any matter or people.", "No major issues"],
   },
   {
-    text: "My digestion recently feels:",
+    text: "Recently, After meals, I predominantly feels:",
     hint: "Gas, acidity, or heaviness?",
     options: ["Gassy or bloated", "Acidic or burning", "Heavy or constipated", "No major issues"],
   },
   {
     text: "My sleep recently has been:",
     hint: "Light, reduced, or heavy?",
-    options: ["Light or broken", "Less sleep or heat at night", "Too much sleep or dull", "No major issues"],
+    options: ["Take longer time to fall asleep, sleep breaks in between and not able to sleep longer", "Less sleep at night and feels hot at night.", "Sleeping for longer duration, yet feel dull", "No major issues, sleep well."],
   },
   {
     text: "My skin recently looks:",
     hint: "Dry, red, or oily?",
-    options: ["Very dry or rough", "Red, irritated, or acne-prone", "Oily or dull", "No major issues"],
+    options: ["Very dry or rough", "Red, quietly irritated, or acne-prone (very sensitive)", "Oily or dull", "No major issues"],
   },
   {
     text: "When stressed, I usually:",
     hint: "Overthink, anger, or withdrawal?",
-    options: ["Overthink or worry", "Get angry or react", "Shut down or withdraw"],
+    options: ["Overthink or worry and get anxious", "Get angry or react aggressively", "Shut down or withdraw and keep things within."],
   },
   {
-    text: "My energy right now feels:",
+    text: "My Physical energy right now feels:",
     hint: "Nervous, intense, or heavy?",
-    options: ["Nervous or unstable", "Strong but burns out fast", "Slow or heavy"],
+    options: ["Nervous or unstable (Energy feels restless, shaky, or inconsistent.)", "Strong but burns out fast (I have bursts of energy but get tired quickly).", "Slow or heavy (Energy feels low, sluggish, or hard to activate.)"],
   },
   {
     text: "My bowel movements recently are:",
     hint: "Dry? Loose? Heavy?",
-    options: ["Dry or irregular", "Loose or urgent", "Slow or heavy", "No major issues"],
+    options: ["Stools are hard, dry, or not regular.", "Frequent, loose stools or sudden urgency.", "Digestion feels slow; stools are heavy or sluggish.", "Bowel movements feel normal and regular."],
   },
   {
     text: "My food cravings are mostly for:",
     hint: "Dry, spicy, or sweet?",
-    options: ["Cold or dry foods", "Spicy or salty foods", "Sweet or heavy foods"],
+    options: ["Cold or dry foods (Salads, cold milk, biscuits, dry snacks, leftovers.)", "Spicy or salty foods (Chaat, pickles, namkeen, spicy curries, chips.)", "Sweet or heavy foods (Mithai, halwa, kheer, sweets, fried foods like puri or\npakora.)"],
   },
   {
     text: "My body symptoms recently include:",
     hint: "Dryness, heat, or heaviness?",
-    options: ["Dryness or stiffness", "Heat or burning", "Mucus or heaviness", "No major issues"],
+    options: ["Dryness or stiffness (Dry skin, dry lips, joint stiffness, or cracking)", "Heat or burning (Feeling hot, acidity, burning sensation, or inflammation.)", "Mucus or heaviness (Congestion, excess mucus, bloating, or heaviness in the\nbody.)", "No major issues (No noticeable or ongoing physical symptoms.)"],
   },
   {
     text: "Emotionally, I recently feel:",
     hint: "Overwhelmed, aggressive, or low?",
-    options: ["Over-sensitive or overwhelmed", "Easily reactive", "Emotionally dull", "No major issues"],
+    options: ["emotionally sensitive and easily overloaded.", "I react quickly, often with irritation or frustration.", "numb, low, or disconnected emotionally.", "My emotions feel balanced and stable."],
   },
   {
     text: "My concentration recently is:",
     hint: "Too many thoughts, sharp but stressed, or foggy?",
-    options: ["Distracted or jumpy", "Sharp but stressed", "Slow or foggy", "No major issues"],
+    options: ["Distracted or jumpy (I lose focus easily and my attention shifts often.)", "Sharp but stressed (I can focus well, but I feel tense or pressured)", "Slow or foggy (My thinking feels dull, heavy, or unclear.)", "No major issues (My concentration feels normal and steady.)"],
   },
   {
     text: "In the last 30 days, my body has:",
     hint: "Weight loss, heat, or weight gain?",
-    options: ["Lost weight or become dry", "Felt overheated", "Gained weight or felt swollen", "No major changes"],
+    options: ["lost weight, or my body feels dry or depleted.", "been feeling warmer than usual or overheat easily.", "gained weight, feel bloated, or notice swelling", "No major changes"],
   },
   {
-    text: "I feel discomfort mostly in:",
+    text: "Recently, I am experiencing discomfort mostly in:",
     hint: "Joints, chest/stomach, or sinuses?",
-    options: ["Joints or nerves", "Stomach or chest (burning)", "Sinuses, chest, or heaviness", "No major issues"],
+    options: ["Joints or nerves (Pain, stiffness, tingling, or nerve discomfort.)", "Stomach or chest (Acidity, heartburn, or burning sensations.)", "Sinuses, chest, or heaviness (Congestion, mucus, pressure, or feeling heavy.)", "No noticeable or ongoing discomfort."],
   },
   {
     text: "My hunger in the last month has been:",
     hint: "Low, strong, or craving sweets?",
-    options: ["Low or irregular", "Very strong", "Emotional or sweet-based", "Normal"],
+    options: ["Low or irregular (I don't feel hungry often, or my hunger comes and goes.)", "I feel hungry frequently and strongly.", "I crave food, especially sweets, due to emotions or stress.", "My hunger feels balanced and regular."],
   },
   {
     text: "My motivation right now feels:",
     hint: "Many ideas, urgency, or slow start?",
-    options: ["Scattered", "Urgent or competitive", "Low or slow"],
+    options: ["Scattered (want to do many things, but my energy and focus are scattered, making it hard\nto start or complete anything)", "Urgent or competitive (I feel driven, pressured, or eager to act and achieve quickly.)", "Low or slow (I have little energy or motivation and prefer moving at a relaxed pace)"],
   },
   {
-    text: "Weather affects me like this:",
+    text: "Recently, Weather affects me like this:",
     hint: "How weather impacts your body",
-    options: ["I feel dry in winter", "I feel irritated in summer", "I feel heavy in rainy season"],
+    options: ["I feel more dry in winter (winters are more hard to handle)", "I feel more irritated in summer (summers are more hard to handle)", "I feel heavy, dull and more uneasy in rainy season (Rain getting harder to handle)"],
   },
   {
     text: "My mind right now feels:",
     hint: "Mental state and clarity",
-    options: ["Fast and jumping", "Sharp but heated", "Slow or stuck"],
+    options: ["Fast and jumping (Thoughts move quickly and shift from one idea to another)", "Sharp but heated (Thinking is clear but tense, pressured, or easily irritated.)", "Slow or stuck (My mind feels slow and kind of stuck.)"],
   },
 ];
 
@@ -468,7 +468,7 @@ export default function TestPage() {
                 gutterBottom
                 sx={{
                   fontWeight: 900,
-                  fontSize: { xs: "2rem", md: "3rem" },
+                  fontSize: { xs: "1.5rem", md: "2rem" },
                   background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 50%, #00ffff 100%)",
                   backgroundSize: "200% 200%",
                   WebkitBackgroundClip: "text",
@@ -480,7 +480,7 @@ export default function TestPage() {
                   mb: 1,
                 }}
               >
-                KNOW YOUR BODY
+                KNOW YOUR BODY NATURE & BEHAVIOR
               </Typography>
             </motion.div>
             <motion.div
@@ -499,7 +499,7 @@ export default function TestPage() {
                   mb: 0.5,
                 }}
               >
-                NMBT Test
+                BBA Test
               </Typography>
               <Typography 
                 variant="body1" 

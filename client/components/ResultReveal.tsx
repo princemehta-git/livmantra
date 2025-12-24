@@ -114,7 +114,7 @@ export default function ResultReveal({ snapshot }: Props) {
             mb: 2,
           }}
         >
-          Body Type Detected
+          Body Behavior Analysed (BBA)
         </Typography> */}
       </motion.div>
 
@@ -139,7 +139,7 @@ export default function ResultReveal({ snapshot }: Props) {
                 mb: 1,
               }}
             >
-              Body Type
+              Body Behavior Analysed (BBA)
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
               <Typography

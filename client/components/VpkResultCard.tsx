@@ -637,10 +637,72 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
             {currentSection === 2 && "Current Imbalance Overview"}
           </Typography>
           {(() => {
-            const currentCode = currentSection === 0 ? snapshot.bodyCode : 
-                               currentSection === 1 ? snapshot.prakritiCode : 
-                               snapshot.vikritiCode;
-            const typeName = getTypeNameForCode(currentCode);
+            // Helper function to map dosha to Aero/Pyro/Geo
+            const doshaToType = (dosha: string): string => {
+              const doshaLower = dosha.toLowerCase();
+              if (doshaLower.includes("vata")) return "Aero";
+              if (doshaLower.includes("pitta")) return "Pyro";
+              if (doshaLower.includes("kapha")) return "Geo";
+              return dosha;
+            };
+            
+            // Helper function to map body type to Aero/Pyro/Geo
+            const bodyTypeToType = (bodyType: string): string => {
+              const bodyTypeLower = bodyType.toLowerCase();
+              if (bodyTypeLower.includes("ectomorph")) return "Aero";
+              if (bodyTypeLower.includes("mesomorph")) return "Pyro";
+              if (bodyTypeLower.includes("endomorph")) return "Geo";
+              return bodyType;
+            };
+            
+            let typeName: string | null = null;
+            
+            if (currentSection === 0) {
+              // Body Type section
+              const currentCode = snapshot.bodyCode;
+              typeName = getTypeNameForCode(currentCode) || 
+                        (snapshot.bodyType ? bodyTypeToType(snapshot.bodyType) : null) ||
+                        (snapshot.bodyTypeDetailed?.primary ? bodyTypeToType(snapshot.bodyTypeDetailed.primary) : null);
+            } else if (currentSection === 1) {
+              // Prakriti section
+              const currentCode = snapshot.prakritiCode;
+              typeName = getTypeNameForCode(currentCode) || 
+                        (snapshot.prakriti ? doshaToType(snapshot.prakriti) : null) ||
+                        (snapshot.prakritiDetailed?.primary ? doshaToType(snapshot.prakritiDetailed.primary) : null);
+            } else if (currentSection === 2) {
+              // Vikriti/Imbalance section
+              const currentCode = snapshot.vikritiCode;
+              typeName = getTypeNameForCode(currentCode);
+              
+              // If code doesn't provide type, try to get from imbalance data
+              if (!typeName && snapshot.vikritiDetailed?.imbalances && snapshot.vikritiDetailed.imbalances.length > 0) {
+                const imbalances = snapshot.vikritiDetailed.imbalances;
+                if (imbalances.length > 1) {
+                  // Dual imbalance - use the first one for type display
+                  typeName = doshaToType(imbalances[0].dosha);
+                } else if (imbalances.length === 1) {
+                  // Single imbalance
+                  typeName = doshaToType(imbalances[0].dosha);
+                }
+              }
+              
+              // Additional fallback: try to get from vikritiCode elements if available
+              if (!typeName && snapshot.vikritiCode) {
+                const elements = getElementsForCode(snapshot.vikritiCode);
+                if (elements.length > 0) {
+                  const primary = getPrimaryElement(elements);
+                  if (primary === "air") typeName = "Aero";
+                  else if (primary === "fire") typeName = "Pyro";
+                  else if (primary === "earth") typeName = "Geo";
+                }
+              }
+              
+              // Last fallback: use vikriti string directly
+              if (!typeName && snapshot.vikriti) {
+                typeName = doshaToType(snapshot.vikriti);
+              }
+            }
+            
             if (!typeName) return null;
             
             // Get color based on type
@@ -899,7 +961,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       lineHeight: 1.3,
                     }}
                   >
-                    This is how your body feels, day to day
+                    {snapshot.bodyCode === "B1" ? "How your body actually feels, day to day" : "This is how your body feels, day to day"}
                   </Typography>
                   <Typography
                     variant="body2"
@@ -928,7 +990,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                         lineHeight: 1.3,
                       }}
                     >
-                      This is how your mind usually works
+                      {snapshot.bodyCode === "B1" ? "How your mind really works" : "This is how your mind usually works"}
                     </Typography>
                     <Typography
                       variant="body2"
@@ -958,7 +1020,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                         lineHeight: 1.3,
                       }}
                     >
-                      What quietly drains you
+                      {snapshot.bodyCode === "B1" ? "What drains you without you realizing it" : "What quietly drains you"}
                     </Typography>
                     <Typography
                       variant="body2"
@@ -1015,7 +1077,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       lineHeight: 1.3,
                     }}
                   >
-                    Early signs your body gives
+                    {snapshot.bodyCode === "B1" ? "Early signs your body gives you" : "Early signs your body gives"}
                   </Typography>
                   <Box component="ul" sx={{ pl: 2, m: 0, mt: 0.5 }}>
                     {mergedReport.bodyCodeReport.earlySignals.map((signal, idx) => (
@@ -1047,7 +1109,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       lineHeight: 1.3,
                     }}
                   >
-                    What can help you immediately
+                    {snapshot.bodyCode === "B1" ? "What helps you almost immediately" : "What can help you immediately"}
                   </Typography>
                   <Box component="ul" sx={{ pl: 2, m: 0, mt: 0.5 }}>
                     {mergedReport.bodyCodeReport.dailyAnchors.map((anchor, idx) => (
@@ -1969,7 +2031,17 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
         >
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 1.5 }}>
             <Box sx={{ flex: 1, minWidth: { xs: "100%", sm: 200 } }}>
-              <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.8, fontSize: { xs: "0.95rem", sm: "1rem" }, lineHeight: 1.3 }}>
+              <Typography 
+                variant="h6" 
+                sx={{ 
+                  fontWeight: 700, 
+                  mb: 0.8, 
+                  fontSize: { xs: "0.95rem", sm: "1rem" }, 
+                  lineHeight: 1.3,
+                  color: "#0f172a",
+                  textShadow: "0 1px 2px rgba(255, 255, 255, 0.5)",
+                }}
+              >
                 Need Expert Guidance for Healthier Body and Mind
               </Typography>
               <Box 
@@ -1986,13 +2058,13 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       width: 6,
                       height: 6,
                       borderRadius: "50%",
-                      backgroundColor: "white",
+                      backgroundColor: "#0f172a",
                       mt: 0.5,
                       flexShrink: 0,
                     }}
                   />
-                  <Typography variant="body2" sx={{ opacity: 0.95, fontSize: "inherit", lineHeight: 1.4 }}>
-                    <strong>Diet Plan</strong> – tailored to your needs
+                  <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                    <strong style={{ color: "#0f172a", fontWeight: 700 }}>Diet Plan</strong> – tailored to your needs
                   </Typography>
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
@@ -2001,13 +2073,13 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       width: 6,
                       height: 6,
                       borderRadius: "50%",
-                      backgroundColor: "white",
+                      backgroundColor: "#0f172a",
                       mt: 0.5,
                       flexShrink: 0,
                     }}
                   />
-                  <Typography variant="body2" sx={{ opacity: 0.95, fontSize: "inherit", lineHeight: 1.4 }}>
-                    <strong>Workout Plan</strong> – safe, effective movement
+                  <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                    <strong style={{ color: "#0f172a", fontWeight: 700 }}>Workout Plan</strong> – safe, effective movement
                   </Typography>
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
@@ -2016,13 +2088,13 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       width: 6,
                       height: 6,
                       borderRadius: "50%",
-                      backgroundColor: "white",
+                      backgroundColor: "#0f172a",
                       mt: 0.5,
                       flexShrink: 0,
                     }}
                   />
-                  <Typography variant="body2" sx={{ opacity: 0.95, fontSize: "inherit", lineHeight: 1.4 }}>
-                    <strong>Sleep Scheduling</strong> – deep, quality sleep
+                  <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                    <strong style={{ color: "#0f172a", fontWeight: 700 }}>Sleep Scheduling</strong> – deep, quality sleep
                   </Typography>
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
@@ -2031,13 +2103,13 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       width: 6,
                       height: 6,
                       borderRadius: "50%",
-                      backgroundColor: "white",
+                      backgroundColor: "#0f172a",
                       mt: 0.5,
                       flexShrink: 0,
                     }}
                   />
-                  <Typography variant="body2" sx={{ opacity: 0.95, fontSize: "inherit", lineHeight: 1.4 }}>
-                    <strong>Emotional Training</strong> – calm, healthy mind
+                  <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                    <strong style={{ color: "#0f172a", fontWeight: 700 }}>Emotional Training</strong> – calm, healthy mind
                   </Typography>
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
@@ -2046,13 +2118,13 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       width: 6,
                       height: 6,
                       borderRadius: "50%",
-                      backgroundColor: "white",
+                      backgroundColor: "#0f172a",
                       mt: 0.5,
                       flexShrink: 0,
                     }}
                   />
-                  <Typography variant="body2" sx={{ opacity: 0.95, fontSize: "inherit", lineHeight: 1.4 }}>
-                    <strong>Daily Routine Mapping</strong> – habit alignment
+                  <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                    <strong style={{ color: "#0f172a", fontWeight: 700 }}>Daily Routine Mapping</strong> – habit alignment
                   </Typography>
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
@@ -2061,36 +2133,100 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       width: 6,
                       height: 6,
                       borderRadius: "50%",
-                      backgroundColor: "white",
+                      backgroundColor: "#0f172a",
                       mt: 0.5,
                       flexShrink: 0,
                     }}
                   />
-                  <Typography variant="body2" sx={{ opacity: 0.95, fontSize: "inherit", lineHeight: 1.4 }}>
-                    <strong>Medication & Supplements</strong> – faster recovery
+                  <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                    <strong style={{ color: "#0f172a", fontWeight: 700 }}>Medication & Supplements</strong> – faster recovery
                   </Typography>
                 </Box>
               </Box>
+              <Box sx={{ mt: 1.5, display: "flex", alignItems: "center", gap: 1 }}>
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    color: "#0f172a", 
+                    fontSize: { xs: "0.85rem", sm: "0.9rem" },
+                    fontWeight: 600,
+                  }}
+                >
+                  Only @
+                </Typography>
+                <Typography 
+                  variant="h6" 
+                  sx={{ 
+                    color: "#0f172a", 
+                    fontSize: { xs: "1.1rem", sm: "1.25rem" },
+                    fontWeight: 800,
+                    lineHeight: 1,
+                  }}
+                >
+                  ₹2,499/-
+                </Typography>
+              </Box>
             </Box>
-            <Button
-              variant="contained"
-              size="medium"
-              onClick={handleContactUs}
-              startIcon={<WhatsAppIcon />}
-              sx={{
-                backgroundColor: "white",
-                color: "#0f172a",
-                fontWeight: 700,
-                px: 2.5,
-                py: 1,
-                fontSize: "0.9rem",
-                "&:hover": {
-                  backgroundColor: "rgba(255, 255, 255, 0.9)",
-                },
+            <Box
+              component={motion.div}
+              animate={{
+                scale: [1, 1.03, 1],
               }}
+              transition={{
+                duration: 2.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
             >
-              Contact Us
-            </Button>
+              <Button
+                variant="contained"
+                size="medium"
+                onClick={handleContactUs}
+                startIcon={<WhatsAppIcon />}
+                sx={{
+                  backgroundColor: "#0f172a",
+                  color: "#ffffff",
+                  fontWeight: 700,
+                  px: 2.5,
+                  py: 1,
+                  fontSize: "0.9rem",
+                  borderRadius: "8px",
+                  border: "2px solid #ffffff",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)",
+                  animation: "contactButtonGlow 2.5s ease-in-out infinite",
+                  position: "relative",
+                  overflow: "hidden",
+                  transition: "all 0.3s ease",
+                  "&::before": {
+                    content: '""',
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent)",
+                    animation: "contactButtonShimmer 3s infinite",
+                  },
+                  "&:hover": {
+                    backgroundColor: "#1e293b",
+                    borderColor: "#ffffff",
+                    boxShadow: "0 6px 16px rgba(0, 0, 0, 0.4), 0 3px 6px rgba(0, 0, 0, 0.3)",
+                    transform: "translateY(-1px)",
+                  },
+                  "& .MuiButton-startIcon": {
+                    transition: "transform 0.3s ease",
+                    color: "#ffffff",
+                  },
+                  "&:hover .MuiButton-startIcon": {
+                    transform: "scale(1.1)",
+                  },
+                }}
+              >
+                Contact Us
+              </Button>
+            </Box>
           </Box>
         </Paper>
       </motion.div>

@@ -220,9 +220,9 @@ export default function ResultPage() {
                   }}
                 >
                   {!showHackingLoader ? (
-                    "BODY DETECTION COMPLETED"
+                    "BBA ANALYSIS COMPLETED"
                   ) : (
-                    <TerminalTypingText text="BODY DETECTION COMPLETED" speed={100} />
+                    <TerminalTypingText text="BBA ANALYSIS COMPLETED" speed={100} />
                   )}
                 </Typography>
                 <Typography
@@ -236,7 +236,7 @@ export default function ResultPage() {
                     fontFamily: "monospace",
                   }}
                 >
-                  {!showHackingLoader && "> Know your body"}
+                  {!showHackingLoader && "> Know your body nature & behavior"}
                 </Typography>
               </Box>
 

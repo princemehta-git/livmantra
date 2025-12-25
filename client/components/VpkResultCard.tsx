@@ -395,8 +395,8 @@ function ExpandableParagraph({
         sx={{
           lineHeight: 1.8,
           color: "text.primary",
-          userSelect: "text",
-          WebkitUserSelect: "text",
+          userSelect: "none",
+          WebkitUserSelect: "none",
         }}
         title="From LivMantra free template"
       >
@@ -459,6 +459,39 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
   const bodyVideoRef = React.useRef<HTMLVideoElement>(null);
   const dnaVideoRef = React.useRef<HTMLVideoElement>(null);
   const energyVideoRef = React.useRef<HTMLVideoElement>(null);
+  const reportContainerRef = React.useRef<HTMLDivElement>(null);
+
+  // Copy protection: intercept copy events and replace with custom message
+  useEffect(() => {
+    const handleCopy = (e: ClipboardEvent) => {
+      // Check if the copy event originated from within the report container
+      const target = e.target as Node;
+      if (reportContainerRef.current && reportContainerRef.current.contains(target)) {
+        e.preventDefault();
+        
+        // Get home URL
+        const homeUrl = typeof window !== "undefined" ? window.location.origin : "";
+        const customMessage = `Hi I gave free test at ${homeUrl}`;
+        
+        // Set clipboard content
+        if (e.clipboardData) {
+          e.clipboardData.setData("text/plain", customMessage);
+        } else if (navigator.clipboard) {
+          navigator.clipboard.writeText(customMessage).catch((err) => {
+            console.error("Failed to write to clipboard:", err);
+          });
+        }
+      }
+    };
+
+    // Add event listener
+    document.addEventListener("copy", handleCopy);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener("copy", handleCopy);
+    };
+  }, []);
 
   // Trigger particles on section change
   useEffect(() => {
@@ -627,6 +660,7 @@ Please provide me:
 
   return (
     <Box
+      ref={reportContainerRef}
       sx={{
         position: "relative",
       }}
@@ -955,7 +989,7 @@ Please provide me:
             </Box>
             
             {/* Content wrapper with relative positioning */}
-            <Box sx={{ position: "relative", zIndex: 2 }}>
+            <Box sx={{ position: "relative", zIndex: 2, userSelect: "none", WebkitUserSelect: "none" }}>
 
             {/* Intro paragraph, common feeling, tip, and distribution removed for Body Type */}
 
@@ -1315,7 +1349,7 @@ Please provide me:
             </Box>
             
             {/* Content wrapper with relative positioning */}
-            <Box sx={{ position: "relative", zIndex: 2 }}>
+            <Box sx={{ position: "relative", zIndex: 2, userSelect: "none", WebkitUserSelect: "none" }}>
 
             {/* Strengths removed as per updated report requirements */}
 
@@ -1683,7 +1717,7 @@ Please provide me:
             </Box>
             
             {/* Content wrapper with relative positioning */}
-            <Box sx={{ position: "relative", zIndex: 2 }}>
+            <Box sx={{ position: "relative", zIndex: 2, userSelect: "none", WebkitUserSelect: "none" }}>
 
             {/* Imbalance levels removed as per updated report requirements */}
 

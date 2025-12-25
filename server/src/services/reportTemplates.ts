@@ -73,10 +73,16 @@ export type Templates = {
       whatsHappening: string;
       whyFeelingLikeThis: string;
       commonSymptoms: string[];
+      commonSymptomsIntro?: string;
+      commonSymptomsClosing?: string;
       earlyWarningsTitle: string;
       earlyWarnings: string;
       whatYourBodyNeeds: string[];
+      whatYourBodyNeedsIntro?: string;
+      whatYourBodyNeedsClosing?: string;
       whatNotToDo?: string[];
+      whatNotToDoIntro?: string;
+      whatNotToDoClosing?: string;
       closingMessage: string;
     };
   };

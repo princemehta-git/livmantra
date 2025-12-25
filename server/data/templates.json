@@ -524,6 +524,8 @@
         "Feeling cold or shaky when you don't eat on time",
         "Dry lips or dry skin"
       ],
+      "commonSymptomsIntro": "You might notice some of these:",
+      "commonSymptomsClosing": "These are signs your body is unstable, not weak.",
       "earlyWarningsTitle": "Early warning signs (don't ignore these)",
       "earlyWarnings": "If this continues for long, it can lead to:\n– Regular headaches\n– Feeling tired all the time\n– More anxiety or fear\n– Stomach problems like IBS\n– Difficulty concentrating\nExample: Like ignoring low fuel warning in a car — the car doesn't stop immediately, but damage starts.",
       "whatYourBodyNeeds": [
@@ -532,12 +534,16 @@
         "Reduce mobile, TV, work after sunset",
         "Sit quietly and take slow deep breaths before sleep"
       ],
+      "whatYourBodyNeedsIntro": "Your body needs simple support, not medicines first.",
+      "whatYourBodyNeedsClosing": "Example: Just like calming a crying child — you don't shout, you slow down and comfort.",
       "whatNotToDo": [
         "Skip meals",
         "Overwork",
         "Stay awake late",
         "Push yourself when tired"
       ],
+      "whatNotToDoIntro": "Better to avoid:",
+      "whatNotToDoClosing": "Doing more will worsen this condition.",
       "closingMessage": "This is not your permanent nature.\nThis is just a temporary imbalance.\nWhen routine improves and the body feels safe again, this problem settles faster than you\nexpect."
     },
     "I2": {
@@ -554,6 +560,8 @@
         "Redness in skin or eyes",
         "Headache, especially behind the eyes"
       ],
+      "commonSymptomsIntro": "You might notice some of these signs:",
+      "commonSymptomsClosing": "These are signs of too much heat, not weakness.",
       "earlyWarningsTitle": "Early warning signs (don't ignore these)",
       "earlyWarnings": "If this heat keeps increasing, it can lead to:\n– Frequent headaches or migraines\n– Stomach lining irritation (gastritis)\n– Hormonal problems linked to heat\n– Mental burnout and frustration\nLike ignoring engine overheating — damage starts before the engine stops.",
       "whatYourBodyNeeds": [
@@ -562,12 +570,16 @@
         "Don't force yourself when tired",
         "Stop screens late at night — they increase inner heat"
       ],
+      "whatYourBodyNeedsIntro": "Your body needs cooling and slowing, not pushing.",
+      "whatYourBodyNeedsClosing": "Just like cooling a hot pan with water — not adding more flame.",
       "whatNotToDo": [
         "Working continuously without breaks",
         "Competing with yourself",
         "Skipping rest to \"finish things\"",
         "Late nights with screens"
       ],
+      "whatNotToDoIntro": "Better to Avoid:",
+      "whatNotToDoClosing": "These will increase heat further.",
       "closingMessage": "Your fire is a strength, not a problem.\nBut when fire is too high, it needs cooling — not more fuel.\nThis is a temporary imbalance, and it settles quickly when cooled properly."
     },
     "I3": {
@@ -584,6 +596,8 @@
         "Cold, cough, congestion, or mucus",
         "Weight gain or puffiness"
       ],
+      "commonSymptomsIntro": "You may notice some of these signs:",
+      "commonSymptomsClosing": "These are signs of slowness and buildup, not lack of willpower.",
       "earlyWarningsTitle": "Early warning signs (don't ignore these)",
       "earlyWarnings": "If this state continues for long, it can lead to:\n– Rising blood sugar or pre-diabetes\n– Thyroid slowing\n– Constant tiredness\n– Withdrawing emotionally or socially\nLike ignoring water leakage — slow damage happens quietly.",
       "whatYourBodyNeeds": [
@@ -592,12 +606,16 @@
         "Reduce sugar and cold foods",
         "Spend some time in sunlight during the day"
       ],
+      "whatYourBodyNeedsIntro": "Your body needs movement and lightness, not force.",
+      "whatYourBodyNeedsClosing": "Like pushing a stuck bicycle — once it starts moving, it moves easily.",
       "whatNotToDo": [
         "Oversleeping",
         "Staying inactive all day",
         "Eating out of boredom",
         "Waiting for motivation to come"
       ],
+      "whatNotToDoIntro": "Better to Avoid:",
+      "whatNotToDoClosing": "Motivation comes after movement, not before.",
       "closingMessage": "You don't lack discipline.\nYou are not lazy.\nYour body just needs momentum.\nOnce movement starts, energy returns naturally."
     },
     "I4": {
@@ -613,6 +631,8 @@
         "Headaches or burning in the stomach",
         "Feeling overwhelmed by small things"
       ],
+      "commonSymptomsIntro": "You may notice a mix of these symptoms:",
+      "commonSymptomsClosing": "This happens because the mind and digestion are both disturbed.",
       "earlyWarningsTitle": "Early warning signs (don't ignore these)",
       "earlyWarnings": "If this continues for long, it may lead to:\n– IBS-like stomach problems\n– Panic or sudden fear episodes\n– Migraine headaches\n– Severe sleep disturbance\nLike ignoring both low fuel and overheating signs in a car — breakdown becomes more\nlikely.",
       "whatYourBodyNeeds": [
@@ -621,12 +641,16 @@
         "Slow down your evening routine",
         "Do slow deep breathing for 3–5 minutes before sleep"
       ],
+      "whatYourBodyNeedsIntro": "Your body needs rhythm and cooling, not pushing.",
+      "whatYourBodyNeedsClosing": "Like slowing a spinning fan before it overheats — not speeding it up further.",
       "whatNotToDo": [
         "Skipping meals",
         "Working late nights",
         "Multitasking constantly",
         "Forcing productivity when tired"
       ],
+      "whatNotToDoIntro": "Better to Avoid:",
+      "whatNotToDoClosing": "These increase both speed and heat.",
       "closingMessage": "This is a temporary mixed imbalance, not who you are.\nYour system doesn't need more effort.\nIt needs timing, rest, and cooling.\nWhen rhythm returns, balance follows."
     },
     "I5": {
@@ -642,6 +666,8 @@
         "Light sleep or waking between 2–4 AM",
         "Feeling heat in face, eyes, or chest"
       ],
+      "commonSymptomsIntro": "You may notice a mix of these signs:",
+      "commonSymptomsClosing": "These signs mean heat and restlessness are working together.",
       "earlyWarningsTitle": "Early warning signs (don't ignore these)",
       "earlyWarnings": "If this pattern continues, it may lead to:\n– Stomach lining irritation (gastritis)\n– Mental and emotional burnout\n– Constant anxiety\n– Hormonal problems related to excess heat\nLike ignoring an overheating warning light — damage happens before you realize it.",
       "whatYourBodyNeeds": [
@@ -650,12 +676,16 @@
         "Keep tea, coffee, and stimulants low",
         "Create one calming habit at night (quiet sitting, breathing, no screen)"
       ],
+      "whatYourBodyNeedsIntro": "Your body needs cooling with stability, not more pushing.",
+      "whatYourBodyNeedsClosing": "Like cooling a hot engine before driving again — not pressing the accelerator harder.",
       "whatNotToDo": [
         "Overworking",
         "Late nights",
         "Skipping meals",
         "Competing with yourself"
       ],
+      "whatNotToDoIntro": "Better to Avoid:",
+      "whatNotToDoClosing": "These increase both heat and restlessness.",
       "closingMessage": "Your fire and speed are strengths.\nBut right now, your body is asking you to cool down, not slow down.\nOnce heat reduces, calm and focus return naturally."
     },
     "I6": {
@@ -671,6 +701,8 @@
         "Puffiness in face, hands, or legs",
         "Skin breakouts or feeling hot on skin"
       ],
+      "commonSymptomsIntro": "You may notice some of these signs:",
+      "commonSymptomsClosing": "These signs show heat is trapped under heaviness.",
       "earlyWarningsTitle": "Early warning signs (don't ignore these)",
       "earlyWarnings": "If this continues for long, it may lead to:\n– Blood sugar ups and downs\n– Hormonal imbalance\n– Long-lasting inflammation\n– Weight that becomes hard to reduce\nLike water stuck in a pipe — pressure builds, but nothing flows out.",
       "whatYourBodyNeeds": [
@@ -679,12 +711,16 @@
         "Avoid eating out of stress or boredom",
         "Drink warm water through the day"
       ],
+      "whatYourBodyNeedsIntro": "Your body needs lightness and movement, not pressure.",
+      "whatYourBodyNeedsClosing": "Like opening a blocked drain — once flow starts, pressure reduces.",
       "whatNotToDo": [
         "Overeating",
         "Sitting all day",
         "Emotional snacking",
         "Trying extreme diets or forcing workouts"
       ],
+      "whatNotToDoIntro": "Better to Avoid:",
+      "whatNotToDoClosing": "Force increases heat — movement releases it.",
       "closingMessage": "You don't need to push harder.\nYour body is not lazy or broken.\nIt just needs release and flow, not more pressure."
     },
     "I7": {
@@ -701,6 +737,8 @@
         "Puffiness in face, fingers, or stomach",
         "Feeling irritated but avoiding arguments"
       ],
+      "commonSymptomsIntro": "You may notice some of these signs:",
+      "commonSymptomsClosing": "These signs show emotions + heaviness + heat are trapped together.",
       "earlyWarningsTitle": "Early warning signs (don't ignore these)",
       "earlyWarnings": "If this continues for long, it may lead to:\n– Thyroid slowing\n– Weight that doesn't reduce easily\n– Hormonal imbalance\n– Pulling away emotionally from people\nLike water stuck behind a dam — pressure keeps building silently.",
       "whatYourBodyNeeds": [
@@ -709,12 +747,16 @@
         "Talking about feelings instead of holding them",
         "Reducing late-night eating and scrolling"
       ],
+      "whatYourBodyNeedsIntro": "Your body needs release and lightness, not suppression.",
+      "whatYourBodyNeedsClosing": "Like opening windows in a closed room — air starts moving and heat reduces.",
       "whatNotToDo": [
         "Emotional eating",
         "Sitting still for long hours",
         "Keeping everything inside",
         "Forcing yourself without release"
       ],
+      "whatNotToDoIntro": "Better to Avoid:",
+      "whatNotToDoClosing": "Pressure stored becomes irritation.",
       "closingMessage": "You are not lazy or weak.\nYour body is simply carrying too much, too quietly.\nLighten the load — and balance will return."
     },
     "I8": {
@@ -730,6 +772,8 @@
         "Difficulty starting simple tasks",
         "Craving sweets when stressed"
       ],
+      "commonSymptomsIntro": "You may notice some of these signs:",
+      "commonSymptomsClosing": "These signs show restlessness in the mind + heaviness in the body.",
       "earlyWarningsTitle": "Early warning signs (don't ignore these)",
       "earlyWarnings": "If this pattern continues, it may lead to:\n– Constant tiredness\n– Emotional ups and downs\n– Weak digestion\n– Pulling away from people or responsibilities\n– Cycles of doing nothing → then sudden burnout\nLike a phone that keeps many apps open — battery drains quickly, even without much use.",
       "whatYourBodyNeeds": [
@@ -738,12 +782,16 @@
         "Daily time with less screen and less noise",
         "Break tasks into small steps — start slowly, but start"
       ],
+      "whatYourBodyNeedsIntro": "Your body needs gentle movement and steady rhythm.",
+      "whatYourBodyNeedsClosing": "Like warming up a stiff joint — slow movement works better than force.",
       "whatNotToDo": [
         "Waiting for motivation to come",
         "Sitting still all day",
         "Multitasking without finishing",
         "Overthinking without action"
       ],
+      "whatNotToDoIntro": "Better to Avoid:",
+      "whatNotToDoClosing": "Action brings clarity — not the other way around.",
       "closingMessage": "You are not lazy.\nYou are not incapable.\nYour mind wants motion, and your body needs rhythm.\nMeet them halfway — and balance will return."
     },
     "I9": {
@@ -759,6 +807,8 @@
         "Puffiness in face, hands, or legs",
         "Emotional or comfort eating"
       ],
+      "commonSymptomsIntro": "You may notice some of these signs:",
+      "commonSymptomsClosing": "These signs show heaviness in the body + worry in the mind.",
       "earlyWarningsTitle": "Early warning signs (don't ignore these)",
       "earlyWarnings": "If this continues for long, it may lead to:\n– Gradual weight gain\n– Emotional dullness or numbness\n– Lower energy and motivation\n– Anxiety episodes\n– Sleep problems\nLike fog slowly covering a road — visibility reduces step by step.",
       "whatYourBodyNeeds": [
@@ -767,12 +817,16 @@
         "Avoid long daytime naps",
         "Share your thoughts with someone you trust"
       ],
+      "whatYourBodyNeedsIntro": "Your body needs warmth, movement, and expression.",
+      "whatYourBodyNeedsClosing": "Like opening a window in a closed room — fresh air changes everything.",
       "whatNotToDo": [
         "Keeping everything inside",
         "Staying inactive all day",
         "Eating only for comfort",
         "Isolating yourself emotionally"
       ],
+      "whatNotToDoIntro": "Better to Avoid:",
+      "whatNotToDoClosing": "Silence makes heaviness grow.",
       "closingMessage": "You are not weak.\nYou are not lazy.\nYou've just been carrying too much alone.\nLet warmth, movement, and connection help you release it."
     }
   }

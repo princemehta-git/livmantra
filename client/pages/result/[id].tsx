@@ -220,9 +220,9 @@ export default function ResultPage() {
                   }}
                 >
                   {!showHackingLoader ? (
-                    "BBA ANALYSIS COMPLETED"
+                    "BODY DECODING COMPLETED"
                   ) : (
-                    <TerminalTypingText text="BBA ANALYSIS COMPLETED" speed={100} />
+                    <TerminalTypingText text="BODY DECODING COMPLETED" speed={100} />
                   )}
                 </Typography>
                 <Typography

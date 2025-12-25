@@ -113,20 +113,24 @@ export default function Footer() {
               <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mb: 2 }}>
                 Contact
               </Typography>
-              <Typography 
-                variant="body2" 
-                sx={{ 
-                  opacity: 0.8, 
+              <Link
+                href="mailto:support@myexpertdoctor.com"
+                sx={{
+                  textDecoration: "none",
+                  color: "rgba(255, 255, 255, 0.8)",
+                  opacity: 0.8,
                   mb: 2,
+                  display: "block",
                   transition: "all 0.3s ease",
                   "&:hover": {
                     color: "#00ffff",
                     textShadow: "0 0 10px rgba(0, 255, 255, 0.5)",
+                    opacity: 1,
                   },
                 }}
               >
-                support@livmantra.com
-              </Typography>
+                support@myexpertdoctor.com
+              </Link>
               <Typography variant="body2" sx={{ opacity: 0.6 }}>
                 © 2026 LivMantra. All rights reserved.
               </Typography>

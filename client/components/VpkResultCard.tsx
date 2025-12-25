@@ -104,10 +104,16 @@ type MergedReport = {
     whatsHappening: string;
     whyFeelingLikeThis: string;
     commonSymptoms: string[];
+    commonSymptomsIntro?: string;
+    commonSymptomsClosing?: string;
     earlyWarningsTitle: string;
     earlyWarnings: string;
     whatYourBodyNeeds: string[];
+    whatYourBodyNeedsIntro?: string;
+    whatYourBodyNeedsClosing?: string;
     whatNotToDo?: string[];
+    whatNotToDoIntro?: string;
+    whatNotToDoClosing?: string;
     closingMessage: string;
   } | null;
 };
@@ -335,6 +341,32 @@ const getTypeNameForCode = (code?: string): string | null => {
     default:
       return null;
   }
+};
+
+// Map code to combined type name (e.g., "Aero–Pyro" for dual types)
+const getCombinedTypeNameForCode = (code?: string): string | null => {
+  if (!code) return null;
+  
+  const prefix = code[0];
+  const n = parseInt(code.slice(1), 10);
+  if (Number.isNaN(n)) return null;
+
+  // V0 → no clear imbalance → return null
+  if (prefix === "V" && n === 0) return null;
+
+  const elements = getElementsForCode(code);
+  if (elements.length === 0) return null;
+
+  // Map elements to type names
+  const typeNames: string[] = [];
+  for (const el of elements) {
+    if (el === "air") typeNames.push("Aero");
+    else if (el === "fire") typeNames.push("Pyro");
+    else if (el === "earth") typeNames.push("Geo");
+  }
+
+  // Join multiple types with en dash
+  return typeNames.length > 0 ? typeNames.join("–") : null;
 };
 
 // Truncate text to approximately 2-3 lines (roughly 200 characters)
@@ -567,7 +599,16 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
     }
     
     // Build WhatsApp message
-    const message = `Hi, I gave my test, my body type is ${bodyTypeName}, my natural nature is ${naturalNatureName} & my imbalance is ${imbalanceText}. So please provide me detailed diet plan, and exercise and 14 days body reset plan.`;
+    const message = `Hi, I completed the *_Body Behaviour Analysis (BBA) Test_* and here are my results:
+
+*My Body Type:* ${bodyTypeName}
+*My Natural Nature:* ${naturalNatureName}
+*My Imbalance:* ${imbalanceText}
+
+Please provide me:
+• Detailed diet plan
+• Exercise recommendations
+• 14 days body reset plan`;
     
     // Encode message for URL
     const encodedMessage = encodeURIComponent(message);
@@ -660,54 +701,52 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
             if (currentSection === 0) {
               // Body Type section
               const currentCode = snapshot.bodyCode;
-              typeName = getTypeNameForCode(currentCode) || 
+              typeName = getCombinedTypeNameForCode(currentCode) || 
                         (snapshot.bodyType ? bodyTypeToType(snapshot.bodyType) : null) ||
                         (snapshot.bodyTypeDetailed?.primary ? bodyTypeToType(snapshot.bodyTypeDetailed.primary) : null);
             } else if (currentSection === 1) {
               // Prakriti section
               const currentCode = snapshot.prakritiCode;
-              typeName = getTypeNameForCode(currentCode) || 
+              typeName = getCombinedTypeNameForCode(currentCode) || 
                         (snapshot.prakriti ? doshaToType(snapshot.prakriti) : null) ||
                         (snapshot.prakritiDetailed?.primary ? doshaToType(snapshot.prakritiDetailed.primary) : null);
             } else if (currentSection === 2) {
-              // Vikriti/Imbalance section
-              const currentCode = snapshot.vikritiCode;
-              typeName = getTypeNameForCode(currentCode);
-              
-              // If code doesn't provide type, try to get from imbalance data
-              if (!typeName && snapshot.vikritiDetailed?.imbalances && snapshot.vikritiDetailed.imbalances.length > 0) {
-                const imbalances = snapshot.vikritiDetailed.imbalances;
-                if (imbalances.length > 1) {
-                  // Dual imbalance - use the first one for type display
-                  typeName = doshaToType(imbalances[0].dosha);
-                } else if (imbalances.length === 1) {
-                  // Single imbalance
-                  typeName = doshaToType(imbalances[0].dosha);
+              // Vikriti/Imbalance section - always show PRIMARY type only, not combined
+              // Priority: Use primary imbalance from vikritiDetailed.imbalances[0]
+              if (snapshot.vikritiDetailed?.imbalances && snapshot.vikritiDetailed.imbalances.length > 0) {
+                // Always use the first/primary imbalance type only
+                typeName = doshaToType(snapshot.vikritiDetailed.imbalances[0].dosha);
+              } else {
+                // Fallback: try to get from vikritiCode (single type only)
+                const currentCode = snapshot.vikritiCode;
+                typeName = getTypeNameForCode(currentCode);
+                
+                // Additional fallback: try to get from vikritiCode elements if available (primary only)
+                if (!typeName && snapshot.vikritiCode) {
+                  const elements = getElementsForCode(snapshot.vikritiCode);
+                  if (elements.length > 0) {
+                    const primary = getPrimaryElement(elements);
+                    if (primary === "air") typeName = "Aero";
+                    else if (primary === "fire") typeName = "Pyro";
+                    else if (primary === "earth") typeName = "Geo";
+                  }
                 }
-              }
-              
-              // Additional fallback: try to get from vikritiCode elements if available
-              if (!typeName && snapshot.vikritiCode) {
-                const elements = getElementsForCode(snapshot.vikritiCode);
-                if (elements.length > 0) {
-                  const primary = getPrimaryElement(elements);
-                  if (primary === "air") typeName = "Aero";
-                  else if (primary === "fire") typeName = "Pyro";
-                  else if (primary === "earth") typeName = "Geo";
+                
+                // Last fallback: use vikriti string directly
+                if (!typeName && snapshot.vikriti) {
+                  typeName = doshaToType(snapshot.vikriti);
                 }
-              }
-              
-              // Last fallback: use vikriti string directly
-              if (!typeName && snapshot.vikriti) {
-                typeName = doshaToType(snapshot.vikriti);
               }
             }
             
             if (!typeName) return null;
             
-            // Get color based on type
+            // Get color based on type (for combined types, use the first type's color)
             const getTypeColor = (type: string) => {
-              switch (type) {
+              // Extract the first type from combined types (e.g., "Aero–Pyro" -> "Aero")
+              const firstType = type.split("–")[0];
+              
+              switch (firstType) {
                 case "Aero":
                   return { color: "#38bdf8", border: "rgba(56, 189, 248, 0.3)", bg: "rgba(56, 189, 248, 0.1)" };
                 case "Pyro":
@@ -1691,7 +1730,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       lineHeight: 1.3,
                     }}
                   >
-                    What's Happening in Your System Right Now
+                    What's happening in your body right now
                   </Typography>
                   <Typography
                     variant="body2"
@@ -1718,7 +1757,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       lineHeight: 1.3,
                     }}
                   >
-                    Why You May Be Feeling Like This
+                    Why this is happening
                   </Typography>
                   <Typography
                     variant="body2"
@@ -1745,8 +1784,22 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       lineHeight: 1.3,
                     }}
                   >
-                    Common Symptoms You Might Notice
+                    Common problems you may notice
                   </Typography>
+                  {mergedReport.vikritiCodeReport.commonSymptomsIntro && (
+                    <Typography
+                      variant="body2"
+                      sx={{ 
+                        lineHeight: 1.65, 
+                        mb: 0.75, 
+                        color: "rgba(148, 163, 184, 0.85)", 
+                        fontSize: "0.875rem",
+                        whiteSpace: "pre-line",
+                      }}
+                    >
+                      {mergedReport.vikritiCodeReport.commonSymptomsIntro}
+                    </Typography>
+                  )}
                   <Box component="ul" sx={{ pl: 2, m: 0, mt: 0.5 }}>
                     {mergedReport.vikritiCodeReport.commonSymptoms.map((symptom, idx) => (
                       <li key={idx} style={{ marginBottom: "0.5rem" }}>
@@ -1763,6 +1816,20 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       </li>
                     ))}
                   </Box>
+                  {mergedReport.vikritiCodeReport.commonSymptomsClosing && (
+                    <Typography
+                      variant="body2"
+                      sx={{ 
+                        lineHeight: 1.65, 
+                        mt: 0.75, 
+                        color: "rgba(148, 163, 184, 0.85)", 
+                        fontSize: "0.875rem",
+                        whiteSpace: "pre-line",
+                      }}
+                    >
+                      {mergedReport.vikritiCodeReport.commonSymptomsClosing}
+                    </Typography>
+                  )}
                 </Box>
 
                 <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
@@ -1804,8 +1871,22 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       lineHeight: 1.3,
                     }}
                   >
-                    What Your Body Needs Immediately
+                    What your body needs right now
                   </Typography>
+                  {mergedReport.vikritiCodeReport.whatYourBodyNeedsIntro && (
+                    <Typography
+                      variant="body2"
+                      sx={{ 
+                        lineHeight: 1.65, 
+                        mb: 0.75, 
+                        color: "rgba(148, 163, 184, 0.85)", 
+                        fontSize: "0.875rem",
+                        whiteSpace: "pre-line",
+                      }}
+                    >
+                      {mergedReport.vikritiCodeReport.whatYourBodyNeedsIntro}
+                    </Typography>
+                  )}
                   <Box component="ul" sx={{ pl: 2, m: 0, mt: 0.5 }}>
                     {mergedReport.vikritiCodeReport.whatYourBodyNeeds.map((need, idx) => (
                       <li key={idx} style={{ marginBottom: "0.5rem" }}>
@@ -1823,7 +1904,83 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                       </li>
                     ))}
                   </Box>
+                  {mergedReport.vikritiCodeReport.whatYourBodyNeedsClosing && (
+                    <Typography
+                      variant="body2"
+                      sx={{ 
+                        lineHeight: 1.65, 
+                        mt: 0.75, 
+                        color: "rgba(148, 163, 184, 0.85)", 
+                        fontSize: "0.875rem",
+                        whiteSpace: "pre-line",
+                      }}
+                    >
+                      {mergedReport.vikritiCodeReport.whatYourBodyNeedsClosing}
+                    </Typography>
+                  )}
                 </Box>
+
+                {mergedReport.vikritiCodeReport.whatNotToDo && mergedReport.vikritiCodeReport.whatNotToDo.length > 0 && (
+                  <Box sx={{ mb: 2, pb: 2, borderBottom: "1px solid rgba(148, 163, 184, 0.1)" }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ 
+                        fontWeight: 700, 
+                        mb: 0.75, 
+                        color: "#ffffff", 
+                        letterSpacing: "0.01em", 
+                        fontSize: { xs: "1rem", md: "1.1rem" },
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      What NOT to do right now
+                    </Typography>
+                    {mergedReport.vikritiCodeReport.whatNotToDoIntro && (
+                      <Typography
+                        variant="body2"
+                        sx={{ 
+                          lineHeight: 1.65, 
+                          mb: 0.75, 
+                          color: "rgba(148, 163, 184, 0.85)", 
+                          fontSize: "0.875rem",
+                          whiteSpace: "pre-line",
+                        }}
+                      >
+                        {mergedReport.vikritiCodeReport.whatNotToDoIntro}
+                      </Typography>
+                    )}
+                    <Box component="ul" sx={{ pl: 2, m: 0, mt: 0.5 }}>
+                      {mergedReport.vikritiCodeReport.whatNotToDo.map((item, idx) => (
+                        <li key={idx} style={{ marginBottom: "0.5rem" }}>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              lineHeight: 1.6,
+                              color: "rgba(148, 163, 184, 0.85)",
+                              fontSize: "0.875rem",
+                            }}
+                          >
+                            {item}
+                          </Typography>
+                        </li>
+                      ))}
+                    </Box>
+                    {mergedReport.vikritiCodeReport.whatNotToDoClosing && (
+                      <Typography
+                        variant="body2"
+                        sx={{ 
+                          lineHeight: 1.65, 
+                          mt: 0.75, 
+                          color: "rgba(148, 163, 184, 0.85)", 
+                          fontSize: "0.875rem",
+                          whiteSpace: "pre-line",
+                        }}
+                      >
+                        {mergedReport.vikritiCodeReport.whatNotToDoClosing}
+                      </Typography>
+                    )}
+                  </Box>
+                )}
 
                 <Box
                   sx={{
@@ -1835,12 +1992,26 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                   }}
                 >
                   <Typography
+                    variant="h6"
+                    sx={{ 
+                      fontWeight: 700, 
+                      mb: 0.75, 
+                      color: "#ffffff", 
+                      letterSpacing: "0.01em", 
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                      lineHeight: 1.3,
+                    }}
+                  >
+                    One important thing to remember
+                  </Typography>
+                  <Typography
                     variant="body2"
                     sx={{
                       lineHeight: 1.65,
                       fontStyle: "italic",
                       color: "rgba(148, 163, 184, 0.9)",
                       fontSize: "0.875rem",
+                      whiteSpace: "pre-line",
                     }}
                   >
                     {mergedReport.vikritiCodeReport.closingMessage}
@@ -2036,7 +2207,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                 sx={{ 
                   fontWeight: 700, 
                   mb: 0.8, 
-                  fontSize: { xs: "0.95rem", sm: "1rem" }, 
+                  fontSize: { xs: "1.2rem", sm: "1.4rem" }, 
                   lineHeight: 1.3,
                   color: "#0f172a",
                   textShadow: "0 1px 2px rgba(255, 255, 255, 0.5)",
@@ -2139,7 +2310,7 @@ export default function VpkResultCard({ snapshot, mergedReport, currentSection =
                     }}
                   />
                   <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
-                    <strong style={{ color: "#0f172a", fontWeight: 700 }}>Medication & Supplements</strong> – faster recovery
+                    <strong style={{ color: "#0f172a", fontWeight: 700 }}>Expert doctor consultation</strong> – medication & suppliment
                   </Typography>
                 </Box>
               </Box>

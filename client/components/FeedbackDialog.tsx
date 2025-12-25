@@ -121,7 +121,7 @@ export default function FeedbackDialog({ open, onClose, onSubmit }: Props) {
       <DialogContent sx={{ pt: 3 }}>
         <Box sx={{ mb: 3 }}>
           <Typography variant="body1" sx={{ mb: 2, color: "rgba(255, 255, 255, 0.9)" }}>
-            How would you rate your experience with the Body Behaviour Analysis (BBA)?
+            How would you rate your experience with the Body Behaviour Analysis (BBA) Test?
           </Typography>
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Rating

@@ -11,6 +11,8 @@ export async function initializeDatabase() {
     await ensureUserTableExists();
     await ensureTestResponseTableExists();
     await ensureFeedbackTableExists();
+    // Migrate user table to add new columns
+    await migrateUserTable();
     console.log("✅ Database tables initialized");
   } catch (error) {
     console.error("❌ Error initializing database:", error);
@@ -139,6 +141,65 @@ async function ensureFeedbackTableExists() {
       console.error("❌ Unexpected error checking feedback table:", error);
       throw error;
     }
+  }
+}
+
+/**
+ * Migrate user table to add new columns if they don't exist
+ */
+async function migrateUserTable() {
+  try {
+    const columns = [
+      { name: "password", type: "VARCHAR(191) NULL" },
+      { name: "isAdmin", type: "BOOLEAN NOT NULL DEFAULT FALSE" },
+      { name: "dob", type: "DATETIME(3) NULL" },
+      { name: "gender", type: "VARCHAR(191) NULL" },
+      { name: "profileImage", type: "VARCHAR(191) NULL" },
+      { name: "state", type: "VARCHAR(191) NULL" },
+      { name: "nationality", type: "VARCHAR(191) NULL" },
+    ];
+
+    for (const column of columns) {
+      try {
+        await prisma.$executeRawUnsafe(`
+          ALTER TABLE \`user\` 
+          ADD COLUMN IF NOT EXISTS \`${column.name}\` ${column.type}
+        `);
+        console.log(`✅ User table column '${column.name}' checked/added`);
+      } catch (error: any) {
+        // Column might already exist or there's a syntax issue with IF NOT EXISTS
+        // Try without IF NOT EXISTS for MySQL compatibility
+        if (error.message?.includes("Duplicate column") || error.code === "42S21") {
+          console.log(`✅ User table column '${column.name}' already exists`);
+        } else {
+          // Try alternative syntax for MySQL
+          try {
+            const checkResult = await prisma.$queryRawUnsafe(`
+              SELECT COUNT(*) as count 
+              FROM INFORMATION_SCHEMA.COLUMNS 
+              WHERE TABLE_SCHEMA = DATABASE() 
+              AND TABLE_NAME = 'user' 
+              AND COLUMN_NAME = '${column.name}'
+            `) as any[];
+            
+            if (checkResult[0]?.count === 0) {
+              await prisma.$executeRawUnsafe(`
+                ALTER TABLE \`user\` 
+                ADD COLUMN \`${column.name}\` ${column.type}
+              `);
+              console.log(`✅ User table column '${column.name}' added`);
+            } else {
+              console.log(`✅ User table column '${column.name}' already exists`);
+            }
+          } catch (altError: any) {
+            console.log(`⚠️ Could not add column '${column.name}': ${altError.message}`);
+          }
+        }
+      }
+    }
+  } catch (error: any) {
+    console.error("⚠️ Error migrating user table:", error.message);
+    // Don't throw - allow app to continue even if migration fails
   }
 }
 

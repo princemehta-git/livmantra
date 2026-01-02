@@ -2,13 +2,14 @@ import express from "express";
 import { prisma } from "../db";
 import { scoreVPK } from "../services/scoring";
 import { mergeReportWithTemplates } from "../services/reportTemplates";
+import { optionalAuth, AuthRequest } from "../middleware/auth";
 
 const router = express.Router();
 
-router.post("/submit", async (req, res) => {
+router.post("/submit", optionalAuth, async (req: AuthRequest, res) => {
   try {
-    const { user, testType, answers } = req.body;
-    if (!user || !answers) return res.status(400).json({ error: "invalid body" });
+    const { user: userData, testType, answers } = req.body;
+    if (!answers) return res.status(400).json({ error: "invalid body" });
 
     // Validate answers if VPK test
     if (testType === "VPK") {
@@ -21,17 +22,26 @@ router.post("/submit", async (req, res) => {
       }
     }
 
-    // find or create user
-    let dbUser = await prisma.user.findUnique({ where: { email: user.email } });
-    if (!dbUser) {
-      dbUser = await prisma.user.create({
-        data: { name: user.name, email: user.email, phone: user.phone },
-      });
+    let dbUser;
+
+    // If user is authenticated, use the authenticated user
+    if (req.userId && req.user) {
+      dbUser = req.user;
+    } else if (userData && userData.email) {
+      // Guest user flow - find or create user
+      dbUser = await prisma.user.findUnique({ where: { email: userData.email } });
+      if (!dbUser) {
+        dbUser = await prisma.user.create({
+          data: { name: userData.name, email: userData.email, phone: userData.phone },
+        });
+      } else {
+        dbUser = await prisma.user.update({
+          where: { id: dbUser.id },
+          data: { name: userData.name, phone: userData.phone },
+        });
+      }
     } else {
-      dbUser = await prisma.user.update({
-        where: { id: dbUser.id },
-        data: { name: user.name, phone: user.phone },
-      });
+      return res.status(400).json({ error: "user information required" });
     }
 
     // scoring

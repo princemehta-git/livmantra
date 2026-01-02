@@ -5,13 +5,15 @@ import QuestionCard from "../components/QuestionCard";
 import ProgressXP from "../components/ProgressXP";
 import Header from "../components/Header";
 import SectionCelebration from "../components/SectionCelebration";
-import { submitTest } from "../lib/api";
+import { submitTest, getUserTests } from "../lib/api";
 import { useRouter } from "next/router";
-import { Button, Container, Box, Typography } from "@mui/material";
+import { Button, Container, Box, Typography, Card, Alert } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 import { calculateBodyType, calculatePrakriti } from "../lib/bodyTypeCalculator";
 import { useLanguage } from "../hooks/useLanguage";
 import { QUESTIONS_HINDI } from "../data/translations";
+import { useAuth } from "../contexts/AuthContext";
+import { Lock } from "@mui/icons-material";
 
 // VPK Test Questions - 35 Questions total
 // Section A: Body Type (1-6), Section B: Constitution (7-18), Section C: Current Imbalance (19-35)
@@ -202,6 +204,7 @@ export default function TestPage() {
   const questions = QUESTIONS_DATA;
   const { language, changeLanguage } = useLanguage();
 
+  const { user: authUser } = useAuth();
   const [openModal, setOpenModal] = useState(false);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
@@ -217,21 +220,70 @@ export default function TestPage() {
   const [celebrationLevel, setCelebrationLevel] = useState(1);
   const [celebrationSection, setCelebrationSection] = useState("");
   const [completedSections, setCompletedSections] = useState<Set<number>>(new Set());
+  const [testLocked, setTestLocked] = useState(false);
+  const [checkingLock, setCheckingLock] = useState(true);
 
   useEffect(() => {
-    const raw = localStorage.getItem("livmantra_user");
-    if (!raw) {
-      setOpenModal(true);
+    // Check if user has already taken a test
+    const checkTestLock = async () => {
+      if (authUser) {
+        try {
+          const response = await getUserTests();
+          const tests = response.data.tests || [];
+          if (tests.length > 0) {
+            setTestLocked(true);
+          }
+        } catch (error) {
+          console.error("Error checking test lock:", error);
+        } finally {
+          setCheckingLock(false);
+        }
+      } else {
+        setCheckingLock(false);
+      }
+    };
+
+    checkTestLock();
+  }, [authUser]);
+
+  useEffect(() => {
+    // If user is authenticated, use auth user
+    if (authUser) {
+      setUser({
+        name: authUser.name,
+        email: authUser.email,
+        phone: authUser.phone,
+      });
+      if (!testLocked) {
+        setShowDisclaimer(true);
+      }
     } else {
-      setUser(JSON.parse(raw));
-      // Show disclaimer when user info exists
-      setShowDisclaimer(true);
+      // Fallback to localStorage for guest users
+      const raw = localStorage.getItem("livmantra_user");
+      if (!raw) {
+        setOpenModal(true);
+      } else {
+        try {
+          const parsed = JSON.parse(raw);
+          // Check if it's the new auth format or old guest format
+          if (parsed.user) {
+            setUser(parsed.user);
+          } else {
+            setUser(parsed);
+          }
+          if (!testLocked) {
+            setShowDisclaimer(true);
+          }
+        } catch (e) {
+          setOpenModal(true);
+        }
+      }
     }
     const savedAnswers = localStorage.getItem("livmantra_answers");
-    if (savedAnswers) {
+    if (savedAnswers && !testLocked) {
       setAnswers(JSON.parse(savedAnswers));
     }
-  }, []);
+  }, [authUser, testLocked]);
 
   useEffect(() => {
     localStorage.setItem("livmantra_answers", JSON.stringify(answers));
@@ -252,7 +304,7 @@ export default function TestPage() {
       if (sectionAComplete) {
         setCompletedSections(new Set([...completedSections, 1]));
         setCelebrationLevel(1);
-        setCelebrationSection("Body Type Assessment");
+        setCelebrationSection("Body Type Analysis");
         setShowCelebration(true);
         return; // Don't advance index yet, wait for celebration
       }
@@ -265,7 +317,7 @@ export default function TestPage() {
       if (sectionBComplete) {
         setCompletedSections(new Set([...completedSections, 2]));
         setCelebrationLevel(2);
-        setCelebrationSection("Constitution Analysis");
+        setCelebrationSection("Innate Constitution");
         setShowCelebration(true);
         return; // Don't advance index yet, wait for celebration
       }
@@ -278,7 +330,7 @@ export default function TestPage() {
       if (sectionCComplete) {
         setCompletedSections(new Set([...completedSections, 3]));
         setCelebrationLevel(3);
-        setCelebrationSection("Imbalance Detection");
+        setCelebrationSection("Current Imbalance");
         setShowCelebration(true);
         return; // Don't advance index yet, wait for celebration
       }
@@ -298,7 +350,7 @@ export default function TestPage() {
   };
 
   const onSubmit = async () => {
-    if (!user) {
+    if (!user && !authUser) {
       alert("Please provide your information first");
       setOpenModal(true);
       return;
@@ -308,7 +360,13 @@ export default function TestPage() {
     if (missing && !confirm("You have unanswered questions. Submit anyway?"))
       return;
 
-    const payload = { user, testType: "VPK", answers };
+    // If user is authenticated, don't send user data (server will use auth token)
+    // Otherwise, send user data for guest users
+    const payload: any = { testType: "VPK", answers };
+    if (!authUser && user) {
+      payload.user = user;
+    }
+
     setSubmitting(true);
     try {
       const r = await submitTest(payload);
@@ -354,7 +412,88 @@ export default function TestPage() {
     return { bodyTypeHint: null, prakritiHint: null };
   };
   
-  const { bodyTypeHint: displayBodyHint, prakritiHint: displayPrakritiHint } = getHintForLevel();
+  const hintResult = getHintForLevel();
+  const displayBodyHint = hintResult.bodyTypeHint;
+  const displayPrakritiHint = hintResult.prakritiHint;
+
+  // Handle loading state
+  if (checkingLock) {
+    return (
+      <Box sx={{ minHeight: "100vh", background: "#0a0e27", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <Typography sx={{ color: "#00ffff" }}>Loading...</Typography>
+      </Box>
+    );
+  }
+
+  // Handle locked state
+  if (testLocked) {
+    return (
+      <Box 
+        sx={{ 
+          overflowX: "hidden",
+          background: "#0a0e27",
+          minHeight: "100vh",
+          position: "relative",
+        }}
+      >
+        <Header />
+        <Container maxWidth="md" sx={{ py: { xs: 2, md: 3 }, px: { xs: 1.5, sm: 2, md: 3 }, position: "relative", zIndex: 1 }}>
+          <Card
+            sx={{
+              p: 4,
+              mt: 4,
+              background: "rgba(10, 14, 39, 0.9)",
+              border: "2px solid rgba(255, 107, 107, 0.5)",
+              borderRadius: 0,
+              textAlign: "center",
+            }}
+          >
+            <Lock sx={{ fontSize: 64, color: "#ff6b6b", mb: 2 }} />
+            <Typography
+              variant="h4"
+              sx={{
+                color: "#ff6b6b",
+                fontWeight: 800,
+                mb: 2,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+              }}
+            >
+              Test Locked
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                color: "rgba(255, 255, 255, 0.7)",
+                mb: 3,
+              }}
+            >
+              You have already completed the test. You can view your results in your dashboard.
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={() => router.push("/dashboard")}
+              sx={{
+                background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
+                color: "#0a0e27",
+                fontWeight: 700,
+                px: 4,
+                py: 1.5,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+                "&:hover": {
+                  background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
+                  boxShadow: "0 0 30px rgba(0, 255, 255, 0.5)",
+                },
+              }}
+            >
+              Go to Dashboard
+            </Button>
+          </Card>
+        </Container>
+      </Box>
+    );
+  }
 
   return (
     <Box 
@@ -418,28 +557,29 @@ export default function TestPage() {
 
       <Header />
       <Container maxWidth="md" sx={{ py: { xs: 2, md: 3 }, px: { xs: 1.5, sm: 2, md: 3 }, position: "relative", zIndex: 1 }}>
-        <UserModal
-          open={openModal}
-          onClose={(u) => {
-            setOpenModal(false);
-            if (u) {
-              setUser(u);
-              // Show disclaimer after user info is submitted
-              setShowDisclaimer(true);
-            }
-          }}
-        />
-        
-        <DisclaimerModal
-          open={showDisclaimer && !openModal}
-          onClose={() => {
-            setShowDisclaimer(false);
-            setDisclaimerAccepted(true);
-          }}
-          autoCloseTime={15}
-        />
-        
-        <SectionCelebration
+        <>
+          <UserModal
+              open={openModal}
+              onClose={(u) => {
+                setOpenModal(false);
+                if (u) {
+                  setUser(u);
+                  // Show disclaimer after user info is submitted
+                  setShowDisclaimer(true);
+                }
+              }}
+            />
+            
+            <DisclaimerModal
+              open={showDisclaimer && !openModal}
+              onClose={() => {
+                setShowDisclaimer(false);
+                setDisclaimerAccepted(true);
+              }}
+              autoCloseTime={15}
+            />
+            
+            <SectionCelebration
           open={showCelebration}
           onClose={handleCelebrationClose}
           level={celebrationLevel}
@@ -694,9 +834,9 @@ export default function TestPage() {
             </motion.div>
               </Box>
             </motion.div>
-          </>
+        </>
         )}
-
+        </>
       </Container>
     </Box>
   );

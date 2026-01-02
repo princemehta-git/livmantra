@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Container, Typography, Link, Grid } from "@mui/material";
-import { AutoAwesome } from "@mui/icons-material";
 import { motion } from "framer-motion";
+import Logo from "./Logo";
 
 export default function Footer() {
   return (
@@ -36,29 +36,12 @@ export default function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
-                <AutoAwesome 
-                  sx={{ 
-                    mr: 1, 
-                    fontSize: "2rem",
-                    color: "#00ffff",
-                    filter: "drop-shadow(0 0 10px rgba(0, 255, 255, 0.5))",
-                  }} 
+              <Box sx={{ mb: 3 }}>
+                <Logo
+                  width={180}
+                  height={72}
+                  animated={false}
                 />
-                <Typography 
-                  variant="h6" 
-                  sx={{ 
-                    fontWeight: 900,
-                    fontSize: "1.3rem",
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                  }}
-                >
-                  LIVMANTRA
-                </Typography>
               </Box>
               <Typography variant="body2" sx={{ opacity: 0.8, lineHeight: 1.8 }}>
                 Your personal AI wellness coach combining modern medicine, Ayurveda,

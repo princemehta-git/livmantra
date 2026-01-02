@@ -8,14 +8,21 @@ datasource db {
 }
 
 model User {
-  id        String         @id @default(cuid())
-  name      String
-  email     String         @unique
-  phone     String
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-  tests     TestResponse[]
-  feedbacks Feedback[]
+  id           String         @id @default(cuid())
+  name         String
+  email        String         @unique
+  phone        String
+  password     String?
+  isAdmin      Boolean        @default(false)
+  dob          DateTime?
+  gender       String?
+  profileImage String?
+  state        String?
+  nationality  String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  tests        TestResponse[]
+  feedbacks    Feedback[]
 
   @@map("user")
 }

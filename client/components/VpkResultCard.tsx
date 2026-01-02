@@ -2344,7 +2344,7 @@ Please provide me:
                     }}
                   />
                   <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
-                    <strong style={{ color: "#0f172a", fontWeight: 700 }}>Expert doctor consultation</strong> – medication & suppliment
+                    <strong style={{ color: "#0f172a", fontWeight: 700 }}>Expert Doctor Consultation</strong> – medication & suppliment
                   </Typography>
                 </Box>
               </Box>

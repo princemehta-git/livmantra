@@ -18,6 +18,7 @@ import {
 } from "@mui/icons-material";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Logo from "../components/Logo";
 
 export default function HomePage() {
   const router = useRouter();
@@ -89,44 +90,49 @@ export default function HomePage() {
         sx={{
           position: "relative",
           zIndex: 1,
-          minHeight: "90vh",
+          minHeight: { xs: "85vh", md: "90vh" },
           display: "flex",
           alignItems: "center",
-          py: { xs: 8, md: 12 },
+          justifyContent: "center",
+          py: { xs: 6, sm: 8, md: 12 },
+          px: { xs: 2, sm: 3 },
         }}
       >
-        <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
+        <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1, width: "100%" }}>
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: "easeOut" }}
           >
-            <Box sx={{ textAlign: "center", mb: 8 }}>
+            <Box sx={{ textAlign: "center", mb: { xs: 6, md: 8 }, width: "100%" }}>
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
-                <Typography
-                  variant="h1"
-                  component="h1"
-                  sx={{
-                    fontWeight: 900,
-                    fontSize: { xs: "3rem", md: "5.5rem" },
-                    mb: 2,
-                    background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 50%, #00ffff 100%)",
-                    backgroundSize: "200% 200%",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    animation: "gradient 3s ease infinite",
-                    letterSpacing: "0.1em",
-                    textShadow: "0 0 40px rgba(0, 255, 255, 0.3)",
-                    lineHeight: 1.1,
+                <Box 
+                  sx={{ 
+                    display: "flex", 
+                    justifyContent: "center", 
+                    alignItems: "center",
+                    mb: { xs: 3, md: 4 },
+                    width: "100%",
+                    mx: "auto",
                   }}
                 >
-                  LivMantra
-                </Typography>
+                  <Logo
+                    width={400}
+                    height={160}
+                    animated={false}
+                    sx={{
+                      width: { xs: "240px", sm: "320px", md: "400px" },
+                      height: { xs: "96px", sm: "128px", md: "160px" },
+                      mx: "auto",
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  />
+                </Box>
               </motion.div>
               
               <motion.div
@@ -141,8 +147,9 @@ export default function HomePage() {
                     fontWeight: 300,
                     letterSpacing: "0.1em",
                     textTransform: "uppercase",
-                    fontSize: { xs: "0.9rem", md: "1.1rem" },
-                    mb: 6,
+                    fontSize: { xs: "0.75rem", sm: "0.9rem", md: "1.1rem" },
+                    mb: { xs: 4, md: 6 },
+                    px: { xs: 2, sm: 0 },
                   }}
                 >
                   Personal AI Health Coach
@@ -160,17 +167,19 @@ export default function HomePage() {
                   onClick={() => router.push("/test")}
                   startIcon={<PlayArrow />}
                   sx={{
-                    px: 6,
-                    py: 2.5,
-                    fontSize: "1.1rem",
+                    px: { xs: 4, sm: 5, md: 6 },
+                    py: { xs: 1.5, sm: 2, md: 2.5 },
+                    fontSize: { xs: "0.9rem", sm: "1rem", md: "1.1rem" },
                     fontWeight: 700,
                     background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
                     color: "#0a0e27",
                     borderRadius: 0,
-                    border: "2px solid #00ffff",
+                    border: { xs: "1.5px solid #00ffff", md: "2px solid #00ffff" },
                     boxShadow: "0 0 30px rgba(0, 255, 255, 0.5), inset 0 0 20px rgba(138, 43, 226, 0.2)",
                     textTransform: "uppercase",
                     letterSpacing: "0.1em",
+                    width: { xs: "90%", sm: "auto" },
+                    maxWidth: { xs: "300px", sm: "none" },
                     "&:hover": {
                       background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
                       boxShadow: "0 0 50px rgba(0, 255, 255, 0.8), inset 0 0 30px rgba(138, 43, 226, 0.3)",
@@ -290,17 +299,19 @@ export default function HomePage() {
               onClick={() => router.push("/test")}
               startIcon={<PlayArrow />}
               sx={{
-                px: 8,
-                py: 3,
-                fontSize: "1.2rem",
+                px: { xs: 4, sm: 6, md: 8 },
+                py: { xs: 1.5, sm: 2.5, md: 3 },
+                fontSize: { xs: "0.9rem", sm: "1.1rem", md: "1.2rem" },
                 fontWeight: 700,
                 background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
                 color: "#0a0e27",
                 borderRadius: 0,
-                border: "2px solid #00ffff",
+                border: { xs: "1.5px solid #00ffff", md: "2px solid #00ffff" },
                 boxShadow: "0 0 40px rgba(0, 255, 255, 0.6), inset 0 0 30px rgba(138, 43, 226, 0.2)",
                 textTransform: "uppercase",
                 letterSpacing: "0.15em",
+                width: { xs: "90%", sm: "auto" },
+                maxWidth: { xs: "300px", sm: "none" },
                 "&:hover": {
                   background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
                   boxShadow: "0 0 60px rgba(0, 255, 255, 0.9), inset 0 0 40px rgba(138, 43, 226, 0.3)",

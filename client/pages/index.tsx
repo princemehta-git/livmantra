@@ -1,4 +1,6 @@
 import React from "react";
+import { GetServerSideProps } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import {
   Container,
@@ -16,12 +18,14 @@ import {
   Speed,
   Shield,
 } from "@mui/icons-material";
+import { useTranslation } from "next-i18next";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Logo from "../components/Logo";
 
 export default function HomePage() {
   const router = useRouter();
+  const { t } = useTranslation("common");
 
   return (
     <Box 
@@ -152,7 +156,7 @@ export default function HomePage() {
                     px: { xs: 2, sm: 0 },
                   }}
                 >
-                  Personal AI Health Coach
+                  {t("personalAIHealthCoach", { defaultValue: "Personal AI Health Coach" })}
                 </Typography>
               </motion.div>
 
@@ -188,7 +192,7 @@ export default function HomePage() {
                     transition: "all 0.3s ease",
                   }}
                 >
-                  Start Mission
+                  {t("buttons.start")}
                 </Button>
               </motion.div>
             </Box>
@@ -203,17 +207,17 @@ export default function HomePage() {
             {[
               { 
                 icon: <AutoAwesome sx={{ fontSize: 48 }} />, 
-                title: "AI COACH",
+                title: t("aiCoach", { defaultValue: "AI COACH" }),
                 glow: "rgba(0, 255, 255, 0.3)",
               },
               { 
                 icon: <Speed sx={{ fontSize: 48 }} />, 
-                title: "FAST RESULTS",
+                title: t("fastResults", { defaultValue: "FAST RESULTS" }),
                 glow: "rgba(138, 43, 226, 0.3)",
               },
               { 
                 icon: <Shield sx={{ fontSize: 48 }} />, 
-                title: "SECURE",
+                title: t("secure", { defaultValue: "SECURE" }),
                 glow: "rgba(0, 255, 255, 0.3)",
               },
             ].map((feature, idx) => (
@@ -320,7 +324,7 @@ export default function HomePage() {
                 transition: "all 0.3s ease",
               }}
             >
-              Launch System
+              {t("launchSystem", { defaultValue: "Launch System" })}
             </Button>
           </motion.div>
         </Container>
@@ -329,3 +333,11 @@ export default function HomePage() {
     </Box>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? "en", ["common", "header", "footer"])),
+    },
+  };
+};

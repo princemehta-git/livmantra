@@ -1,9 +1,11 @@
 import React from "react";
 import { Box, Container, Typography, Link, Grid } from "@mui/material";
 import { motion } from "framer-motion";
+import { useTranslation } from "next-i18next";
 import Logo from "./Logo";
 
 export default function Footer() {
+  const { t } = useTranslation("footer");
   return (
     <Box
       component="footer"
@@ -44,8 +46,7 @@ export default function Footer() {
                 />
               </Box>
               <Typography variant="body2" sx={{ opacity: 0.8, lineHeight: 1.8 }}>
-                Your personal AI wellness coach combining modern medicine, Ayurveda,
-                and behavioral psychology to help you achieve optimal health.
+                {t("description")}
               </Typography>
             </motion.div>
           </Grid>
@@ -57,14 +58,14 @@ export default function Footer() {
               transition={{ duration: 0.6, delay: 0.1 }}
             >
               <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mb: 2 }}>
-                Quick Links
+                {t("quickLinks")}
               </Typography>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
                 {[
-                  { href: "/", label: "Home" },
-                  { href: "/test", label: "Free Tests" },
-                  { href: "#", label: "Health Score" },
-                  { href: "#", label: "AI Coach" },
+                  { href: "/", label: t("home") },
+                  { href: "/test", label: t("freeTests") },
+                  { href: "#", label: t("healthScore") },
+                  { href: "#", label: t("aiCoach") },
                 ].map((item) => (
                   <Link
                     key={item.label}
@@ -94,10 +95,10 @@ export default function Footer() {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mb: 2 }}>
-                Contact
+                {t("contact")}
               </Typography>
               <Link
-                href="mailto:support@myexpertdoctor.com"
+                href={`mailto:${t("supportEmail")}`}
                 sx={{
                   textDecoration: "none",
                   color: "rgba(255, 255, 255, 0.8)",
@@ -112,10 +113,10 @@ export default function Footer() {
                   },
                 }}
               >
-                support@myexpertdoctor.com
+                {t("supportEmail")}
               </Link>
               <Typography variant="body2" sx={{ opacity: 0.6 }}>
-                © 2026 LivMantra. All rights reserved.
+                {t("copyright")}
               </Typography>
             </motion.div>
           </Grid>

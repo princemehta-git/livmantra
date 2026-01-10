@@ -1,0 +1,38 @@
+{
+  "buttons": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "continue": "Continue",
+    "skip": "Skip",
+    "login": "Login",
+    "logout": "Logout",
+    "signup": "Sign Up",
+    "start": "Start",
+    "test": "Test"
+  },
+  "labels": {
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "phone": "Phone",
+    "confirmPassword": "Confirm Password",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "messages": {
+    "welcome": "Welcome",
+    "goodbye": "Goodbye",
+    "pleaseWait": "Please wait...",
+    "somethingWentWrong": "Something went wrong",
+    "operationSuccessful": "Operation successful"
+  }
+}
+

@@ -8,14 +8,17 @@ import {
   Box,
   Container,
 } from "@mui/material";
-import { Dashboard, Logout, Login, AdminPanelSettings } from "@mui/icons-material";
+import { Dashboard, Logout, Login, AdminPanelSettings, Message } from "@mui/icons-material";
 import Logo from "./Logo";
 import { motion } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
+import { useTranslation } from "next-i18next";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 export default function Header() {
   const router = useRouter();
   const { user, admin, logout, adminLogout } = useAuth();
+  const { t } = useTranslation("header");
 
   return (
     <AppBar
@@ -61,37 +64,70 @@ export default function Header() {
             }}
           >
             {user && (
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  onClick={() => router.push("/dashboard")}
-                  startIcon={<Dashboard sx={{ fontSize: { xs: "1rem", sm: "1.25rem", md: "1.5rem" } }} />}
-                  sx={{
-                    color: "#00ffff",
-                    fontWeight: 600,
-                    px: { xs: 0.75, sm: 1.5, md: 2 },
-                    py: { xs: 0.4, sm: 0.75, md: 1 },
-                    minWidth: { xs: "auto", sm: "auto" },
-                    borderRadius: 0,
-                    border: "1px solid rgba(0, 255, 255, 0.3)",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.1em",
-                    fontSize: { xs: "0.6rem", sm: "0.75rem", md: "0.85rem" },
-                    "& .MuiButton-startIcon": {
-                      margin: { xs: 0, sm: "0 4px 0 0" },
-                    },
-                    "&:hover": { 
-                      bgcolor: "rgba(0, 255, 255, 0.1)",
-                      borderColor: "rgba(0, 255, 255, 0.5)",
-                      boxShadow: "0 0 15px rgba(0, 255, 255, 0.3)",
-                    },
-                    transition: "all 0.3s ease",
-                  }}
-                >
-                  <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
-                    Dashboard
-                  </Box>
-                </Button>
-              </motion.div>
+              <>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button
+                    onClick={() => router.push("/dashboard")}
+                    startIcon={<Dashboard sx={{ fontSize: { xs: "1rem", sm: "1.25rem", md: "1.5rem" } }} />}
+                    sx={{
+                      color: "#00ffff",
+                      fontWeight: 600,
+                      px: { xs: 0.75, sm: 1.5, md: 2 },
+                      py: { xs: 0.4, sm: 0.75, md: 1 },
+                      minWidth: { xs: "auto", sm: "auto" },
+                      borderRadius: 0,
+                      border: "1px solid rgba(0, 255, 255, 0.3)",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.1em",
+                      fontSize: { xs: "0.6rem", sm: "0.75rem", md: "0.85rem" },
+                      "& .MuiButton-startIcon": {
+                        margin: { xs: 0, sm: "0 4px 0 0" },
+                      },
+                      "&:hover": { 
+                        bgcolor: "rgba(0, 255, 255, 0.1)",
+                        borderColor: "rgba(0, 255, 255, 0.5)",
+                        boxShadow: "0 0 15px rgba(0, 255, 255, 0.3)",
+                      },
+                      transition: "all 0.3s ease",
+                    }}
+                  >
+                    <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
+                      {t("dashboard")}
+                    </Box>
+                  </Button>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button
+                    onClick={() => router.push("/dashboard/contact")}
+                    startIcon={<Message sx={{ fontSize: { xs: "1rem", sm: "1.25rem", md: "1.5rem" } }} />}
+                    sx={{
+                      color: "#00ffff",
+                      fontWeight: 600,
+                      px: { xs: 0.75, sm: 1.5, md: 2 },
+                      py: { xs: 0.4, sm: 0.75, md: 1 },
+                      minWidth: { xs: "auto", sm: "auto" },
+                      borderRadius: 0,
+                      border: "1px solid rgba(0, 255, 255, 0.3)",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.1em",
+                      fontSize: { xs: "0.6rem", sm: "0.75rem", md: "0.85rem" },
+                      "& .MuiButton-startIcon": {
+                        margin: { xs: 0, sm: "0 4px 0 0" },
+                      },
+                      "&:hover": { 
+                        bgcolor: "rgba(0, 255, 255, 0.1)",
+                        borderColor: "rgba(0, 255, 255, 0.5)",
+                        boxShadow: "0 0 15px rgba(0, 255, 255, 0.3)",
+                      },
+                      transition: "all 0.3s ease",
+                    }}
+                  >
+                    <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
+                      {t("Chat")}
+                    </Box>
+                  </Button>
+                </motion.div>
+              </>
             )}
             
             {admin && (
@@ -118,7 +154,7 @@ export default function Header() {
                   }}
                 >
                   <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
-                    Admin
+                    {t("admin")}
                   </Box>
                 </Button>
               </motion.div>
@@ -148,7 +184,7 @@ export default function Header() {
                   }}
                 >
                   <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
-                    Logout
+                    {t("logout")}
                   </Box>
                 </Button>
               </motion.div>
@@ -176,11 +212,15 @@ export default function Header() {
                   }}
                 >
                   <Box component="span" sx={{ display: { xs: "none", sm: "inline" } }}>
-                    Login
+                    {t("login")}
                   </Box>
                 </Button>
               </motion.div>
             )}
+
+            <Box sx={{ display: "none" }}>
+              <LanguageSwitcher />
+            </Box>
 
             <motion.div 
               whileHover={{ scale: 1.05 }} 
@@ -210,7 +250,7 @@ export default function Header() {
                   transition: "all 0.3s ease",
                 }}
               >
-                {user ? "Test" : "Start"}
+                {user ? t("test") : t("start")}
               </Button>
             </motion.div>
           </Box>

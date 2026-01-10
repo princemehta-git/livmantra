@@ -159,3 +159,227 @@ export const postChat = (payload: any) =>
 export const submitFeedback = (payload: { userId: string; resultId: string; rating: number; comment?: string }) =>
   axios.post(`${API_BASE}/test/feedback`, payload);
 
+// Message endpoints
+export const getUserConversation = () => api.get(`${API_BASE}/messages/conversation`);
+
+export const getMessages = (conversationId: string) => {
+  // Determine which token to use based on current URL context
+  let authToken = null;
+  if (typeof window !== "undefined") {
+    const currentPath = window.location.pathname;
+    
+    // If URL contains '/admin', use admin token
+    if (currentPath.includes("/admin")) {
+      const adminData = localStorage.getItem("livmantra_admin");
+      if (adminData) {
+        try {
+          const parsed = JSON.parse(adminData);
+          authToken = parsed.token;
+        } catch (e) {
+          // Ignore
+        }
+      }
+    }
+    // If URL contains '/dashboard', use user token
+    else if (currentPath.includes("/dashboard")) {
+      const userData = localStorage.getItem("livmantra_user");
+      if (userData) {
+        try {
+          const parsed = JSON.parse(userData);
+          authToken = parsed.token;
+        } catch (e) {
+          // Ignore
+        }
+      }
+    }
+  }
+  
+  // If we have a specific token, use it; otherwise let api instance handle it
+  if (authToken) {
+    return axios.get(`${API_BASE}/messages/${conversationId}`, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+  }
+  
+  return api.get(`${API_BASE}/messages/${conversationId}`);
+};
+
+export const sendMessage = (data: { conversationId: string; content?: string }, file?: File) => {
+  const formData = new FormData();
+  formData.append("conversationId", data.conversationId);
+  if (data.content) {
+    formData.append("content", data.content);
+  }
+  if (file) {
+    formData.append("attachment", file);
+  }
+  
+  // Determine which token to use based on current URL context
+  let authToken = null;
+  if (typeof window !== "undefined") {
+    const currentPath = window.location.pathname;
+    
+    // If URL contains '/admin', use admin token
+    if (currentPath.includes("/admin")) {
+      const adminData = localStorage.getItem("livmantra_admin");
+      if (adminData) {
+        try {
+          const parsed = JSON.parse(adminData);
+          authToken = parsed.token;
+        } catch (e) {
+          // Ignore
+        }
+      }
+    }
+    // If URL contains '/dashboard', use user token
+    else if (currentPath.includes("/dashboard")) {
+      const userData = localStorage.getItem("livmantra_user");
+      if (userData) {
+        try {
+          const parsed = JSON.parse(userData);
+          authToken = parsed.token;
+        } catch (e) {
+          // Ignore
+        }
+      }
+    }
+  }
+  
+  // If we have a specific token, use it; otherwise let api instance handle it
+  if (authToken) {
+    return axios.post(`${API_BASE}/messages`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+  }
+  
+  return api.post(`${API_BASE}/messages`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};
+
+export const markMessageAsRead = (messageId: string) => {
+  // Determine which token to use based on current URL context
+  let authToken = null;
+  if (typeof window !== "undefined") {
+    const currentPath = window.location.pathname;
+    
+    // If URL contains '/admin', use admin token
+    if (currentPath.includes("/admin")) {
+      const adminData = localStorage.getItem("livmantra_admin");
+      if (adminData) {
+        try {
+          const parsed = JSON.parse(adminData);
+          authToken = parsed.token;
+        } catch (e) {
+          // Ignore
+        }
+      }
+    }
+    // If URL contains '/dashboard', use user token
+    else if (currentPath.includes("/dashboard")) {
+      const userData = localStorage.getItem("livmantra_user");
+      if (userData) {
+        try {
+          const parsed = JSON.parse(userData);
+          authToken = parsed.token;
+        } catch (e) {
+          // Ignore
+        }
+      }
+    }
+  }
+  
+  // If we have a specific token, use it; otherwise let api instance handle it
+  if (authToken) {
+    return axios.put(`${API_BASE}/messages/${messageId}/read`, {}, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+  }
+  
+  return api.put(`${API_BASE}/messages/${messageId}/read`);
+};
+
+export const markConversationAsRead = (conversationId: string) => {
+  // Determine which token to use based on current URL context
+  let authToken = null;
+  if (typeof window !== "undefined") {
+    const currentPath = window.location.pathname;
+    
+    // If URL contains '/admin', use admin token
+    if (currentPath.includes("/admin")) {
+      const adminData = localStorage.getItem("livmantra_admin");
+      if (adminData) {
+        try {
+          const parsed = JSON.parse(adminData);
+          authToken = parsed.token;
+        } catch (e) {
+          // Ignore
+        }
+      }
+    }
+    // If URL contains '/dashboard', use user token
+    else if (currentPath.includes("/dashboard")) {
+      const userData = localStorage.getItem("livmantra_user");
+      if (userData) {
+        try {
+          const parsed = JSON.parse(userData);
+          authToken = parsed.token;
+        } catch (e) {
+          // Ignore
+        }
+      }
+    }
+  }
+  
+  // If we have a specific token, use it; otherwise let api instance handle it
+  if (authToken) {
+    return axios.put(`${API_BASE}/messages/conversation/${conversationId}/read`, {}, {
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+  }
+  
+  return api.put(`${API_BASE}/messages/conversation/${conversationId}/read`);
+};
+
+export const getAdminConversations = (params?: { page?: number; limit?: number; search?: string }) => {
+  const token = typeof window !== "undefined" ? localStorage.getItem("livmantra_admin") : null;
+  let authToken = null;
+  if (token) {
+    try {
+      const parsed = JSON.parse(token);
+      authToken = parsed.token;
+    } catch (e) {
+      // Ignore
+    }
+  }
+  return axios.get(`${API_BASE}/messages/admin/conversations`, {
+    params,
+    headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+  });
+};
+
+export const getAdminUnreadCount = () => {
+  const token = typeof window !== "undefined" ? localStorage.getItem("livmantra_admin") : null;
+  let authToken = null;
+  if (token) {
+    try {
+      const parsed = JSON.parse(token);
+      authToken = parsed.token;
+    } catch (e) {
+      // Ignore
+    }
+  }
+  return axios.get(`${API_BASE}/messages/admin/unread-count`, {
+    headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+  });
+};
+

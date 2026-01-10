@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { GetServerSideProps } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import UserModal from "../components/UserModal";
 import DisclaimerModal from "../components/DisclaimerModal";
 import QuestionCard from "../components/QuestionCard";
@@ -10,14 +12,14 @@ import { useRouter } from "next/router";
 import { Button, Container, Box, Typography, Card, Alert } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 import { calculateBodyType, calculatePrakriti } from "../lib/bodyTypeCalculator";
-import { useLanguage } from "../hooks/useLanguage";
-import { QUESTIONS_HINDI } from "../data/translations";
+import { useTranslation } from "next-i18next";
 import { useAuth } from "../contexts/AuthContext";
 import { Lock } from "@mui/icons-material";
 
 // VPK Test Questions - 35 Questions total
 // Section A: Body Type (1-6), Section B: Constitution (7-18), Section C: Current Imbalance (19-35)
-const QUESTIONS_DATA = [
+// Note: Questions are now loaded from translation files
+const QUESTIONS_DATA_EN = [
   // Section A: Body Type (1-6)
   {
     text: "When I look in the mirror, my body looks:",
@@ -200,9 +202,8 @@ const QUESTIONS_DATA = [
 
 export default function TestPage() {
   const router = useRouter();
+  const { t, i18n } = useTranslation("test");
   const total = 35;
-  const questions = QUESTIONS_DATA;
-  const { language, changeLanguage } = useLanguage();
 
   const { user: authUser } = useAuth();
   const [openModal, setOpenModal] = useState(false);
@@ -222,6 +223,8 @@ export default function TestPage() {
   const [completedSections, setCompletedSections] = useState<Set<number>>(new Set());
   const [testLocked, setTestLocked] = useState(false);
   const [checkingLock, setCheckingLock] = useState(true);
+  const [hasGoneBack, setHasGoneBack] = useState(false);
+  const [lastAnsweredIndex, setLastAnsweredIndex] = useState(-1);
 
   useEffect(() => {
     // Check if user has already taken a test
@@ -281,7 +284,19 @@ export default function TestPage() {
     }
     const savedAnswers = localStorage.getItem("livmantra_answers");
     if (savedAnswers && !testLocked) {
-      setAnswers(JSON.parse(savedAnswers));
+      const parsedAnswers = JSON.parse(savedAnswers);
+      setAnswers(parsedAnswers);
+      // Find the last answered question index
+      let lastIndex = -1;
+      for (let i = parsedAnswers.length - 1; i >= 0; i--) {
+        if (parsedAnswers[i] !== 0) {
+          lastIndex = i;
+          break;
+        }
+      }
+      if (lastIndex >= 0) {
+        setLastAnsweredIndex(lastIndex);
+      }
     }
   }, [authUser, testLocked]);
 
@@ -293,6 +308,11 @@ export default function TestPage() {
     const nxt = [...answers];
     nxt[index] = val;
     setAnswers(nxt);
+    
+    // Update last answered index
+    if (index > lastAnsweredIndex) {
+      setLastAnsweredIndex(index);
+    }
     
     // Check if a section is completed
     const newIndex = index + 1;
@@ -381,19 +401,26 @@ export default function TestPage() {
     }
   };
 
-  const currentQ = questions[index];
-  const currentQHindi = QUESTIONS_HINDI[index];
-  
-  // Get translated question based on language
+  // Get translated question from i18n
   const getTranslatedQuestion = () => {
-    if (language === "hi" && currentQHindi) {
-      return {
-        text: currentQHindi.text,
-        hint: currentQHindi.hint,
-        options: currentQHindi.options,
-      };
+    try {
+      const questions = t("questions", { returnObjects: true }) as any[];
+      if (questions && Array.isArray(questions) && questions[index]) {
+        return questions[index];
+      }
+    } catch (e) {
+      console.error("Error loading questions from translations:", e);
     }
-    return currentQ;
+    // Fallback to English if translation not available
+    if (QUESTIONS_DATA_EN && QUESTIONS_DATA_EN[index]) {
+      return QUESTIONS_DATA_EN[index];
+    }
+    // Ultimate fallback
+    return {
+      text: "Question " + (index + 1),
+      hint: "",
+      options: ["Option 1", "Option 2", "Option 3"],
+    };
   };
   
   const translatedQ = getTranslatedQuestion();
@@ -420,7 +447,7 @@ export default function TestPage() {
   if (checkingLock) {
     return (
       <Box sx={{ minHeight: "100vh", background: "#0a0e27", display: "flex", justifyContent: "center", alignItems: "center" }}>
-        <Typography sx={{ color: "#00ffff" }}>Loading...</Typography>
+        <Typography sx={{ color: "#00ffff" }}>{t("loading", { ns: "common", defaultValue: "Loading..." })}</Typography>
       </Box>
     );
   }
@@ -459,7 +486,7 @@ export default function TestPage() {
                 letterSpacing: "0.1em",
               }}
             >
-              Test Locked
+              {t("testLocked")}
             </Typography>
             <Typography
               variant="body1"
@@ -468,7 +495,7 @@ export default function TestPage() {
                 mb: 3,
               }}
             >
-              You have already completed the test. You can view your results in your dashboard.
+              {t("testLockedMessage")}
             </Typography>
             <Button
               variant="contained"
@@ -487,7 +514,7 @@ export default function TestPage() {
                 },
               }}
             >
-              Go to Dashboard
+              {t("goToDashboard")}
             </Button>
           </Card>
         </Container>
@@ -620,7 +647,7 @@ export default function TestPage() {
                   mb: 1,
                 }}
               >
-                KNOW YOUR BODY NATURE & BEHAVIOR
+                {t("title")}
               </Typography>
             </motion.div>
             <motion.div
@@ -639,7 +666,7 @@ export default function TestPage() {
                   mb: 0.5,
                 }}
               >
-                BBA Test
+                {t("subtitle")}
               </Typography>
               <Typography 
                 variant="body1" 
@@ -649,7 +676,7 @@ export default function TestPage() {
                   fontSize: { xs: "0.8rem", md: "0.9rem" },
                 }}
               >
-                Discover your body type and natural constitution
+                {t("description")}
               </Typography>
             </motion.div>
           </Box>
@@ -689,12 +716,12 @@ export default function TestPage() {
                     lineHeight: 1.4,
                   }}
                 >
-                  Mission Phase:{" "}
+                  {t("missionPhase")}{" "}
                   {index < 6
-                    ? "Body Type Analysis (1-6)"
+                    ? t("bodyTypeAnalysis")
                     : index < 18
-                    ? "Constitution Scan (7-18)"
-                    : "Imbalance Detection (19-35)"}
+                    ? t("constitutionScan")
+                    : t("imbalanceDetection")}
                 </Typography>
               </Box>
             </motion.div>
@@ -718,8 +745,6 @@ export default function TestPage() {
                 hint={translatedQ.hint}
                 onAnswer={onAnswer}
                 selected={answers[index] || undefined}
-                language={language}
-                onLanguageChange={changeLanguage}
               />
             </motion.div>
           </AnimatePresence>
@@ -738,7 +763,10 @@ export default function TestPage() {
               <Button
                 variant="outlined"
                 disabled={index === 0}
-                onClick={() => setIndex(Math.max(0, index - 1))}
+                onClick={() => {
+                  setHasGoneBack(true);
+                  setIndex(Math.max(0, index - 1));
+                }}
                 sx={{
                   px: { xs: 1.5, sm: 4 },
                   py: { xs: 0.75, sm: 1.5 },
@@ -764,13 +792,13 @@ export default function TestPage() {
                   transition: "all 0.3s ease",
                 }}
               >
-                ← Back
+                {t("back")}
               </Button>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 variant="outlined"
-                disabled={index === total - 1}
+                disabled={!hasGoneBack || index >= lastAnsweredIndex || index === total - 1}
                 onClick={() => setIndex(Math.min(total - 1, index + 1))}
                 sx={{
                   px: { xs: 1.5, sm: 4 },
@@ -797,7 +825,7 @@ export default function TestPage() {
                   transition: "all 0.3s ease",
                 }}
               >
-                Next →
+                {t("next")}
               </Button>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
@@ -829,7 +857,7 @@ export default function TestPage() {
                   transition: "all 0.3s ease",
                 }}
               >
-                {submitting ? "Submitting..." : "Submit Mission"}
+                {submitting ? t("submitting") : t("submitMission")}
               </Button>
             </motion.div>
               </Box>
@@ -842,3 +870,10 @@ export default function TestPage() {
   );
 }
 
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? "en", ["test", "common", "header"])),
+    },
+  };
+};

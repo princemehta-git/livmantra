@@ -446,3 +446,18 @@ html {
   color: #ffffff;
 }
 
+/* RTL Support for Arabic and Urdu */
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="rtl"] .MuiButton-startIcon {
+  margin-right: 0;
+  margin-left: 8px;
+}
+
+[dir="rtl"] .MuiButton-endIcon {
+  margin-left: 0;
+  margin-right: 8px;
+}

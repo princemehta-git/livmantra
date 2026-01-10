@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { GetServerSideProps } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useRouter } from "next/router";
 import {
   Box,
@@ -8,14 +10,18 @@ import {
   Typography,
   Link,
   Alert,
+  Divider,
 } from "@mui/material";
 import { motion } from "framer-motion";
+import { GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../contexts/AuthContext";
+import { useTranslation } from "next-i18next";
 import Header from "../components/Header";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, user, loading } = useAuth();
+  const { login, googleLogin, user, loading } = useAuth();
+  const { t } = useTranslation("auth");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -40,6 +46,23 @@ export default function LoginPage() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    setError("");
+    setSubmitting(true);
+    try {
+      await googleLogin(credentialResponse.credential);
+      router.push("/dashboard");
+    } catch (err: any) {
+      setError(err.message || "Google login failed");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError("Google login failed");
   };
 
   if (loading) {
@@ -102,7 +125,7 @@ export default function LoginPage() {
                 letterSpacing: "0.1em",
               }}
             >
-              Login
+              {t("login.title")}
             </Typography>
 
             <Typography
@@ -113,7 +136,7 @@ export default function LoginPage() {
                 mb: 4,
               }}
             >
-              Welcome back! Please login to continue.
+              {t("login.subtitle")}
             </Typography>
 
             {error && (
@@ -125,7 +148,7 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit}>
               <TextField
                 fullWidth
-                label="Email"
+                label={t("login.email")}
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -152,7 +175,7 @@ export default function LoginPage() {
 
               <TextField
                 fullWidth
-                label="Password"
+                label={t("login.password")}
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -196,12 +219,37 @@ export default function LoginPage() {
                   },
                 }}
               >
-                {submitting ? "Logging in..." : "Login"}
+                {submitting ? t("login.submitting") : t("login.submit")}
               </Button>
+
+              <Box sx={{ display: "flex", alignItems: "center", my: 3 }}>
+                <Divider sx={{ flex: 1, borderColor: "rgba(0, 255, 255, 0.3)" }} />
+                <Typography
+                  variant="body2"
+                  sx={{
+                    px: 2,
+                    color: "rgba(255, 255, 255, 0.6)",
+                    textTransform: "uppercase",
+                    fontSize: "0.75rem",
+                    letterSpacing: "0.1em",
+                  }}
+                >
+                  {t("login.or")}
+                </Typography>
+                <Divider sx={{ flex: 1, borderColor: "rgba(0, 255, 255, 0.3)" }} />
+              </Box>
+
+              <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                  useOneTap
+                />
+              </Box>
 
               <Box sx={{ textAlign: "center" }}>
                 <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.6)" }}>
-                  Don't have an account?{" "}
+                  {t("login.noAccount")}{" "}
                   <Link
                     href="/signup"
                     sx={{
@@ -212,7 +260,7 @@ export default function LoginPage() {
                       },
                     }}
                   >
-                    Sign up
+                    {t("login.signupLink")}
                   </Link>
                 </Typography>
               </Box>
@@ -224,3 +272,10 @@ export default function LoginPage() {
   );
 }
 
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale ?? "en", ["auth", "common", "header"])),
+    },
+  };
+};

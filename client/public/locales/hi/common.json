@@ -1,0 +1,40 @@
+{
+  "buttons": {
+    "submit": "सबमिट करें",
+    "cancel": "रद्द करें",
+    "save": "सहेजें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें",
+    "close": "बंद करें",
+    "back": "वापस",
+    "next": "अगला",
+    "previous": "पिछला",
+    "continue": "जारी रखें",
+    "skip": "छोड़ें",
+    "login": "लॉगिन",
+    "logout": "लॉगआउट",
+    "signup": "साइन अप",
+    "start": "शुरू करें",
+    "test": "टेस्ट"
+  },
+  "labels": {
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "name": "नाम",
+    "phone": "फोन",
+    "confirmPassword": "पासवर्ड की पुष्टि करें",
+    "loading": "लोड हो रहा है...",
+    "error": "त्रुटि",
+    "success": "सफलता"
+  },
+  "messages": {
+    "welcome": "स्वागत है",
+    "goodbye": "अलविदा",
+    "pleaseWait": "कृपया प्रतीक्षा करें...",
+    "somethingWentWrong": "कुछ गलत हो गया",
+    "operationSuccessful": "ऑपरेशन सफल"
+  }
+}
+
+
+

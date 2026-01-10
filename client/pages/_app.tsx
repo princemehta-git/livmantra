@@ -1,7 +1,11 @@
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import type { AppProps } from "next/app";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { AuthProvider } from "../contexts/AuthContext";
+import { appWithTranslation } from "next-i18next";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import "../styles/globals.css";
 
 const theme = createTheme({
@@ -144,14 +148,31 @@ const theme = createTheme({
   },
 });
 
-export default function App({ Component, pageProps }: AppProps) {
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
+
+function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  const isRTL = router.locale === "ar" || router.locale === "ur";
+
+  useEffect(() => {
+    // Set document direction for RTL languages
+    if (isRTL) {
+      document.documentElement.setAttribute("dir", "rtl");
+    } else {
+      document.documentElement.setAttribute("dir", "ltr");
+    }
+  }, [isRTL]);
+
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <AuthProvider>
-        <Component {...pageProps} />
-      </AuthProvider>
-    </ThemeProvider>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AuthProvider>
+          <Component {...pageProps} />
+        </AuthProvider>
+      </ThemeProvider>
+    </GoogleOAuthProvider>
   );
 }
 
+export default appWithTranslation(App);

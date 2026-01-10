@@ -69,6 +69,7 @@ export async function authenticateUser(
     req.userId = user.id;
     req.user = user;
     req.isAdmin = user.isAdmin || false;
+    console.log(`authenticateUser - userId: ${user.id}, isAdmin from DB: ${user.isAdmin}, req.isAdmin: ${req.isAdmin}`);
     next();
   } catch (error) {
     console.error("Auth error:", error);

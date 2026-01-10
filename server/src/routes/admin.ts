@@ -207,24 +207,150 @@ router.post("/impersonate/:id", authenticateAdmin, async (req: AuthRequest, res)
 // Get dashboard statistics
 router.get("/stats", authenticateAdmin, async (req: AuthRequest, res) => {
   try {
-    const [totalUsers, totalTests, totalFeedback, recentUsers] = await Promise.all([
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const todayStart = new Date(now);
+    todayStart.setHours(0, 0, 0, 0);
+    const todayEnd = new Date(now);
+    todayEnd.setHours(23, 59, 59, 999);
+
+    const [
+      totalUsers,
+      totalTests,
+      totalFeedback,
+      recentUsers,
+      recentTests,
+      recentFeedback,
+      testsToday,
+      usersToday,
+      testsLast7Days,
+      testsLast30Days,
+      usersLast7Days,
+      usersLast30Days,
+      testTypesBreakdown,
+      averageRating,
+      feedbackWithComments,
+    ] = await Promise.all([
       prisma.user.count(),
       prisma.testResponse.count(),
       prisma.feedback.count(),
       prisma.user.count({
         where: {
           createdAt: {
-            gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // Last 7 days
+            gte: sevenDaysAgo,
+          },
+        },
+      }),
+      prisma.testResponse.count({
+        where: {
+          createdAt: {
+            gte: sevenDaysAgo,
+          },
+        },
+      }),
+      prisma.feedback.count({
+        where: {
+          createdAt: {
+            gte: sevenDaysAgo,
+          },
+        },
+      }),
+      prisma.testResponse.count({
+        where: {
+          createdAt: {
+            gte: todayStart,
+            lte: todayEnd,
+          },
+        },
+      }),
+      prisma.user.count({
+        where: {
+          createdAt: {
+            gte: todayStart,
+            lte: todayEnd,
+          },
+        },
+      }),
+      prisma.testResponse.count({
+        where: {
+          createdAt: {
+            gte: sevenDaysAgo,
+          },
+        },
+      }),
+      prisma.testResponse.count({
+        where: {
+          createdAt: {
+            gte: thirtyDaysAgo,
+          },
+        },
+      }),
+      prisma.user.count({
+        where: {
+          createdAt: {
+            gte: sevenDaysAgo,
+          },
+        },
+      }),
+      prisma.user.count({
+        where: {
+          createdAt: {
+            gte: thirtyDaysAgo,
+          },
+        },
+      }),
+      prisma.testResponse.groupBy({
+        by: ["type"],
+        _count: {
+          type: true,
+        },
+      }),
+      prisma.feedback.aggregate({
+        _avg: {
+          rating: true,
+        },
+      }),
+      prisma.feedback.count({
+        where: {
+          comment: {
+            not: null,
           },
         },
       }),
     ]);
+
+    // Calculate user growth rate (30 days vs 7 days)
+    const userGrowthRate = usersLast30Days > 0 
+      ? ((usersLast7Days / usersLast30Days) * 100).toFixed(1)
+      : "0";
+
+    // Calculate test growth rate
+    const testGrowthRate = testsLast30Days > 0
+      ? ((testsLast7Days / testsLast30Days) * 100).toFixed(1)
+      : "0";
 
     return res.json({
       totalUsers,
       totalTests,
       totalFeedback,
       recentUsers,
+      recentTests,
+      recentFeedback,
+      testsToday,
+      usersToday,
+      testsLast7Days,
+      testsLast30Days,
+      usersLast7Days,
+      usersLast30Days,
+      testTypesBreakdown: testTypesBreakdown.map((item) => ({
+        type: item.type,
+        count: item._count.type,
+      })),
+      averageRating: averageRating._avg.rating || 0,
+      feedbackWithComments,
+      userGrowthRate: parseFloat(userGrowthRate),
+      testGrowthRate: parseFloat(testGrowthRate),
     });
   } catch (err) {
     console.error(err);

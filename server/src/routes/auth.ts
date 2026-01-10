@@ -1,11 +1,15 @@
 import express from "express";
 import bcrypt from "bcrypt";
+import { OAuth2Client } from "google-auth-library";
 import { prisma } from "../db";
 import { generateToken, authenticateUser, AuthRequest } from "../middleware/auth";
 import { uploadSingle } from "../middleware/upload";
 import path from "path";
 
 const router = express.Router();
+
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const client = GOOGLE_CLIENT_ID ? new OAuth2Client(GOOGLE_CLIENT_ID) : null;
 
 // Guest endpoint (keep for backward compatibility)
 router.post("/guest", async (req, res) => {
@@ -120,6 +124,152 @@ router.post("/login", async (req, res) => {
     return res.json({ token, user: userData });
   } catch (err) {
     console.error(err);
+    return res.status(500).json({ error: "server error" });
+  }
+});
+
+// Google OAuth login/signup
+router.post("/google", async (req, res) => {
+  try {
+    const { idToken } = req.body;
+    
+    if (!idToken) {
+      return res.status(400).json({ error: "idToken is required" });
+    }
+
+    if (!client) {
+      return res.status(500).json({ error: "Google OAuth not configured" });
+    }
+
+    // Verify the Google ID token
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    if (!payload) {
+      return res.status(401).json({ error: "Invalid token" });
+    }
+
+    const { sub: googleId, email, name, picture } = payload;
+
+    if (!email || !googleId) {
+      return res.status(400).json({ error: "Invalid Google account" });
+    }
+
+    // Check if user exists by googleId
+    let user = await prisma.user.findUnique({ where: { googleId } });
+
+    if (user) {
+      // User exists with this googleId, login
+      const token = generateToken(user.id, user.isAdmin || false);
+      const userData = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        isAdmin: user.isAdmin,
+        dob: user.dob,
+        gender: user.gender,
+        profileImage: user.profileImage || picture || null,
+        state: user.state,
+        nationality: user.nationality,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      };
+
+      // Update profile image if Google provides one and user doesn't have one
+      if (picture && !user.profileImage) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { profileImage: picture },
+        });
+        userData.profileImage = picture;
+      }
+
+      return res.json({ token, user: userData });
+    }
+
+    // Check if user exists by email (link Google account)
+    user = await prisma.user.findUnique({ where: { email } });
+
+    if (user) {
+      // User exists with this email, link Google account
+      user = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          googleId,
+          // Update profile image if Google provides one and user doesn't have one
+          profileImage: user.profileImage || picture || null,
+          // Update name if user name is missing or default
+          name: user.name || name,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          isAdmin: true,
+          dob: true,
+          gender: true,
+          profileImage: true,
+          state: true,
+          nationality: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+
+      const token = generateToken(user.id, user.isAdmin || false);
+      const userData = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        isAdmin: user.isAdmin,
+        dob: user.dob,
+        gender: user.gender,
+        profileImage: user.profileImage,
+        state: user.state,
+        nationality: user.nationality,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      };
+
+      return res.json({ token, user: userData });
+    }
+
+    // Create new user
+    user = await prisma.user.create({
+      data: {
+        name: name || "User",
+        email,
+        phone: "", // Empty string for Google users, can be updated later
+        googleId,
+        profileImage: picture || null,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        isAdmin: true,
+        dob: true,
+        gender: true,
+        profileImage: true,
+        state: true,
+        nationality: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    const token = generateToken(user.id, user.isAdmin || false);
+
+    return res.json({ token, user });
+  } catch (err) {
+    console.error("Google OAuth error:", err);
     return res.status(500).json({ error: "server error" });
   }
 });

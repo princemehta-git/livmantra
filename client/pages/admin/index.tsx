@@ -25,8 +25,9 @@ import {
   Tooltip,
 } from "@mui/material";
 import { motion } from "framer-motion";
-import { Search, Visibility, Login as LoginIcon } from "@mui/icons-material";
+import { Search, Visibility, Login as LoginIcon, Message, TrendingUp, Star, Assessment, People } from "@mui/icons-material";
 import AdminRoute from "../../components/AdminRoute";
+import AdminHeader from "../../components/AdminHeader";
 import { useAuth } from "../../contexts/AuthContext";
 import { getAdminUsers, getAdminStats, impersonateUser, getAdminFeedback } from "../../lib/api";
 
@@ -217,91 +218,335 @@ export default function AdminPanelPage() {
           position: "relative",
         }}
       >
+        <AdminHeader />
         <Container maxWidth="lg" sx={{ py: 4 }}>
-          <Typography
-            variant="h4"
-            sx={{
-              color: "#00ffff",
-              fontWeight: 800,
-              mb: 4,
-              textTransform: "uppercase",
-            }}
-          >
-            Admin Dashboard
-          </Typography>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 4, flexWrap: "wrap", gap: 2 }}>
+            <Typography
+              variant="h4"
+              sx={{
+                color: "#00ffff",
+                fontWeight: 800,
+                textTransform: "uppercase",
+              }}
+            >
+              Admin Dashboard
+            </Typography>
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Button
+                variant="contained"
+                startIcon={<Message />}
+                onClick={() => router.push("/admin/messages")}
+                sx={{
+                  bgcolor: "#00ffff",
+                  color: "#0a0e27",
+                  fontWeight: 700,
+                  px: 3,
+                  py: 1,
+                  textTransform: "uppercase",
+                  "&:hover": {
+                    bgcolor: "#00cccc",
+                  },
+                }}
+              >
+                Messages
+              </Button>
+            </Box>
+          </Box>
 
           {/* Stats Cards */}
           {stats && (
-            <Grid container spacing={3} sx={{ mb: 4 }}>
-              <Grid item xs={12} sm={6} md={3}>
-                <Card
-                  sx={{
-                    p: 3,
-                    background: "rgba(10, 14, 39, 0.8)",
-                    border: "1px solid rgba(0, 255, 255, 0.3)",
-                    borderRadius: 0,
-                  }}
-                >
-                  <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.6)", mb: 1 }}>
-                    Total Users
-                  </Typography>
-                  <Typography variant="h4" sx={{ color: "#00ffff", fontWeight: 800 }}>
-                    {stats.totalUsers}
-                  </Typography>
-                </Card>
+            <>
+              <Grid container spacing={3} sx={{ mb: 4 }}>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Card
+                    sx={{
+                      p: 3,
+                      background: "rgba(10, 14, 39, 0.8)",
+                      border: "1px solid rgba(0, 255, 255, 0.3)",
+                      borderRadius: 0,
+                      "&:hover": {
+                        borderColor: "rgba(0, 255, 255, 0.6)",
+                        boxShadow: "0 0 20px rgba(0, 255, 255, 0.2)",
+                      },
+                      transition: "all 0.3s ease",
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1 }}>
+                      <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.6)" }}>
+                        Total Users
+                      </Typography>
+                      <People sx={{ color: "#00ffff", fontSize: 20 }} />
+                    </Box>
+                    <Typography variant="h4" sx={{ color: "#00ffff", fontWeight: 800, mb: 0.5 }}>
+                      {stats.totalUsers}
+                    </Typography>
+                    {stats.usersLast7Days > 0 && (
+                      <Typography variant="caption" sx={{ color: "rgba(255, 255, 255, 0.5)" }}>
+                        +{stats.usersLast7Days} in last 7 days
+                      </Typography>
+                    )}
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Card
+                    sx={{
+                      p: 3,
+                      background: "rgba(10, 14, 39, 0.8)",
+                      border: "1px solid rgba(138, 43, 226, 0.3)",
+                      borderRadius: 0,
+                      "&:hover": {
+                        borderColor: "rgba(138, 43, 226, 0.6)",
+                        boxShadow: "0 0 20px rgba(138, 43, 226, 0.2)",
+                      },
+                      transition: "all 0.3s ease",
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1 }}>
+                      <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.6)" }}>
+                        Total Tests
+                      </Typography>
+                      <Assessment sx={{ color: "#8a2be2", fontSize: 20 }} />
+                    </Box>
+                    <Typography variant="h4" sx={{ color: "#8a2be2", fontWeight: 800, mb: 0.5 }}>
+                      {stats.totalTests}
+                    </Typography>
+                    {stats.testsLast7Days > 0 && (
+                      <Typography variant="caption" sx={{ color: "rgba(255, 255, 255, 0.5)" }}>
+                        +{stats.testsLast7Days} in last 7 days
+                      </Typography>
+                    )}
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Card
+                    sx={{
+                      p: 3,
+                      background: "rgba(10, 14, 39, 0.8)",
+                      border: "1px solid rgba(255, 107, 107, 0.3)",
+                      borderRadius: 0,
+                      "&:hover": {
+                        borderColor: "rgba(255, 107, 107, 0.6)",
+                        boxShadow: "0 0 20px rgba(255, 107, 107, 0.2)",
+                      },
+                      transition: "all 0.3s ease",
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1 }}>
+                      <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.6)" }}>
+                        Total Feedback
+                      </Typography>
+                      <Star sx={{ color: "#ff6b6b", fontSize: 20 }} />
+                    </Box>
+                    <Typography variant="h4" sx={{ color: "#ff6b6b", fontWeight: 800, mb: 0.5 }}>
+                      {stats.totalFeedback}
+                    </Typography>
+                    {stats.averageRating > 0 && (
+                      <Typography variant="caption" sx={{ color: "rgba(255, 255, 255, 0.5)" }}>
+                        Avg Rating: {stats.averageRating.toFixed(1)}/5
+                      </Typography>
+                    )}
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                  <Card
+                    sx={{
+                      p: 3,
+                      background: "rgba(10, 14, 39, 0.8)",
+                      border: "1px solid rgba(16, 185, 129, 0.3)",
+                      borderRadius: 0,
+                      "&:hover": {
+                        borderColor: "rgba(16, 185, 129, 0.6)",
+                        boxShadow: "0 0 20px rgba(16, 185, 129, 0.2)",
+                      },
+                      transition: "all 0.3s ease",
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1 }}>
+                      <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.6)" }}>
+                        Today's Activity
+                      </Typography>
+                      <TrendingUp sx={{ color: "#10b981", fontSize: 20 }} />
+                    </Box>
+                    <Typography variant="h4" sx={{ color: "#10b981", fontWeight: 800, mb: 0.5 }}>
+                      {stats.testsToday || 0}
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: "rgba(255, 255, 255, 0.5)" }}>
+                      {stats.usersToday || 0} new users today
+                    </Typography>
+                  </Card>
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <Card
-                  sx={{
-                    p: 3,
-                    background: "rgba(10, 14, 39, 0.8)",
-                    border: "1px solid rgba(0, 255, 255, 0.3)",
-                    borderRadius: 0,
-                  }}
-                >
-                  <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.6)", mb: 1 }}>
-                    Total Tests
-                  </Typography>
-                  <Typography variant="h4" sx={{ color: "#8a2be2", fontWeight: 800 }}>
-                    {stats.totalTests}
-                  </Typography>
-                </Card>
+
+              {/* Additional Analytics Cards */}
+              <Grid container spacing={3} sx={{ mb: 4 }}>
+                <Grid item xs={12} md={6}>
+                  <Card
+                    sx={{
+                      p: 3,
+                      background: "rgba(10, 14, 39, 0.8)",
+                      border: "1px solid rgba(0, 255, 255, 0.3)",
+                      borderRadius: 0,
+                    }}
+                  >
+                    <Typography variant="h6" sx={{ color: "#00ffff", fontWeight: 700, mb: 2 }}>
+                      Test Types Breakdown
+                    </Typography>
+                    {stats.testTypesBreakdown && stats.testTypesBreakdown.length > 0 ? (
+                      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                        {stats.testTypesBreakdown.map((item: any, index: number) => {
+                          const percentage = stats.totalTests > 0 
+                            ? ((item.count / stats.totalTests) * 100).toFixed(1)
+                            : 0;
+                          return (
+                            <Box key={index}>
+                              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
+                                <Typography variant="body2" sx={{ color: "#fff", fontWeight: 600 }}>
+                                  {item.type || "Unknown"}
+                                </Typography>
+                                <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.6)" }}>
+                                  {item.count} ({percentage}%)
+                                </Typography>
+                              </Box>
+                              <Box
+                                sx={{
+                                  height: 8,
+                                  background: "rgba(0, 255, 255, 0.2)",
+                                  borderRadius: 1,
+                                  overflow: "hidden",
+                                }}
+                              >
+                                <Box
+                                  sx={{
+                                    height: "100%",
+                                    width: `${percentage}%`,
+                                    background: "linear-gradient(90deg, #00ffff, #8a2be2)",
+                                    transition: "width 0.5s ease",
+                                  }}
+                                />
+                              </Box>
+                            </Box>
+                          );
+                        })}
+                      </Box>
+                    ) : (
+                      <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.5)" }}>
+                        No test data available
+                      </Typography>
+                    )}
+                  </Card>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Card
+                    sx={{
+                      p: 3,
+                      background: "rgba(10, 14, 39, 0.8)",
+                      border: "1px solid rgba(138, 43, 226, 0.3)",
+                      borderRadius: 0,
+                    }}
+                  >
+                    <Typography variant="h6" sx={{ color: "#8a2be2", fontWeight: 700, mb: 2 }}>
+                      Growth Metrics
+                    </Typography>
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                      <Box>
+                        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+                          <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.6)" }}>
+                            User Growth Rate (7d/30d)
+                          </Typography>
+                          <Typography variant="body2" sx={{ color: "#00ffff", fontWeight: 600 }}>
+                            {stats.userGrowthRate || 0}%
+                          </Typography>
+                        </Box>
+                        <Box
+                          sx={{
+                            height: 8,
+                            background: "rgba(0, 255, 255, 0.2)",
+                            borderRadius: 1,
+                            overflow: "hidden",
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              height: "100%",
+                              width: `${Math.min(stats.userGrowthRate || 0, 100)}%`,
+                              background: "linear-gradient(90deg, #00ffff, #10b981)",
+                              transition: "width 0.5s ease",
+                            }}
+                          />
+                        </Box>
+                      </Box>
+                      <Box>
+                        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+                          <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.6)" }}>
+                            Test Growth Rate (7d/30d)
+                          </Typography>
+                          <Typography variant="body2" sx={{ color: "#8a2be2", fontWeight: 600 }}>
+                            {stats.testGrowthRate || 0}%
+                          </Typography>
+                        </Box>
+                        <Box
+                          sx={{
+                            height: 8,
+                            background: "rgba(138, 43, 226, 0.2)",
+                            borderRadius: 1,
+                            overflow: "hidden",
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              height: "100%",
+                              width: `${Math.min(stats.testGrowthRate || 0, 100)}%`,
+                              background: "linear-gradient(90deg, #8a2be2, #00ffff)",
+                              transition: "width 0.5s ease",
+                            }}
+                          />
+                        </Box>
+                      </Box>
+                      <Box>
+                        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+                          <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.6)" }}>
+                            Average Rating
+                          </Typography>
+                          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                            <Star sx={{ color: "#ffd700", fontSize: 16 }} />
+                            <Typography variant="body2" sx={{ color: "#ffd700", fontWeight: 600 }}>
+                              {stats.averageRating ? stats.averageRating.toFixed(2) : "0.00"}/5
+                            </Typography>
+                          </Box>
+                        </Box>
+                        <Box
+                          sx={{
+                            height: 8,
+                            background: "rgba(255, 215, 0, 0.2)",
+                            borderRadius: 1,
+                            overflow: "hidden",
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              height: "100%",
+                              width: `${stats.averageRating ? (stats.averageRating / 5) * 100 : 0}%`,
+                              background: "linear-gradient(90deg, #ffd700, #ff6b6b)",
+                              transition: "width 0.5s ease",
+                            }}
+                          />
+                        </Box>
+                      </Box>
+                      {stats.feedbackWithComments > 0 && (
+                        <Box>
+                          <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.6)", mb: 0.5 }}>
+                            Feedback with Comments
+                          </Typography>
+                          <Typography variant="h6" sx={{ color: "#00ffff", fontWeight: 700 }}>
+                            {stats.feedbackWithComments} / {stats.totalFeedback}
+                          </Typography>
+                        </Box>
+                      )}
+                    </Box>
+                  </Card>
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <Card
-                  sx={{
-                    p: 3,
-                    background: "rgba(10, 14, 39, 0.8)",
-                    border: "1px solid rgba(0, 255, 255, 0.3)",
-                    borderRadius: 0,
-                  }}
-                >
-                  <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.6)", mb: 1 }}>
-                    Total Feedback
-                  </Typography>
-                  <Typography variant="h4" sx={{ color: "#ff6b6b", fontWeight: 800 }}>
-                    {stats.totalFeedback}
-                  </Typography>
-                </Card>
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <Card
-                  sx={{
-                    p: 3,
-                    background: "rgba(10, 14, 39, 0.8)",
-                    border: "1px solid rgba(0, 255, 255, 0.3)",
-                    borderRadius: 0,
-                  }}
-                >
-                  <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.6)", mb: 1 }}>
-                    Recent Users (7d)
-                  </Typography>
-                  <Typography variant="h4" sx={{ color: "#00ffff", fontWeight: 800 }}>
-                    {stats.recentUsers}
-                  </Typography>
-                </Card>
-              </Grid>
-            </Grid>
+            </>
           )}
 
           {/* Tabs */}
@@ -328,6 +573,7 @@ export default function AdminPanelPage() {
             >
               <Tab label="Users" />
               <Tab label="Feedback" />
+              <Tab label="Analytics" />
             </Tabs>
           </Box>
 
@@ -519,6 +765,142 @@ export default function AdminPanelPage() {
                 </TableContainer>
               )}
             </>
+          )}
+
+          {/* Analytics Tab */}
+          {tabValue === 2 && stats && (
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Card
+                  sx={{
+                    p: 3,
+                    background: "rgba(10, 14, 39, 0.8)",
+                    border: "1px solid rgba(0, 255, 255, 0.3)",
+                    borderRadius: 0,
+                  }}
+                >
+                  <Typography variant="h5" sx={{ color: "#00ffff", fontWeight: 700, mb: 3 }}>
+                    Detailed Analytics
+                  </Typography>
+                  
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} md={6}>
+                      <Box sx={{ mb: 3 }}>
+                        <Typography variant="h6" sx={{ color: "#00ffff", fontWeight: 600, mb: 2 }}>
+                          Activity Summary
+                        </Typography>
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                              Tests Today
+                            </Typography>
+                            <Typography variant="h6" sx={{ color: "#00ffff", fontWeight: 700 }}>
+                              {stats.testsToday || 0}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                              Users Today
+                            </Typography>
+                            <Typography variant="h6" sx={{ color: "#10b981", fontWeight: 700 }}>
+                              {stats.usersToday || 0}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                              Tests (Last 7 Days)
+                            </Typography>
+                            <Typography variant="h6" sx={{ color: "#8a2be2", fontWeight: 700 }}>
+                              {stats.testsLast7Days || 0}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                              Tests (Last 30 Days)
+                            </Typography>
+                            <Typography variant="h6" sx={{ color: "#8a2be2", fontWeight: 700 }}>
+                              {stats.testsLast30Days || 0}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                              Users (Last 7 Days)
+                            </Typography>
+                            <Typography variant="h6" sx={{ color: "#00ffff", fontWeight: 700 }}>
+                              {stats.usersLast7Days || 0}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                              Users (Last 30 Days)
+                            </Typography>
+                            <Typography variant="h6" sx={{ color: "#00ffff", fontWeight: 700 }}>
+                              {stats.usersLast30Days || 0}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                              Recent Tests (7d)
+                            </Typography>
+                            <Typography variant="h6" sx={{ color: "#8a2be2", fontWeight: 700 }}>
+                              {stats.recentTests || 0}
+                            </Typography>
+                          </Box>
+                          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                              Recent Feedback (7d)
+                            </Typography>
+                            <Typography variant="h6" sx={{ color: "#ff6b6b", fontWeight: 700 }}>
+                              {stats.recentFeedback || 0}
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </Box>
+                    </Grid>
+                    
+                    <Grid item xs={12} md={6}>
+                      <Box sx={{ mb: 3 }}>
+                        <Typography variant="h6" sx={{ color: "#8a2be2", fontWeight: 600, mb: 2 }}>
+                          Engagement Metrics
+                        </Typography>
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                          {stats.totalTests > 0 && stats.totalUsers > 0 && (
+                            <Box>
+                              <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.7)", mb: 0.5 }}>
+                                Tests per User
+                              </Typography>
+                              <Typography variant="h6" sx={{ color: "#00ffff", fontWeight: 700 }}>
+                                {(stats.totalTests / stats.totalUsers).toFixed(2)}
+                              </Typography>
+                            </Box>
+                          )}
+                          {stats.totalFeedback > 0 && stats.totalTests > 0 && (
+                            <Box>
+                              <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.7)", mb: 0.5 }}>
+                                Feedback Rate
+                              </Typography>
+                              <Typography variant="h6" sx={{ color: "#ff6b6b", fontWeight: 700 }}>
+                                {((stats.totalFeedback / stats.totalTests) * 100).toFixed(1)}%
+                              </Typography>
+                            </Box>
+                          )}
+                          {stats.feedbackWithComments > 0 && stats.totalFeedback > 0 && (
+                            <Box>
+                              <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.7)", mb: 0.5 }}>
+                                Comment Rate
+                              </Typography>
+                              <Typography variant="h6" sx={{ color: "#ffd700", fontWeight: 700 }}>
+                                {((stats.feedbackWithComments / stats.totalFeedback) * 100).toFixed(1)}%
+                              </Typography>
+                            </Box>
+                          )}
+                        </Box>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </Card>
+              </Grid>
+            </Grid>
           )}
         </Container>
       </Box>

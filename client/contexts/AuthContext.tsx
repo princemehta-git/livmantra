@@ -27,6 +27,7 @@ interface AuthState {
 interface AuthContextType extends AuthState {
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, phone: string, password: string) => Promise<void>;
+  googleLogin: (idToken: string) => Promise<void>;
   adminLogin: (email: string, password: string) => Promise<void>;
   logout: () => void;
   adminLogout: () => void;
@@ -115,6 +116,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.error || "Signup failed");
+    }
+
+    const data = await response.json();
+    const authData = { token: data.token, user: data.user };
+
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(authData));
+    setState((prev) => ({
+      ...prev,
+      user: data.user,
+      userToken: data.token,
+    }));
+  };
+
+  const googleLogin = async (idToken: string) => {
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
+    const response = await fetch(`${API_BASE}/auth/google`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idToken }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || "Google login failed");
     }
 
     const data = await response.json();
@@ -237,6 +262,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         ...state,
         login,
         signup,
+        googleLogin,
         adminLogin,
         logout,
         adminLogout,

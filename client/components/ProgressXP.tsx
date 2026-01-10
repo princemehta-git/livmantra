@@ -11,7 +11,17 @@ export default function ProgressXP({
 }) {
   const percent = Math.round((current / total) * 100);
   const xp = current * 10;
-  const level = Math.floor(xp / 100) + 1;
+  // Level is based on sections: Level 1 (0-5), Level 2 (6-17), Level 3 (18-34)
+  // Cap at level 3 since there are only 3 sections
+  let level = 1;
+  if (current > 5) {
+    level = 2;
+  }
+  if (current > 17) {
+    level = 3;
+  }
+  // Ensure level never exceeds 3
+  level = Math.min(level, 3);
 
   return (
     <motion.div

@@ -203,11 +203,14 @@ async function verifyTableColumns(tableName: string, expectedColumns: string[]):
       AND TABLE_NAME = '${tableName}'
     `) as Array<{ COLUMN_NAME: string }>;
     
-    const existingColumns = result.map(row => row.COLUMN_NAME);
-    const missingColumns = expectedColumns.filter(col => !existingColumns.includes(col));
+    // Convert to lowercase for case-insensitive comparison (MySQL column names can be case-sensitive)
+    const existingColumns = result.map(row => row.COLUMN_NAME.toLowerCase());
+    const missingColumns = expectedColumns.filter(col => !existingColumns.includes(col.toLowerCase()));
     
     if (missingColumns.length > 0) {
       console.warn(`⚠️ Table '${tableName}' is missing columns: ${missingColumns.join(", ")}`);
+      // Log existing columns for debugging
+      console.log(`   Existing columns: ${result.map(r => r.COLUMN_NAME).join(", ")}`);
       return false;
     } else {
       console.log(`✅ Table '${tableName}' has all expected columns`);
@@ -385,12 +388,28 @@ async function createMissingTables() {
 
     // Add unique index for googleId if it doesn't exist
     try {
-      await prisma.$executeRawUnsafe(`
-        CREATE UNIQUE INDEX IF NOT EXISTS \`user_googleId_key\` ON \`user\`(\`googleId\`);
-      `);
+      // Check if index already exists
+      const indexCheck = await prisma.$queryRawUnsafe(`
+        SELECT COUNT(*) as count 
+        FROM INFORMATION_SCHEMA.STATISTICS 
+        WHERE TABLE_SCHEMA = DATABASE() 
+        AND TABLE_NAME = 'user' 
+        AND INDEX_NAME = 'user_googleId_key'
+      `) as Array<{ count: number }>;
+      
+      if (indexCheck[0]?.count === 0) {
+        await prisma.$executeRawUnsafe(`
+          CREATE UNIQUE INDEX \`user_googleId_key\` ON \`user\`(\`googleId\`);
+        `);
+        console.log("✅ Created unique index 'user_googleId_key'");
+      } else {
+        console.log("✅ Unique index 'user_googleId_key' already exists");
+      }
     } catch (error: any) {
       // Index might already exist, which is fine
-      if (!error.message?.includes("Duplicate key name")) {
+      if (error.message?.includes("Duplicate key name") || error.code === "1061") {
+        console.log("✅ Unique index 'user_googleId_key' already exists");
+      } else {
         console.warn(`⚠️ Could not create googleId index: ${error.message}`);
       }
     }

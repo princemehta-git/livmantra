@@ -6,6 +6,27 @@ import Logo from "./Logo";
 
 export default function Footer() {
   const { t } = useTranslation("footer");
+  
+  // Helper function to get translation with fallback
+  const getTranslation = (key: string, fallback: string) => {
+    const translated = t(key);
+    // If translation returns the key itself, use fallback
+    return translated === key ? fallback : translated || fallback;
+  };
+  
+  // Translations with fallbacks
+  const translations = {
+    description: getTranslation("description", "Your personal AI wellness coach combining modern medicine, Ayurveda, and behavioral psychology to help you achieve optimal health."),
+    quickLinks: getTranslation("quickLinks", "Quick Links"),
+    home: getTranslation("home", "Home"),
+    freeTests: getTranslation("freeTests", "Free Tests"),
+    healthScore: getTranslation("healthScore", "Health Score"),
+    aiCoach: getTranslation("aiCoach", "AI Coach"),
+    contact: getTranslation("contact", "Contact"),
+    supportEmail: getTranslation("supportEmail", "support@livmantra.com"),
+    copyright: getTranslation("copyright", "© 2026 LivMantra. All rights reserved."),
+  };
+  
   return (
     <Box
       component="footer"
@@ -46,7 +67,7 @@ export default function Footer() {
                 />
               </Box>
               <Typography variant="body2" sx={{ opacity: 0.8, lineHeight: 1.8 }}>
-                {t("description")}
+                {translations.description}
               </Typography>
             </motion.div>
           </Grid>
@@ -58,14 +79,14 @@ export default function Footer() {
               transition={{ duration: 0.6, delay: 0.1 }}
             >
               <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mb: 2 }}>
-                {t("quickLinks")}
+                {translations.quickLinks}
               </Typography>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
                 {[
-                  { href: "/", label: t("home") },
-                  { href: "/test", label: t("freeTests") },
-                  { href: "#", label: t("healthScore") },
-                  { href: "#", label: t("aiCoach") },
+                  { href: "/", label: translations.home },
+                  { href: "/test", label: translations.freeTests },
+                  { href: "#", label: translations.healthScore },
+                  { href: "#", label: translations.aiCoach },
                 ].map((item) => (
                   <Link
                     key={item.label}
@@ -95,10 +116,10 @@ export default function Footer() {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <Typography variant="h6" gutterBottom sx={{ fontWeight: 700, mb: 2 }}>
-                {t("contact")}
+                {translations.contact}
               </Typography>
               <Link
-                href={`mailto:${t("supportEmail")}`}
+                href={`mailto:${translations.supportEmail}`}
                 sx={{
                   textDecoration: "none",
                   color: "rgba(255, 255, 255, 0.8)",
@@ -113,10 +134,10 @@ export default function Footer() {
                   },
                 }}
               >
-                {t("supportEmail")}
+                {translations.supportEmail}
               </Link>
               <Typography variant="body2" sx={{ opacity: 0.6 }}>
-                {t("copyright")}
+                {translations.copyright}
               </Typography>
             </motion.div>
           </Grid>

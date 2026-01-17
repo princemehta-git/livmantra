@@ -33,7 +33,7 @@ export default function PersonalityQuestionCard({
           borderRadius: 0,
           boxShadow: "0 0 30px rgba(0, 255, 255, 0.1), inset 0 0 20px rgba(138, 43, 226, 0.05)",
           position: "relative",
-          overflow: "hidden",
+          overflow: { xs: "visible", sm: "hidden" }, // Allow overflow on mobile for labels
           "&::before": {
             content: '""',
             position: "absolute",
@@ -51,7 +51,7 @@ export default function PersonalityQuestionCard({
           transition: "all 0.3s ease",
         }}
       >
-        <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+        <CardContent sx={{ p: { xs: 2, sm: 3 }, overflow: { xs: "visible", sm: "visible" } }}>
           {/* Dimension Header */}
           <Box
             sx={{
@@ -130,6 +130,9 @@ export default function PersonalityQuestionCard({
               display: "flex",
               justifyContent: "center",
               width: "100%",
+              overflow: { xs: "visible", sm: "visible" },
+              position: "relative",
+              zIndex: 1,
             }}
           >
             <HorizontalLikertScale selected={selected} onSelect={onAnswer} />

@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { motion } from "framer-motion";
+import PhoneInput from "./PhoneInput";
 
 type Props = {
   open: boolean;
@@ -159,36 +160,15 @@ export default function UserModal({ open, onClose }: Props) {
                 },
               }}
             />
-            <TextField
+            <PhoneInput
               label="Phone"
-              fullWidth
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={setPhone}
+              required
               sx={{
                 "& .MuiOutlinedInput-root": {
                   borderRadius: 0,
                   bgcolor: "rgba(0, 255, 255, 0.05)",
-                  color: "#ffffff",
-                  "& fieldset": {
-                    borderColor: "rgba(0, 255, 255, 0.3)",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "rgba(0, 255, 255, 0.5)",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#00ffff",
-                    borderWidth: 2,
-                    boxShadow: "0 0 15px rgba(0, 255, 255, 0.3)",
-                  },
-                },
-                "& .MuiInputLabel-root": {
-                  color: "rgba(255, 255, 255, 0.7)",
-                  "&.Mui-focused": {
-                    color: "#00ffff",
-                  },
-                },
-                "& .MuiInputBase-input": {
-                  color: "#ffffff",
                 },
               }}
             />

@@ -14,6 +14,8 @@ import {
 import { motion } from "framer-motion";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import ProfileImageUpload from "../../components/ProfileImageUpload";
+import PhoneInput from "../../components/PhoneInput";
+import CountryAutocomplete from "../../components/CountryAutocomplete";
 import { useAuth } from "../../contexts/AuthContext";
 import { updateProfile } from "../../lib/api";
 import Header from "../../components/Header";
@@ -182,29 +184,11 @@ export default function ProfilePage() {
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label="Phone"
+                    <PhoneInput
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      onChange={setPhone}
+                      label="Phone"
                       required
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          color: "#fff",
-                          "& fieldset": {
-                            borderColor: "rgba(0, 255, 255, 0.3)",
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "rgba(0, 255, 255, 0.5)",
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "#00ffff",
-                          },
-                        },
-                        "& .MuiInputLabel-root": {
-                          color: "rgba(255, 255, 255, 0.6)",
-                        },
-                      }}
                     />
                   </Grid>
 
@@ -296,28 +280,10 @@ export default function ProfilePage() {
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label="Nationality"
+                    <CountryAutocomplete
                       value={nationality}
-                      onChange={(e) => setNationality(e.target.value)}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          color: "#fff",
-                          "& fieldset": {
-                            borderColor: "rgba(0, 255, 255, 0.3)",
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "rgba(0, 255, 255, 0.5)",
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "#00ffff",
-                          },
-                        },
-                        "& .MuiInputLabel-root": {
-                          color: "rgba(255, 255, 255, 0.6)",
-                        },
-                      }}
+                      onChange={setNationality}
+                      label="Nationality"
                     />
                   </Grid>
                 </Grid>

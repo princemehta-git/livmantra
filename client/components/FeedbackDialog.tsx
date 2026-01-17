@@ -18,9 +18,17 @@ type Props = {
   open: boolean;
   onClose: () => void;
   onSubmit?: (feedback: { rating: number; comment: string }) => void | Promise<void>;
+  testType?: string; // "BBA" or "PERSONALITY" or custom test name
 };
 
-export default function FeedbackDialog({ open, onClose, onSubmit }: Props) {
+export default function FeedbackDialog({ open, onClose, onSubmit, testType = "BBA" }: Props) {
+  // Get test name based on test type
+  const getTestName = () => {
+    if (testType === "PERSONALITY" || testType.toLowerCase().includes("personality")) {
+      return "Personality Test";
+    }
+    return "Body Behaviour Analysis (BBA) Test";
+  };
   const [rating, setRating] = useState<number | null>(null);
   const [comment, setComment] = useState("");
 
@@ -121,7 +129,7 @@ export default function FeedbackDialog({ open, onClose, onSubmit }: Props) {
       <DialogContent sx={{ pt: 3 }}>
         <Box sx={{ mb: 3 }}>
           <Typography variant="body1" sx={{ mb: 2, color: "rgba(255, 255, 255, 0.9)" }}>
-            How would you rate your experience with the Body Behaviour Analysis (BBA) Test?
+            How would you rate your experience with the {getTestName()}?
           </Typography>
           <Box sx={{ display: "flex", justifyContent: "center" }}>
             <Rating

@@ -22,9 +22,32 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 type Props = {
   open: boolean;
   onClose: () => void;
+  testType?: string; // "BBA" or "PERSONALITY" or custom test name
 };
 
-const shareText = `Hi! I just tried the *_Body Behaviour Analysis (BBA) Test_* and it's completely free! 
+const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+
+export default function ShareDialog({ open, onClose, testType = "BBA" }: Props) {
+  // Get test name and share text based on test type
+  const getTestName = () => {
+    if (testType === "PERSONALITY" || testType.toLowerCase().includes("personality")) {
+      return "Personality Test";
+    }
+    return "Body Behaviour Analysis (BBA) Test";
+  };
+
+  const getShareText = () => {
+    if (testType === "PERSONALITY" || testType.toLowerCase().includes("personality")) {
+      return `Hi! I just tried the *_Personality Test_* and it's completely free! 
+
+You should definitely try it too - it's an amazing way to:
+• *_Discover your personality dimensions_*
+• *_Understand your mind style and stress response_*
+• *_Learn about your health, social, energy, and habit patterns_*
+
+It's insightful and totally worth checking out!`;
+    }
+    return `Hi! I just tried the *_Body Behaviour Analysis (BBA) Test_* and it's completely free! 
 
 You should definitely try it too - it's an amazing way to:
 • *_Discover your body type_*
@@ -32,10 +55,9 @@ You should definitely try it too - it's an amazing way to:
 • *_Identify energy imbalances_*
 
 It's insightful and totally worth checking out!`;
+  };
 
-const shareUrl = typeof window !== "undefined" ? window.location.href : "";
-
-export default function ShareDialog({ open, onClose }: Props) {
+  const shareText = getShareText();
   const handleShare = (platform: string) => {
     const encodedText = encodeURIComponent(shareText);
     const encodedUrl = encodeURIComponent(shareUrl);
@@ -85,7 +107,7 @@ export default function ShareDialog({ open, onClose }: Props) {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Body Behaviour Analysis (BBA) Test",
+          title: getTestName(),
           text: shareText,
           url: shareUrl,
         });

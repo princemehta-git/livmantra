@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, Typography, Box, Chip, Divider, Button, Grid } from "@mui/material";
+import { Card, CardContent, Typography, Box, Divider, Button, Grid, Paper } from "@mui/material";
 import { motion } from "framer-motion";
-import { EmojiEvents, Psychology, TrendingUp, ArrowBack, ArrowForward } from "@mui/icons-material";
+import { EmojiEvents, Psychology, TrendingUp, ArrowBack, ArrowForward, Feedback, Share, WhatsApp } from "@mui/icons-material";
 import { DIMENSIONS } from "../data/personalityQuestions";
 import ParticleExplosion from "./ParticleExplosion";
+import { playSoundEffect } from "../lib/audioUtils";
+import FeedbackDialog from "./FeedbackDialog";
+import ShareDialog from "./ShareDialog";
+import { submitFeedback } from "../lib/api";
 
 interface PersonalityResultCardProps {
   snapshot: any;
@@ -23,6 +27,9 @@ export default function PersonalityResultCard({
   const [sectionChangeTrigger, setSectionChangeTrigger] = useState(0);
   const [cursorPos, setCursorPos] = useState<{ x: number; y: number } | null>(null);
   const [showCursor, setShowCursor] = useState(false);
+  const [showFeedbackDialog, setShowFeedbackDialog] = useState(false);
+  const [showShareDialog, setShowShareDialog] = useState(false);
+  const [feedbackShown, setFeedbackShown] = useState(false);
   const reportContainerRef = React.useRef<HTMLDivElement>(null);
 
   if (!snapshot) {
@@ -42,19 +49,66 @@ export default function PersonalityResultCard({
   }, [currentDimension, sectionChangeTrigger]);
 
   const handleDimensionChange = (newDimension: number) => {
+    playSoundEffect();
     setSectionChangeTrigger((prev) => prev + 1);
     setCurrentDimension(newDimension);
+  };
+
+  // Auto-show feedback popup after 20 seconds when user views the report
+  useEffect(() => {
+    if (!feedbackShown && enrichedDimensions.length > 0) {
+      const timer = setTimeout(() => {
+        if (!feedbackShown) {
+          setShowFeedbackDialog(true);
+          setFeedbackShown(true);
+        }
+      }, 20000); // 20 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [enrichedDimensions.length, feedbackShown]);
+
+  const handleContactUs = () => {
+    // Build WhatsApp message for personality test
+    const personalityTypeName = personalityName || personalityType || "Unknown";
+    const dimensionNames = ["MIND", "STRESS", "HEALTH", "SOCIAL", "ENERGY", "HABIT"];
+    const currentDim = enrichedDimensions[currentDimension];
+    const currentDimName = currentDim ? dimensionNames[currentDim.dimensionResult.dimensionIndex] || "Unknown" : "Unknown";
+    
+    const message = `Hi, I completed the *_Personality Test_* and here are my results:
+
+*My Personality Type:* ${personalityTypeName}
+*Current Dimension:* ${currentDimName}
+*Personality Code:* ${code || "N/A"}
+
+Please provide me:
+• Detailed diet plan
+• Exercise recommendations
+• Sleep scheduling guidance
+• Emotional training plan
+• Daily routine mapping
+• Expert doctor consultation`;
+
+    // Encode message for URL
+    const encodedMessage = encodeURIComponent(message);
+    
+    // WhatsApp number - same as BBA
+    const whatsappNumber = "918055079055";
+    
+    // Open WhatsApp
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+    window.open(whatsappUrl, "_blank");
   };
 
   // Color mapping for dimensions
   const getDimensionColor = (dimensionIndex: number) => {
     const colors = [
       "#00ffff", // Mind Style
-      "#8a2be2", // Stress Response
+      "#ff69b4", // Stress Response (pink - second)
       "#ff6b6b", // Health Discipline
       "#51cf66", // Social & Emotional
       "#ffd700", // Energy & Activity
-      "#ff69b4", // Habit & Change
+      "#8a2be2", // Habit & Change (purple - last)
     ];
     return colors[dimensionIndex] || "#00ffff";
   };
@@ -142,29 +196,16 @@ export default function PersonalityResultCard({
               </Typography>
             )}
             {personalityType && (
-              <>
-                <Chip
-                  label={personalityType.family}
-                  sx={{
-                    background: "rgba(138, 43, 226, 0.3)",
-                    color: "#8a2be2",
-                    border: "1px solid rgba(138, 43, 226, 0.5)",
-                    fontWeight: 600,
-                    mb: 1,
-                    fontSize: { xs: "0.7rem", sm: "0.85rem" },
-                  }}
-                />
-                <Typography
-                  variant="body1"
-                  sx={{
-                    color: "rgba(255, 255, 255, 0.8)",
-                    fontSize: { xs: "0.875rem", sm: "1rem" },
-                    mt: 1,
-                  }}
-                >
-                  {personalityType.descriptor}
-                </Typography>
-              </>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "rgba(255, 255, 255, 0.8)",
+                  fontSize: { xs: "0.875rem", sm: "1rem" },
+                  mt: 1,
+                }}
+              >
+                {personalityType.descriptor}
+              </Typography>
             )}
           </Box>
 
@@ -245,7 +286,7 @@ export default function PersonalityResultCard({
                           sx={{
                             color: isActive ? dimColor : "rgba(255, 255, 255, 0.7)",
                             fontWeight: isActive ? 700 : 600,
-                            fontSize: { xs: "0.7rem", sm: "0.85rem", md: "0.9rem" },
+                            fontSize: { xs: "0.85rem", sm: "1rem", md: "1.1rem" },
                             textTransform: "uppercase",
                             letterSpacing: "0.05em",
                             fontFamily: "monospace",
@@ -296,11 +337,335 @@ export default function PersonalityResultCard({
             )}
           </Box>
 
+          {/* Consultation CTA Banner - Sticky */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.8 }}
+          >
+            <Paper
+              sx={{
+                position: "sticky",
+                bottom: 0,
+                mt: 4,
+                p: 2,
+                background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
+                color: "white",
+                boxShadow:
+                  "0 -10px 30px rgba(0, 0, 0, 0.6), 0 0 35px rgba(0, 255, 255, 0.4)",
+                zIndex: 1000,
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 1.5 }}>
+                <Box sx={{ flex: 1, minWidth: { xs: "100%", sm: 200 } }}>
+                  <Typography 
+                    variant="h6" 
+                    sx={{ 
+                      fontWeight: 700, 
+                      mb: 0.8, 
+                      fontSize: { xs: "1.2rem", sm: "1.4rem" }, 
+                      lineHeight: 1.3,
+                      color: "#0f172a",
+                      textShadow: "0 1px 2px rgba(255, 255, 255, 0.5)",
+                    }}
+                  >
+                    Need Expert Guidance for Healthier Body and Mind
+                  </Typography>
+                  <Box 
+                    sx={{ 
+                      display: "grid", 
+                      gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)" },
+                      gap: { xs: 0.3, sm: 0.4 },
+                      fontSize: { xs: "0.75rem", sm: "0.8rem" }
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                      <Box
+                        sx={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: "50%",
+                          backgroundColor: "#0f172a",
+                          mt: 0.5,
+                          flexShrink: 0,
+                        }}
+                      />
+                      <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                        <strong style={{ color: "#0f172a", fontWeight: 700 }}>Diet Plan</strong> – tailored to your needs
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                      <Box
+                        sx={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: "50%",
+                          backgroundColor: "#0f172a",
+                          mt: 0.5,
+                          flexShrink: 0,
+                        }}
+                      />
+                      <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                        <strong style={{ color: "#0f172a", fontWeight: 700 }}>Workout Plan</strong> – safe, effective movement
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                      <Box
+                        sx={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: "50%",
+                          backgroundColor: "#0f172a",
+                          mt: 0.5,
+                          flexShrink: 0,
+                        }}
+                      />
+                      <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                        <strong style={{ color: "#0f172a", fontWeight: 700 }}>Sleep Scheduling</strong> – deep, quality sleep
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                      <Box
+                        sx={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: "50%",
+                          backgroundColor: "#0f172a",
+                          mt: 0.5,
+                          flexShrink: 0,
+                        }}
+                      />
+                      <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                        <strong style={{ color: "#0f172a", fontWeight: 700 }}>Emotional Training</strong> – calm, healthy mind
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                      <Box
+                        sx={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: "50%",
+                          backgroundColor: "#0f172a",
+                          mt: 0.5,
+                          flexShrink: 0,
+                        }}
+                      />
+                      <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                        <strong style={{ color: "#0f172a", fontWeight: 700 }}>Daily Routine Mapping</strong> – habit alignment
+                      </Typography>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                      <Box
+                        sx={{
+                          width: 6,
+                          height: 6,
+                          borderRadius: "50%",
+                          backgroundColor: "#0f172a",
+                          mt: 0.5,
+                          flexShrink: 0,
+                        }}
+                      />
+                      <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                        <strong style={{ color: "#0f172a", fontWeight: 700 }}>Expert Doctor Consultation</strong> – medication & suppliment
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Box sx={{ mt: 1.5, display: "flex", alignItems: "center", gap: 1 }}>
+                    <Typography 
+                      variant="body2" 
+                      sx={{ 
+                        color: "#0f172a", 
+                        fontSize: { xs: "0.85rem", sm: "0.9rem" },
+                        fontWeight: 600,
+                      }}
+                    >
+                      Only @
+                    </Typography>
+                    <Typography 
+                      variant="h6" 
+                      sx={{ 
+                        color: "#0f172a", 
+                        fontSize: { xs: "1.1rem", sm: "1.25rem" },
+                        fontWeight: 800,
+                        lineHeight: 1,
+                      }}
+                    >
+                      ₹2,499/-
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box
+                  component={motion.div}
+                  animate={{
+                    scale: [1, 1.03, 1],
+                  }}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    onClick={handleContactUs}
+                    startIcon={<WhatsApp />}
+                    sx={{
+                      backgroundColor: "#0f172a",
+                      color: "#ffffff",
+                      fontWeight: 700,
+                      px: 2.5,
+                      py: 1,
+                      fontSize: "0.9rem",
+                      borderRadius: "8px",
+                      border: "2px solid #ffffff",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)",
+                      animation: "contactButtonGlow 2.5s ease-in-out infinite",
+                      position: "relative",
+                      overflow: "hidden",
+                      transition: "all 0.3s ease",
+                      "&::before": {
+                        content: '""',
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent)",
+                        animation: "contactButtonShimmer 3s infinite",
+                      },
+                      "&:hover": {
+                        backgroundColor: "#1e293b",
+                        borderColor: "#ffffff",
+                        boxShadow: "0 6px 16px rgba(0, 0, 0, 0.4), 0 3px 6px rgba(0, 0, 0, 0.3)",
+                        transform: "translateY(-1px)",
+                      },
+                      "& .MuiButton-startIcon": {
+                        transition: "transform 0.3s ease",
+                        color: "#ffffff",
+                      },
+                      "&:hover .MuiButton-startIcon": {
+                        transform: "scale(1.1)",
+                      },
+                    }}
+                  >
+                    Contact Us
+                  </Button>
+                </Box>
+              </Box>
+            </Paper>
+          </motion.div>
+
+          {/* Feedback and Share Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1 }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                gap: 2,
+                mt: 3,
+                mb: 2,
+                flexWrap: "wrap",
+                position: "relative",
+                zIndex: 1001,
+              }}
+            >
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant="outlined"
+                  startIcon={<Feedback />}
+                  onClick={() => setShowFeedbackDialog(true)}
+                  disabled={false}
+                  sx={{
+                    color: "#00ffff",
+                    borderColor: "#00ffff",
+                    px: 3,
+                    py: 1.5,
+                    fontSize: "0.9rem",
+                    fontWeight: 600,
+                    pointerEvents: "auto",
+                    cursor: "pointer",
+                    "&:hover": {
+                      borderColor: "#00ffff",
+                      backgroundColor: "rgba(0, 255, 255, 0.1)",
+                      boxShadow: "0 0 20px rgba(0, 255, 255, 0.3)",
+                    },
+                    "&.Mui-disabled": {
+                      borderColor: "rgba(0, 255, 255, 0.3)",
+                      color: "rgba(0, 255, 255, 0.3)",
+                    },
+                  }}
+                >
+                  Feedback
+                </Button>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant="outlined"
+                  startIcon={<Share />}
+                  onClick={() => setShowShareDialog(true)}
+                  sx={{
+                    color: "#8a2be2",
+                    borderColor: "#8a2be2",
+                    px: 3,
+                    py: 1.5,
+                    fontSize: "0.9rem",
+                    fontWeight: 600,
+                    "&:hover": {
+                      borderColor: "#8a2be2",
+                      backgroundColor: "rgba(138, 43, 226, 0.1)",
+                      boxShadow: "0 0 20px rgba(138, 43, 226, 0.3)",
+                    },
+                  }}
+                >
+                  Share
+                </Button>
+              </motion.div>
+            </Box>
+          </motion.div>
 
           
           </CardContent>
         </Card>
       </motion.div>
+
+      {/* Feedback Dialog */}
+      <FeedbackDialog
+        open={showFeedbackDialog}
+        onClose={() => setShowFeedbackDialog(false)}
+        testType="PERSONALITY"
+        onSubmit={async (feedback) => {
+          if (!resultId || !userId) {
+            alert("Unable to submit feedback: Missing result ID or user ID");
+            return;
+          }
+          try {
+            await submitFeedback({
+              userId,
+              resultId,
+              rating: feedback.rating,
+              comment: feedback.comment,
+            });
+            alert("Thank you for your feedback!");
+          } catch (error: any) {
+            console.error("Error submitting feedback:", error);
+            alert(error.response?.data?.error || "Failed to submit feedback. Please try again.");
+          }
+        }}
+      />
+
+      {/* Share Dialog */}
+      <ShareDialog
+        open={showShareDialog}
+        onClose={() => setShowShareDialog(false)}
+        testType="PERSONALITY"
+      />
 
       {/* Cursor Effect */}
       {showCursor && cursorPos && (

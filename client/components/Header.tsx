@@ -285,38 +285,6 @@ export default function Header() {
             <Box sx={{ display: "none" }}>
               <LanguageSwitcher />
             </Box>
-
-            <motion.div 
-              whileHover={{ scale: 1.05 }} 
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button
-                variant="contained"
-                onClick={() => router.push(user ? "/test" : "/login")}
-                sx={{
-                  background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
-                  color: "#0a0e27",
-                  fontWeight: 700,
-                  px: { xs: 1, sm: 3, md: 4 },
-                  py: { xs: 0.4, sm: 0.75, md: 1 },
-                  minWidth: { xs: "auto", sm: "auto" },
-                  borderRadius: 0,
-                  border: "1px solid #00ffff",
-                  boxShadow: "0 0 20px rgba(0, 255, 255, 0.4)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  fontSize: { xs: "0.6rem", sm: "0.75rem", md: "0.85rem" },
-                  "&:hover": { 
-                    background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
-                    boxShadow: "0 0 30px rgba(0, 255, 255, 0.6)",
-                    transform: "translateY(-2px)",
-                  },
-                  transition: "all 0.3s ease",
-                }}
-              >
-                {user ? t("test") : t("start")}
-              </Button>
-            </motion.div>
           </Box>
         </Toolbar>
       </Container>

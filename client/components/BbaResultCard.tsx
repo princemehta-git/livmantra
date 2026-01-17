@@ -27,6 +27,7 @@ import AchievementBadge from "./AchievementBadge";
 import FeedbackDialog from "./FeedbackDialog";
 import ShareDialog from "./ShareDialog";
 import { submitFeedback } from "../lib/api";
+import { playSoundEffect } from "../lib/audioUtils";
 
 // Enhanced type definitions
 type DoshaCounts = {
@@ -434,12 +435,14 @@ export default function BbaResultCard({ snapshot, mergedReport, currentSection =
 
   const handleNext = () => {
     if (currentSection < 2 && onSectionChange) {
+      playSoundEffect();
       onSectionChange(currentSection + 1);
     }
   };
 
   const handleBack = () => {
     if (currentSection > 0 && onSectionChange) {
+      playSoundEffect();
       onSectionChange(currentSection - 1);
     }
   };
@@ -835,6 +838,7 @@ Please provide me:
             icon="🔍"
             onClick={() => {
               if (onSectionChange) {
+                playSoundEffect();
                 setSectionChangeTrigger((prev) => prev + 1);
                 onSectionChange(0);
               }
@@ -850,6 +854,7 @@ Please provide me:
             icon="🧬"
             onClick={() => {
               if (onSectionChange) {
+                playSoundEffect();
                 setSectionChangeTrigger((prev) => prev + 1);
                 onSectionChange(1);
               }
@@ -865,6 +870,7 @@ Please provide me:
             icon="⚡"
             onClick={() => {
               if (onSectionChange) {
+                playSoundEffect();
                 setSectionChangeTrigger((prev) => prev + 1);
                 onSectionChange(2);
               }
@@ -2512,6 +2518,7 @@ Please provide me:
       <FeedbackDialog
         open={showFeedbackDialog}
         onClose={() => setShowFeedbackDialog(false)}
+        testType="BBA"
         onSubmit={async (feedback) => {
           if (!resultId || !userId) {
             alert("Unable to submit feedback: Missing result ID or user ID");
@@ -2536,6 +2543,7 @@ Please provide me:
       <ShareDialog
         open={showShareDialog}
         onClose={() => setShowShareDialog(false)}
+        testType="BBA"
       />
 
       {cursorElement && cursorPos && (

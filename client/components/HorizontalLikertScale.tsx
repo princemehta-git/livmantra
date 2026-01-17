@@ -65,32 +65,33 @@ export default function HorizontalLikertScale({ selected, onSelect }: Props) {
         alignItems: "center",
         gap: { xs: 1.5, sm: 2 },
         py: { xs: 2, sm: 3 },
-        px: { xs: 0.5, sm: 1, md: 2 }, // Reduced padding on mobile
+        px: { xs: 0, sm: 1, md: 2 },
         width: "100%",
-        overflow: "hidden", // Prevent horizontal overflow
+        overflow: "visible",
+        position: "relative",
       }}
     >
       {/* Main scale container - dots in one row with labels aligned */}
       <Box
         sx={{
           display: "flex",
-          alignItems: "flex-start", // Align from top
+          alignItems: "flex-start",
           justifyContent: "center",
           width: "100%",
           maxWidth: { xs: "100%", sm: "650px", md: "750px" },
           position: "relative",
-          gap: { xs: 0, sm: 0.75, md: 1.5 }, // No gap on mobile since labels are below
-          px: { xs: 0, sm: 0 }, // No horizontal padding needed
+          gap: { xs: 0, sm: 0.75, md: 1.5 },
+          px: { xs: 0, sm: 0 },
         }}
       >
-        {/* Left label: Strongly Disagree - only show on desktop, aligned with dots center */}
+        {/* Left label: Strongly Disagree - only show on desktop */}
         <Box
           sx={{
-            display: { xs: "none", sm: "flex" }, // Hide on mobile
+            display: { xs: "none", sm: "flex" },
             alignItems: "center",
-            height: { sm: "32px" }, // Match the dot container height to align with dot centers
+            height: { sm: "32px" },
             justifyContent: "flex-end",
-            flexShrink: 0, // Prevent shrinking
+            flexShrink: 0,
           }}
         >
           <Typography
@@ -114,12 +115,16 @@ export default function HorizontalLikertScale({ selected, onSelect }: Props) {
         <Box
           sx={{
             display: "flex",
-            alignItems: "flex-start", // Align from top so all dots start at same position
-            justifyContent: "space-between",
+            alignItems: "flex-start",
+            justifyContent: { xs: "space-between", sm: "space-between" },
             flex: 1,
             position: "relative",
-            gap: { xs: 0.25, sm: 0.5, md: 1 }, // Reduced gap on mobile
-            minWidth: 0, // Allow shrinking
+            gap: { xs: 0, sm: 0.5, md: 1 },
+            minWidth: 0,
+            overflow: "visible",
+            width: "100%",
+            px: { xs: 0, sm: 0 },
+            pb: { xs: isMobile ? "24px" : "0", sm: 0 }, // Add bottom padding on mobile for labels
           }}
         >
           {LIKERT_SCALE_OPTIONS.map((option, index) => {
@@ -169,11 +174,13 @@ export default function HorizontalLikertScale({ selected, onSelect }: Props) {
                     cursor: "pointer",
                     position: "relative",
                     flex: 1,
-                    maxWidth: { xs: "32px", sm: "40px", md: "50px" }, // Smaller on mobile
-                    padding: { xs: "0 2px", sm: "0" }, // Reduced padding on mobile
-                    paddingBottom: label ? { xs: "0", sm: "0" } : { xs: "8px", sm: "4px" }, // Only add bottom padding if no label
+                    maxWidth: { xs: "none", sm: "40px", md: "50px" },
+                    minWidth: 0,
+                    padding: { xs: "0 2px", sm: "0" },
+                    paddingBottom: label ? { xs: "0", sm: "0" } : { xs: "8px", sm: "4px" },
                     touchAction: "manipulation",
                     WebkitTapHighlightColor: "transparent",
+                    overflow: "visible",
                   }}
                   onMouseEnter={() => setHoveredIndex(index)}
                   onMouseLeave={() => setHoveredIndex(null)}
@@ -246,17 +253,24 @@ export default function HorizontalLikertScale({ selected, onSelect }: Props) {
                         color: isSelected ? dotColor : index === 0 || index === 6 
                           ? (index === 0 ? "#8a2be2" : "#00ffff") 
                           : "rgba(255, 255, 255, 0.6)",
-                        fontWeight: isSelected ? 700 : 500,
-                        fontSize: { xs: "0.55rem", sm: "0.7rem" }, // Smaller on mobile for end labels
-                        textAlign: "center",
+                        fontWeight: isSelected ? 700 : 600,
+                        fontSize: { xs: "0.65rem", sm: "0.7rem", md: "0.75rem" },
+                        textAlign: { xs: index === 6 ? "right" : index === 0 ? "left" : "center", sm: "center" }, // Shift right label left on mobile
                         textTransform: "uppercase",
-                        letterSpacing: { xs: "0.02em", sm: "0.05em" },
+                        letterSpacing: { xs: "0.01em", sm: "0.05em" },
                         whiteSpace: "nowrap",
+                        lineHeight: 1.2,
                         transition: "all 0.3s ease",
                         textShadow: isSelected
                           ? `0 0 8px ${dotColor}`
-                          : "none",
-                        marginTop: { xs: "12px", sm: "16px" }, // Increased spacing to push text down
+                          : `0 0 4px ${index === 0 ? "#8a2be2" : "#00ffff"}50`,
+                        marginTop: { xs: "8px", sm: "16px" },
+                        width: "100%",
+                        overflow: "visible",
+                        position: "relative",
+                        zIndex: 1,
+                        transform: { xs: index === 6 ? "translateX(-35%)" : index === 0 ? "translateX(10%)" : "none", sm: "none" }, // Shift left more significantly on mobile
+                        left: { xs: index === 6 ? "-20px" : "0", sm: "0" }, // Additional left offset for mobile
                       }}
                     >
                       {label}

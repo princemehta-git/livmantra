@@ -17,6 +17,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../contexts/AuthContext";
 import { useTranslation } from "next-i18next";
 import Header from "../components/Header";
+import PhoneInput from "../components/PhoneInput";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -32,7 +33,7 @@ export default function SignupPage() {
 
   useEffect(() => {
     if (!loading && user) {
-      router.push("/dashboard");
+      router.push("/test-transition");
     }
   }, [user, loading, router]);
 
@@ -54,7 +55,7 @@ export default function SignupPage() {
 
     try {
       await signup(name, email, phone, password);
-      router.push("/dashboard");
+      router.push("/test-transition");
     } catch (err: any) {
       setError(err.message || "Signup failed");
     } finally {
@@ -67,7 +68,7 @@ export default function SignupPage() {
     setSubmitting(true);
     try {
       await googleLogin(credentialResponse.credential);
-      router.push("/dashboard");
+      router.push("/test-transition");
     } catch (err: any) {
       setError(err.message || "Google signup failed");
     } finally {
@@ -100,10 +101,7 @@ export default function SignupPage() {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundImage: `
-            linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px)
-          `,
+          backgroundImage: "linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px)",
           backgroundSize: "50px 50px",
           opacity: 0.4,
           zIndex: 0,

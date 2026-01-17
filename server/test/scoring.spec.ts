@@ -1,5 +1,5 @@
 import {
-  scoreVPK,
+  scoreBBA,
   computeCounts,
   determineBodyTypeWithModifier,
   determinePrakritiWithModifier,
@@ -9,7 +9,7 @@ import {
   generateShortEmotionalLine,
 } from "../src/services/scoring";
 
-describe("VPK Scoring Service", () => {
+describe("BBA Scoring Service", () => {
   describe("computeCounts", () => {
     it("should count doshas correctly", () => {
       const arr = [1, 1, 2, 2, 2, 3];
@@ -276,21 +276,21 @@ describe("VPK Scoring Service", () => {
     });
   });
 
-  describe("scoreVPK - Integration Tests", () => {
+  describe("scoreBBA - Integration Tests", () => {
     it("should validate input length", () => {
-      expect(() => scoreVPK([])).toThrow("answers must be length 35");
-      expect(() => scoreVPK(new Array(34).fill(1))).toThrow("answers must be length 35");
+      expect(() => scoreBBA([])).toThrow("answers must be length 35");
+      expect(() => scoreBBA(new Array(34).fill(1))).toThrow("answers must be length 35");
     });
 
     it("should validate answer values", () => {
       const invalid = new Array(35).fill(1);
       invalid[0] = 5;
-      expect(() => scoreVPK(invalid)).toThrow("Invalid answer value");
+      expect(() => scoreBBA(invalid)).toThrow("Invalid answer value");
     });
 
     it("should return backward compatible structure", () => {
       const answers = new Array(35).fill(1);
-      const result = scoreVPK(answers);
+      const result = scoreBBA(answers);
       expect(result).toHaveProperty("bodyType");
       expect(result).toHaveProperty("prakriti");
       expect(result).toHaveProperty("vikriti");
@@ -300,7 +300,7 @@ describe("VPK Scoring Service", () => {
 
     it("should return enriched structure", () => {
       const answers = new Array(35).fill(1);
-      const result = scoreVPK(answers);
+      const result = scoreBBA(answers);
       expect(result).toHaveProperty("bodyTypeDetailed");
       expect(result).toHaveProperty("prakritiDetailed");
       expect(result).toHaveProperty("vikritiDetailed");
@@ -319,7 +319,7 @@ describe("VPK Scoring Service", () => {
         ...new Array(6).fill(2),
         ...new Array(6).fill(3), // Section C: 6 vata, 6 pitta, 6 kapha
       ];
-      const result = scoreVPK(answers);
+      const result = scoreBBA(answers);
       expect(result.vikritiDetailed?.summary).toContain("(mild)");
       expect(result.reportId).toBeNull();
     });
@@ -332,7 +332,7 @@ describe("VPK Scoring Service", () => {
         ...new Array(6).fill(2), // 6 Pitta
         ...new Array(3).fill(3), // 3 Kapha
       ];
-      const result = scoreVPK(answers);
+      const result = scoreBBA(answers);
       expect(result.vikritiDetailed?.summary).toBe("Vata");
       expect(result.vikritiDetailed?.imbalances[0]).toEqual({
         dosha: "Vata",
@@ -351,7 +351,7 @@ describe("VPK Scoring Service", () => {
         ...new Array(8).fill(2), // 8 Pitta
         ...new Array(2).fill(3), // 2 Kapha
       ];
-      const result = scoreVPK(answers);
+      const result = scoreBBA(answers);
       // Tie-break: Pitta > Vata, so should be "Pitta-Vata" (Pitta first due to tie-break)
       expect(result.vikritiDetailed?.summary).toContain("Pitta");
       expect(result.vikritiDetailed?.summary).toContain("Vata");
@@ -370,7 +370,7 @@ describe("VPK Scoring Service", () => {
         ...new Array(12).fill(1), // Section B
         ...new Array(18).fill(1), // Section C
       ];
-      const result = scoreVPK(answers);
+      const result = scoreBBA(answers);
       expect(result.bodyTypeDetailed?.modifier).toBe("Pitta");
     });
 
@@ -382,7 +382,7 @@ describe("VPK Scoring Service", () => {
         ...new Array(3).fill(2), // 3 Pitta
         ...new Array(12).fill(3), // 12 Kapha
       ];
-      const result = scoreVPK(answers);
+      const result = scoreBBA(answers);
       expect(result.vikritiDetailed?.summary).toBe("Kapha");
       expect(result.reportId).toBe(3);
       expect(result.score).toBeLessThanOrEqual(30); // count >= 10
@@ -401,7 +401,7 @@ describe("VPK Scoring Service", () => {
         ...new Array(6).fill(2), // 6 Pitta
         ...new Array(3).fill(3), // 3 Kapha
       ];
-      const result = scoreVPK(answers);
+      const result = scoreBBA(answers);
 
       expect(result.bodyTypeDetailed?.primary).toBe("Mesomorph");
       expect(result.bodyTypeDetailed?.modifier).toBe("Vata");

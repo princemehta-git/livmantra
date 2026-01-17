@@ -829,5 +829,655 @@
       "whatNotToDoClosing": "Silence makes heaviness grow.",
       "closingMessage": "You are not weak.\nYou are not lazy.\nYou've just been carrying too much alone.\nLet warmth, movement, and connection help you release it."
     }
+  },
+  "personalityDimensions": {
+    "Mind_A_Reflective": {
+      "title": "🧠 YOUR MIND STYLE",
+      "subtitle": "Final",
+      "section1": {
+        "title": "1⃣ HOW YOUR MIND NATURALLY WORKS",
+        "content": "Your mind does not like to hurry.\nIt prefers to finish one thought properly before moving to the next.\nMany times, you already know the answer inside, but you wait.\nNot because you are unsure.\nNot because you lack confidence.\nYou wait because you want things to be clear in your mind before you speak.\nFor you, clarity feels more comfortable than speed."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "You may notice this in very normal, everyday situations.\nIn meetings, you listen carefully.\nAt home, you pause before replying.\nAnd often, after a conversation ends, a clear thought comes to you and you feel:\n\"Now I know exactly what I wanted to say.\"\n\nYour best thoughts usually come later, when there is no pressure and no one is waiting for an answer."
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "Over time, people around you may have misunderstood this habit.\nThey may have said things like:\n• \"Why are you so quiet?\"\n• \"Speak faster.\"\n• \"You think too much.\"\nAfter hearing this many times, you may have started doubting yourself.\nYou may have felt that something about you needed fixing.\nBut the truth is simple:\nThere was nothing wrong with you.\nYour mind was simply working in its own natural way."
+      },
+      "section4": {
+        "title": "4⃣ WHAT DRAINS YOU (WITHOUT YOU REALISING)",
+        "content": "Your mind does not get tired because of work.\nIt gets tired when:\n• many people talk at the same time\n• you are expected to reply immediately\n• conversations move very fast without pause\nFor example, long meetings, constant phone calls, or back-to-back discussions can quietly drain you — even if you don't notice it at that moment.\nBy the end of the day, you may feel mentally tired without knowing why.\nThis tiredness comes from mental pressure, not from effort."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY WORKS FOR YOU",
+        "content": "Your mind feels better when it gets some quiet space.\nSimple things help you a lot:\n\n• sitting quietly for a few minutes\n• slow walks\n• doing one thing at a time\n• writing thoughts on paper\nYou don't need constant activity or excitement.\nYou feel calmer when things slow down a little.\nThat is when your mind feels settled and clear."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS HEALTH ADVICE DID NOT FEEL RIGHT",
+        "content": "You may have tried many well-meaning suggestions.\nSome methods were very fast or very energetic.\nSome involved too much talking or constant interaction.\nThese methods are not wrong.\nThey just don't suit everyone.\nFor you, such approaches may have felt tiring instead of calming —\nnot because you did anything wrong,\nbut because your mind needs gentle quiet, not continuous input."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"I understand myself better when I give my mind time.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "This way of thinking is not a weakness.\nIt is a natural style.\nMany thoughtful people in the world have worked this way.\nFor example, Albert Einstein was known to think deeply and quietly. He took time to understand things properly, and that became his strength, not his weakness.\nIn daily life too, when you stop forcing yourself to think or act like others,\nlife starts feeling calmer and more manageable."
+      }
+    },
+    "Mind_B_Balanced": {
+      "title": "🧠 YOUR MIND STYLE",
+      "subtitle": "Balanced",
+      "section1": {
+        "title": "1⃣ HOW YOUR MIND NATURALLY WORKS",
+        "content": "Your mind is flexible.\nSome days, it prefers quiet thinking.\nSome days, it feels better when you talk things out.\nFor example, when it is a serious decision — like money, work, or health — you like to sit quietly and think first.\nBut when something is emotional — like a misunderstanding or a heavy feeling — talking to someone helps you feel lighter.\nYour mind changes its way based on the situation.\nThis is natural for you."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "You may notice this in your everyday life.\nSometimes, you enjoy being alone with your thoughts.\nAt other times, you feel better after a good conversation.\nOn some days, silence feels calming.\nOn other days, silence feels uncomfortable and talking feels necessary.\nBecause of this, you may feel different on different days — and that is normal for you."
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "At times, this may have confused even you.\nYou may have thought:\n• \"Why do I want to be alone sometimes?\"\n• \"Why do I feel like talking a lot on other days?\"\n• \"Why am I not the same every day?\"\n\nOthers may have felt confused too.\nThey may not have known whether you wanted space or conversation.\nBut this is not confusion or inconsistency.\nIt simply means your mind is responsive.\nIt understands what is needed in that moment and adjusts."
+      },
+      "section4": {
+        "title": "4⃣ WHAT DRAINS YOU (WITHOUT YOU REALISING)",
+        "content": "Your mind feels tired when it is pushed only in one direction.\nToo much silence for many days can make you feel stuck or low.\nToo much talking or social activity without rest can make you feel drained.\nFor example, a very quiet weekend may leave you feeling dull.\nA very social day without any personal space may also leave you tired.\nYour mind needs balance, not extremes."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY WORKS FOR YOU",
+        "content": "Your mind feels best when you listen to it.\nYou do well when you:\n• take quiet time when you need it\n• talk things out when emotions feel heavy\n• don't force yourself to follow one fixed style\nWhen you allow yourself this flexibility, your mind feels lighter and clearer."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS HEALTH ADVICE DID NOT FEEL RIGHT",
+        "content": "Some advice may have pushed you to choose only one way.\nEither:\n• \"Be more silent and reflective,\"\nor\n• \"Express everything and talk it out.\"\nNeither felt fully right.\n\nThat's because your mind doesn't like strict rules.\nIt works better with choice and adjustment."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"My mind works best when I allow myself balance.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "This flexible way of thinking is not a weakness.\nIt is a strength.\nMany people who handle different situations well think this way.\nFor example, Barack Obama is known for being thoughtful and calm, yet also able to communicate clearly when needed. He knew when to pause and when to speak — and that balance helped him handle complex situations.\nIn daily life too, when you stop forcing yourself to be only one type,\nyou start feeling more comfortable and confident in your own mind."
+      }
+    },
+    "Mind_C_Expressive": {
+      "title": "🧠 YOUR MIND STYLE",
+      "subtitle": "Expressive",
+      "section1": {
+        "title": "1⃣ HOW YOUR MIND NATURALLY WORKS",
+        "content": "Your mind understands things by talking about them.\nMany times, thoughts are not fully clear inside your head at first.\nBut the moment you start speaking, things begin to make sense.\nFor example, you may start explaining a problem to someone and suddenly realise the solution while talking.\nIt feels like your mind clears itself as words come out.\nThis is how your thinking works best."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "You may notice this in daily situations.\nWhen something is bothering you, staying quiet feels uncomfortable.\nOnce you talk — to a friend, a family member, or even to yourself — you start feeling lighter.\nYou often think better during conversations, phone calls, or discussions.\nSilence for too long can make your thoughts feel stuck.\nTalking helps your mind move forward."
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "This style of thinking may not have always been understood.\nPeople may have said things like:\n• \"You talk too much.\"\n• \"Think first, then speak.\"\n• \"Why can't you stay quiet?\"\n\nAfter hearing this, you may have felt:\n\"Maybe I should speak less.\"\n\"Maybe something is wrong with me.\"\nBut nothing was wrong.\nYour mind is not careless or unfocused.\nIt simply thinks while expressing, not before expressing."
+      },
+      "section4": {
+        "title": "4⃣ WHAT DRAINS YOU (WITHOUT YOU REALISING)",
+        "content": "Your mind feels tired when:\n• you keep things inside for too long\n• you are told to stay quiet even when you need to speak\n• you don't get a chance to share what's on your mind\nFor example, holding emotions in, sitting silently with confusion, or avoiding conversation can quietly exhaust you.\nYour mind needs expression, not suppression."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY WORKS FOR YOU",
+        "content": "Your mind feels best when it is allowed to speak freely.\nSimple things help you:\n• talking things out\n• discussing ideas\n• walking and talking\n• sharing thoughts with someone you trust\nMovement and conversation together often help you think clearly."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS HEALTH ADVICE DID NOT FEEL RIGHT",
+        "content": "Some advice may have asked you to:\n• stay silent for long periods\n• suppress your urge to speak\n• follow very quiet practices\n\nThese methods are not wrong.\nThey just don't suit everyone.\nFor you, such methods may have felt uncomfortable or boring —\nnot because you lack control,\nbut because your mind needs expression to feel settled."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"I understand myself better when I talk things out.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "This expressive way of thinking is not a weakness.\nIt is a natural style.\nMany well-known people in the world think this way.\nFor example, Oprah Winfrey is known for thinking through conversation. She speaks, reflects, listens, and connects — and that ability to express clearly became her strength.\nIn daily life too, when you stop forcing yourself to stay quiet and allow healthy expression,\nyour mind feels clearer and lighter."
+      }
+    },
+    "Stress_A_Composed": {
+      "title": "YOUR STRESS RESPONSE",
+      "subtitle": "Composed",
+      "section1": {
+        "title": "1⃣ HOW YOUR STRESS RESPONSE NATURALLY WORKS",
+        "content": "When stress comes, your system usually stays steady.\nYou may feel pressure inside, but outwardly you remain calm.\nYour body and mind try to keep things under control instead of reacting immediately.\nYou observe first.\nYou act later."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "In difficult situations, people often notice your calm nature.\nAt work, if something goes wrong, you don't panic.\nAt home, during arguments or tension, you try to stay balanced.\nOthers may say:\n\"How are you so calm?\"\nEven when things are serious, you handle them quietly."
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "Because you stay calm, people may think:\n• \"This doesn't affect you.\"\n• \"You can handle everything.\"\n\nEven you may start believing this.\nSo you keep taking responsibility.\nYou keep managing things.\nYou keep saying, \"It's okay.\"\nThe consequence is this:\n👉 Your stress does not show immediately — it collects silently.\nYou may suddenly feel tired, heavy, or low without knowing why."
+      },
+      "section4": {
+        "title": "4⃣ WHAT DRAINS YOU (WITHOUT YOU REALISING)",
+        "content": "Your stress increases when:\n• you keep solving problems for everyone\n• you don't talk about what you're carrying\n• you don't give yourself rest after stressful days\nFor example, you may manage a tough situation calmly — but later feel exhausted, irritable, or disconnected.\nThat is your body asking for release."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY HELPS YOU",
+        "content": "You feel better when:\n• you slow down after stressful periods\n• you rest without guilt\n• you share your load with one trusted person\nYou don't need emergency calming techniques.\nYou need regular unloading."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS STRESS ADVICE DID NOT FEEL USEFUL",
+        "content": "Much advice focuses on \"staying calm\".\nBut you were already calm on the outside.\nWhat you needed was not control —\nbut space to release what you were holding inside."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"I stay healthy when I allow myself to rest and share.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "Being calm under pressure is a strength.\nFor example, Angela Merkel was known for staying steady during crises. She didn't react loudly, but she understood the importance of pausing and reflecting.\nIn daily life too, when you allow yourself to release stress instead of carrying it quietly,\nyour calmness stays strong and healthy."
+      }
+    },
+    "Stress_B_Balanced": {
+      "title": "YOUR STRESS RESPONSE",
+      "subtitle": "Balanced",
+      "section1": {
+        "title": "1⃣ HOW YOUR STRESS RESPONSE NATURALLY WORKS",
+        "content": "Your stress response changes based on the situation.\nFor example:\n• On a normal day, you handle pressure well.\n• On a very busy or emotional day, stress affects you more.\nYour reaction depends on how tired you are and how much is already on your plate."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "Some days, problems don't bother you much.\nOther days, even small issues feel heavy.\nFor example:\n• One day you manage work calmly.\n• Another day, a small delay or comment upsets you.\nYou may wonder:\n\"Why was I okay yesterday, but not today?\""
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "You may have judged yourself for this change.\nYou may think:\n\"Why can't I stay calm all the time?\"\nOthers may feel unsure how you will react.\nBut this does not mean you are weak or unstable.\nIt simply means your system is sensitive to overload."
+      },
+      "section4": {
+        "title": "4⃣ WHAT DRAINS YOU (WITHOUT YOU REALISING)",
+        "content": "Stress builds up when:\n• tasks keep adding without breaks\n• you ignore early tiredness\n• you push yourself for too long\nStress doesn't hit suddenly.\nIt builds quietly."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY HELPS YOU",
+        "content": "You do best when you:\n• take short breaks\n• notice stress early\n• rest before exhaustion\nSmall pauses protect you from big stress."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS STRESS ADVICE DID NOT FEEL RIGHT",
+        "content": "Some advice focused only on extreme calm.\nSome focused only on toughness.\nNeither fully helped you.\nYou don't need extremes.\nYou need balance and timing."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"I handle stress best when I listen to early signs.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "Many people with balanced stress responses work this way.\nFor example, Barack Obama has spoken about recognising stress early and taking breaks to reset.\nIn daily life too, when you respect your limits instead of pushing endlessly,\nstress becomes manageable."
+      }
+    },
+    "Stress_C_Reactive": {
+      "title": "YOUR STRESS RESPONSE",
+      "subtitle": "Reactive",
+      "section1": {
+        "title": "1⃣ HOW YOUR STRESS RESPONSE NATURALLY WORKS",
+        "content": "Your system reacts quickly to stress.\nYour body and mind feel it immediately.\nThoughts speed up.\nEmotions rise.\nThis does not mean something is wrong with you.\nIt means your system is very alert."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "For example:\n• When plans change suddenly, you feel disturbed.\n• When something goes wrong, your mind starts running fast.\nStress may show up as:\n• poor sleep\n• low appetite\n• body discomfort\nYour body reacts first.\nUnderstanding comes later."
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "You may have blamed yourself for reacting strongly.\nYou may think:\n\"Why am I like this?\"\n\"Why can't I stay calm?\"\nBut please remember:\n👉 A fast reaction does NOT mean weakness.\nIt means your nervous system notices things quickly.\nWith the right care, this sensitivity becomes a strength."
+      },
+      "section4": {
+        "title": "4⃣ WHAT DRAINS YOU (WITHOUT YOU REALISING)",
+        "content": "Stress increases when:\n• things change suddenly\n• emotions stay unresolved\n• you keep thinking without calming your body\nFor example, replaying problems in your head without rest only makes stress worse."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY HELPS YOU",
+        "content": "You feel better when you:\n• calm your body first\n• slow your breathing\n• step away briefly\nOnce your body settles,\nyour mind becomes clear naturally."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS STRESS ADVICE DID NOT FEEL USEFUL",
+        "content": "Some advice asked you to \"stay positive\" or \"think calmly\".\nThat is hard when your body is already stressed.\nYou don't need thinking first.\nYou need physical calming first."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"I feel better when I calm my body first.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "Fast-reacting systems are common in creative and sensitive people.\nFor example, Elon Musk has spoken openly about intense stress reactions and learning how to manage them.\nIn daily life too, when you stop blaming yourself and start calming your body,\nstress becomes easier to handle."
+      }
+    },
+    "Discipline_A_Structured": {
+      "title": "YOUR HEALTH DISCIPLINE STYLE",
+      "subtitle": "Structured",
+      "section1": {
+        "title": "1⃣ HOW YOUR DISCIPLINE NATURALLY WORKS",
+        "content": "You feel comfortable when life has a clear order.\nFor example, when you know:\n• wake-up time\n• meal time\n• work time\n• rest time\nyour mind feels relaxed.\nYou don't like guessing what to do next.\nClear plans make you feel safe and settled."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "This shows up clearly in daily responsibilities.\nAt work, if tasks are assigned clearly, you complete them on time.\nAt home, if household work has a fixed routine, you manage it smoothly.\nWhether you are working outside or managing home,\nonce roles and timings are clear, you function very well.\nYou don't like last-minute confusion.\nYou like knowing what comes next."
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "Unpredictable situations are difficult for you.\nFor example:\n• sudden guests\n• last-minute office changes\n• unexpected travel\n• unplanned work at home\nDuring such times, others may say:\n\"Why are you getting stressed over small changes?\"\nBut for you, sudden change breaks your internal order.\nThis does NOT mean you are rigid.\nIt means your discipline depends on predictability."
+      },
+      "section4": {
+        "title": "4⃣ WHAT DRAINS YOU (WITHOUT YOU REALISING)",
+        "content": "You feel drained when:\n• plans keep changing\n• rules are unclear\n• routines are broken repeatedly\nFor example, if meal timing changes daily or exercise has no fixed slot, you may slowly stop doing it — without realising why.\nYour system feels lost without structure."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY WORKS FOR YOU",
+        "content": "You do best when:\n• routines are fixed\n• instructions are clear\n• expectations are stable\nOnce a routine is set, you follow it naturally.\nStructure reduces stress for you."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS HEALTH ADVICE DID NOT FEEL RIGHT",
+        "content": "Advice like:\n• \"Just adjust daily\"\n• \"Do it whenever possible\"\n\nmay have felt uncomfortable.\nYou don't work well in open-ended systems.\nYou work best when the path is clear and steady."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"I stay consistent when my routine is clear.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "This structured way of living is a strength.\nFor example, Warren Buffett is known for following simple daily routines for decades. That stability helped him stay focused and successful.\nIn daily life too, when you allow structure instead of forcing flexibility,\nhealth habits become much easier."
+      }
+    },
+    "Discipline_B_Balanced": {
+      "title": "YOUR HEALTH DISCIPLINE STYLE",
+      "subtitle": "Balanced",
+      "section1": {
+        "title": "1⃣ HOW YOUR DISCIPLINE NATURALLY WORKS",
+        "content": "You like some rules, but not too many.\nYou want guidance, but you also want room to adjust.\nToo much control feels heavy.\nToo little direction feels confusing."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "For example:\n• You follow medicines well when timings are suggested, not forced.\n• You eat healthy when there are choices instead of strict menus.\nIf exercise has 2–3 flexible options, you follow it better.\nYou do well when routines feel realistic."
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "You may have felt:\n\"Why can't I be strict like some people?\"\nOthers may say:\n\"You start well but don't continue.\"\nBut this is not lack of discipline.\nYour system needs balance, not pressure."
+      },
+      "section4": {
+        "title": "4⃣ WHAT DRAINS YOU (WITHOUT YOU REALISING)",
+        "content": "You feel drained when:\n• rules feel controlling\n• guilt is used as motivation\n• routines ignore daily ups and downs\nFor example, a very strict diet may work for a few days, then suddenly feel impossible."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY WORKS FOR YOU",
+        "content": "You do best when:\n• there is a basic structure\n• flexibility is allowed\n• adjustments are acceptable\nWhen health fits life, not fights it, you stay consistent."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS HEALTH ADVICE DID NOT FEEL RIGHT",
+        "content": "Advice was often either:\n• too strict\n• or too casual\nNeither worked long term.\nYou don't need extremes.\nYou need reasonable structure."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"I stay healthy when routines respect real life.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "Many people who manage life well work this way.\nFor example, Barack Obama followed routines but allowed flexibility. That balance helped him manage long-term pressure.\nIn daily life too, when you stop blaming yourself and choose realistic routines,\nhealth becomes sustainable."
+      }
+    },
+    "Discipline_C_Flexible": {
+      "title": "YOUR HEALTH DISCIPLINE STYLE",
+      "subtitle": "Flexible",
+      "section1": {
+        "title": "1⃣ HOW YOUR DISCIPLINE NATURALLY WORKS",
+        "content": "Your discipline changes with mood, interest, and situation.\nFor example:\n• When you feel motivated, you follow routines very well.\n• When interest drops, routine feels heavy.\nFreedom keeps you engaged."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "Some days you eat very well.\nSome days you don't.\nSome days you exercise with full energy.\nOther days it feels boring.\nYour effort depends on how connected you feel."
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "You may have been called:\n• \"undisciplined\"\n• \"inconsistent\"\nBut the truth is different.\nYou don't lack discipline.\nYou lack emotional connection to forced routines.\nWhen something feels meaningful, you do it sincerely."
+      },
+      "section4": {
+        "title": "4⃣ WHAT DRAINS YOU (WITHOUT YOU REALISING)",
+        "content": "You feel drained when:\n• rules are forced\n• routines feel rigid\n• health feels like punishment\nThis often leads to giving up completely."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY WORKS FOR YOU",
+        "content": "You do best when:\n• routines feel light\n• enjoyment is included\n• variety is allowed\n\nInterest keeps you consistent."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS HEALTH ADVICE DID NOT FEEL RIGHT",
+        "content": "For example, strict diet plans or fixed gym schedules may have made you quit everything.\nNot because you were careless —\nbut because the system felt restrictive.\nYou don't need force.\nYou need engagement."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"I follow health best when it feels meaningful.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "Flexible people often succeed by staying interested, not strict.\nFor example, Richard Branson is known for adapting instead of following rigid routines.\nIn daily life too, when you stop forcing strict discipline and allow enjoyment,\nhealthy habits last longer."
+      }
+    },
+    "Social_A_Inner": {
+      "title": "YOUR SOCIAL & EMOTIONAL STYLE",
+      "subtitle": "Inner-Focused",
+      "section1": {
+        "title": "1⃣ HOW YOUR SOCIAL & EMOTIONAL STYLE NATURALLY WORKS",
+        "content": "You feel emotions inside first.\nBefore talking to anyone, you like to understand what you are feeling.\nYour mind needs quiet time to sort emotions properly.\nYou don't ignore emotions.\nYou just prefer to understand them privately before sharing.\nThis makes you feel emotionally safe."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "In daily life, this often looks like:\n• After a long or emotional day, you want to sit quietly\n• You feel better after some alone time\n• You prefer deep one-to-one conversations\nFor example, after an argument or misunderstanding, you may stay quiet at first.\nLater, when things are clear inside, you explain yourself calmly."
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "People around you may have said:\n• \"Why don't you talk much?\"\n• \"Why do you keep things to yourself?\"\nYou may have wondered:\n\"Am I too quiet?\"\n\"Why can't I open up immediately like others?\"\nBut this does not mean you are emotionally closed.\nIt simply means your emotions need time and privacy to settle."
+      },
+      "section4": {
+        "title": "4⃣ WHAT DRAINS YOU (WITHOUT YOU REALISING)",
+        "content": "You feel emotionally tired when:\n• you are pushed to talk before you are ready\n• many people are around you for long hours\n• emotions are discussed again and again\nFor example, long family gatherings or constant emotional discussions can quietly exhaust you, even if everyone is kind."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY WORKS FOR YOU",
+        "content": "You feel emotionally better when:\n• you get quiet personal time\n• you talk to one trusted person\n• you are allowed to open up at your own pace\nYou don't need many people.\nYou need safe space."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS EMOTIONAL ADVICE DID NOT FEEL RIGHT",
+        "content": "Advice like:\n• \"Talk immediately\"\n• \"Share everything openly\"\nmay have felt uncomfortable.\nNot because you lack emotions —\nbut because your emotions need settling time first."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"I understand my emotions best when I get quiet time.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "This inner way of connecting is not a weakness.\nIt is a natural style.\nFor example, Bill Gates is known for being thoughtful and reserved. He prefers thinking deeply before speaking, and that quiet approach became his strength.\n\nIn daily life too, when you stop forcing yourself to be more open than you feel,\nrelationships start feeling safer and more comfortable."
+      }
+    },
+    "Social_B_Balanced": {
+      "title": "YOUR SOCIAL & EMOTIONAL STYLE",
+      "subtitle": "Balanced",
+      "section1": {
+        "title": "1⃣ HOW YOUR SOCIAL & EMOTIONAL STYLE NATURALLY WORKS",
+        "content": "You enjoy people — but you also need personal space.\nYour emotional balance comes from both connection and alone time.\nNeither alone works fully on its own."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "You may notice this clearly.\nYou like people when:\n• you feel emotionally fresh\n• conversations feel meaningful\n• you want to share or laugh\nYou prefer being alone when:\n• you feel tired\n• too much talking has happened\n• you need to think or recharge\nFor example, you may enjoy meeting friends one evening,\nbut want quiet time the next day."
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "You may have felt confused and thought:\n\"Why am I social one day and quiet the next?\"\n\nOthers may feel unsure what you want.\nBut this is not moodiness.\nIt simply means your emotional needs change with energy and situation."
+      },
+      "section4": {
+        "title": "4⃣ WHAT DRAINS YOU (WITHOUT YOU REALISING)",
+        "content": "You feel drained when:\n• you ignore your need for space\n• you push yourself to socialise when tired\n• you stay alone for too long\nToo much of either side creates imbalance."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY WORKS FOR YOU",
+        "content": "You feel emotionally healthy when:\n• you mix people time with alone time\n• you listen to your energy levels\n• you allow flexibility\nBalance keeps you stable."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS EMOTIONAL ADVICE DID NOT FEEL RIGHT",
+        "content": "Some advice pushed you to choose one style:\n• \"Be more social\"\n• \"Spend more time alone\"\nNeither was fully right.\nYou don't need fixed rules.\nYou need choice and balance."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"I feel best when I balance people and personal space.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "Many emotionally stable people live this way.\nFor example, Barack Obama is known for being comfortable with people while also valuing quiet reflection.\nIn daily life too, when you stop forcing yourself into one box,\nrelationships feel easier and more natural."
+      }
+    },
+    "Social_C_People": {
+      "title": "YOUR SOCIAL & EMOTIONAL STYLE",
+      "subtitle": "People-Focused",
+      "section1": {
+        "title": "1⃣ HOW YOUR SOCIAL & EMOTIONAL STYLE NATURALLY WORKS",
+        "content": "You understand your emotions by sharing them.\nTalking helps you feel clear.\nBeing around people helps you feel settled.\nConnection is important for your emotional health."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "In daily life:\n• You feel lighter after talking\n• Silence for too long feels heavy\n• Sharing helps you calm down\nFor example, after a stressful day, one good conversation can change your mood completely."
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "People may say:\n• \"You depend too much on others\"\n• \"Why can't you handle things alone?\"\nYou may have felt guilty for needing people.\nBut needing connection does not mean weakness.\nYour emotions settle through interaction."
+      },
+      "section4": {
+        "title": "4⃣ WHAT DRAINS YOU (WITHOUT YOU REALISING)",
+        "content": "You feel drained when:\n• you keep feelings inside\n• you don't feel heard\n• you feel disconnected\nBeing alone for too long can make you feel low or restless."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY WORKS FOR YOU",
+        "content": "You feel emotionally strong when:\n• you talk openly\n• you feel listened to\n• you stay connected\nSharing keeps your emotional system healthy."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS EMOTIONAL ADVICE DID NOT FEEL RIGHT",
+        "content": "Advice that focused only on silence or independence may have felt painful.\nNot because you are needy —\nbut because your system heals through connection."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"I feel emotionally better when I share and connect.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "This people-focused style is a strength.\nFor example, Oprah Winfrey built her life around connection and conversation. Her ability to connect emotionally helped millions feel understood.\nIn daily life too, when you allow healthy connection instead of forcing isolation,\nemotional balance comes naturally."
+      }
+    },
+    "Energy_A_Active": {
+      "title": "YOUR ENERGY & ACTIVITY STYLE",
+      "subtitle": "Active",
+      "section1": {
+        "title": "1⃣ HOW YOUR ENERGY NATURALLY WORKS",
+        "content": "Your body feels alive when it is moving.\nStaying active helps you feel fresh, clear, and positive.\nLong periods of sitting make you feel restless.\nMovement is not extra work for you.\nIt is how your body stays balanced."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "You may notice this clearly.\n• Sitting for long hours makes you uncomfortable\n• You feel better after walking, cleaning, or moving around\n• Even light activity improves your mood\n\nFor example, after a stressful day, a walk or physical work makes you feel lighter than lying down."
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "People may say:\n• \"Why can't you sit quietly?\"\n• \"Why are you always doing something?\"\nYou may have wondered:\n\"Why do I feel irritated when I rest too much?\"\nBut this is not impatience.\nYour body releases stress through movement."
+      },
+      "section4": {
+        "title": "4⃣ WHAT DRAINS YOU (WITHOUT YOU REALISING)",
+        "content": "You feel drained when:\n• you sit too long\n• your day has no physical activity\n• you are forced to stay inactive\nFor example, long office hours without breaks or staying indoors all day can quietly drain you."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY WORKS FOR YOU",
+        "content": "You feel best when:\n• your day includes regular movement\n• activity is spread across the day\n• you don't wait till exhaustion\nShort walks, stretching, chores, or light workouts keep your energy steady."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS ACTIVITY ADVICE DID NOT FEEL RIGHT",
+        "content": "Advice that focused only on rest or sitting still may not have helped.\n\nYou don't recharge by stopping completely.\nYou recharge by moving wisely."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"My energy stays healthy when I keep moving.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "This active energy style is a strength.\nFor example, Cristiano Ronaldo stays energetic not just because of exercise, but because movement is part of his daily life.\nIn daily life too, when you allow your body to move instead of forcing rest,\nyour energy feels natural and steady."
+      }
+    },
+    "Energy_B_Balanced": {
+      "title": "YOUR ENERGY & ACTIVITY STYLE",
+      "subtitle": "Balanced",
+      "section1": {
+        "title": "1⃣ HOW YOUR ENERGY NATURALLY WORKS",
+        "content": "Your energy works best with balance.\nToo much activity makes you tired.\nToo much rest makes you dull.\nYour body likes a steady rhythm."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "You may notice this pattern.\n• Moderate work feels good\n• Extreme exercise exhausts you\n• Complete inactivity lowers your mood\n\nFor example, a balanced day with work, light movement, and rest feels perfect for you."
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "You may have thought:\n\"Why can't I push like others?\"\n\"Why do I feel tired with extremes?\"\nOthers may say:\n\"You should do more\" or \"You should rest more\".\nBut your body is not lazy.\nIt is balance-dependent."
+      },
+      "section4": {
+        "title": "4⃣ WHAT DRAINS YOU (WITHOUT YOU REALISING)",
+        "content": "You feel drained when:\n• days are too busy\n• rest is skipped\n• routine becomes irregular\nFor example, sudden heavy work or sudden long rest can disturb your energy."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY WORKS FOR YOU",
+        "content": "You feel best when:\n• your day has a steady flow\n• activity and rest are both present\n• timing is predictable\nConsistency keeps your energy stable."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS ACTIVITY ADVICE DID NOT FEEL RIGHT",
+        "content": "Advice often pushed extremes:\n• \"Work harder\"\n• \"Rest more\"\n\nNeither suited you.\nYou don't need extremes.\nYou need regular balance."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"My energy stays strong when my day is balanced.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "Many long-term healthy people live this way.\nFor example, Warren Buffett follows a steady daily rhythm without extremes.\nIn daily life too, when you stop forcing highs and lows,\nenergy becomes reliable and calm."
+      }
+    },
+    "Energy_C_Relaxed": {
+      "title": "YOUR ENERGY & ACTIVITY STYLE",
+      "subtitle": "Relaxed",
+      "section1": {
+        "title": "1⃣ HOW YOUR ENERGY NATURALLY WORKS",
+        "content": "Your body prefers slow and calm energy use.\nYou don't like rushing.\nYou function better at an easy pace.\nRest is important for you."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "You may notice:\n• You enjoy slow mornings\n• You like calm activities\n• Too much activity makes you tired quickly\nFor example, you may prefer reading, watching, or light household work over intense workouts."
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "You may have been called:\n• \"lazy\"\n• \"inactive\"\nYou may have believed this too.\nBut this is not laziness.\nYour body recovers slower and needs gentler pacing."
+      },
+      "section4": {
+        "title": "4⃣ WHAT DRAINS YOU (WITHOUT YOU REALISING)",
+        "content": "You feel drained when:\n• you push yourself to match others\n• you overdo physical activity\n• rest is ignored\nFor example, sudden heavy exercise or very busy days can leave you exhausted for long."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY WORKS FOR YOU",
+        "content": "You feel better when:\n• activity is gentle\n• rest is respected\n• pace is slow and steady\nWalking, stretching, and calm routines suit you best."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS ACTIVITY ADVICE DID NOT FEEL RIGHT",
+        "content": "Advice focused on pushing harder.\n\nThat made you feel tired and discouraged.\nYou don't need force.\nYou need gentle consistency."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"My body works best when I move gently.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "Calm energy styles are not weak.\nFor example, Dalai Lama lives with calm routines and gentle movement.\nIn daily life too, when you respect your natural pace instead of forcing speed,\nyour energy stays stable."
+      }
+    },
+    "Habit_A_Consistency": {
+      "title": "YOUR HABIT FORMATION STYLE",
+      "subtitle": "Consistency-Driven",
+      "section1": {
+        "title": "1⃣ HOW YOUR HABIT STYLE NATURALLY WORKS",
+        "content": "You build habits through regular repetition.\nOnce something becomes part of your daily routine, you don't need to think much about it.\nYou don't wait to feel excited.\nYou don't ask yourself daily, \"Do I feel like doing this?\"\nYou simply do it — because it has become normal.\n\nFor you, habit = routine."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "You may notice this clearly in everyday things.\n• You brush your teeth without thinking\n• You take medicines daily once timings are fixed\n• You can walk at the same time every day\nFor example, once you decide:\n\"I will walk at 7 am,\"\nyou just do it — even on low-mood days.\nYou may not enjoy it every day, but you still continue."
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "People around you may say:\n• \"You are boring.\"\n• \"You do the same thing every day.\"\nYou may also feel:\n\"Why don't I feel excited like others?\"\nBut excitement is not how your system works.\nYour strength is reliability, not thrill."
+      },
+      "section4": {
+        "title": "4⃣ WHAT BREAKS YOUR HABITS (WITHOUT YOU REALISING)",
+        "content": "Your habits break mainly when routine breaks.\nFor example:\n• travel\n• festivals\n• illness\n• night shifts\n• sudden schedule changes\n\nOnce timing is disturbed, habits start slipping — not because you lost motivation, but because your system lost structure."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY HELPS YOU",
+        "content": "You do best when:\n• timing is fixed\n• rules are simple\n• habits are linked to daily life (after bath, after breakfast, before sleep)\nOnce habits become automatic, you don't struggle at all."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS HABIT ADVICE DID NOT FEEL RIGHT",
+        "content": "Advice like:\n• \"Stay motivated\"\n• \"Feel inspired daily\"\n• \"Enjoy the process\"\nmay not have helped.\nYou don't need inspiration.\nYou need regularity."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"I stay consistent when habits become routine.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "This steady habit style is powerful.\nFor example, Warren Buffett follows very simple daily habits without chasing excitement.\nIn daily life too, when you stop waiting for motivation and focus on routine,\nhabits stay strong for years."
+      }
+    },
+    "Habit_B_Balanced": {
+      "title": "YOUR HABIT FORMATION STYLE",
+      "subtitle": "Balanced",
+      "section1": {
+        "title": "1⃣ HOW YOUR HABIT STYLE NATURALLY WORKS",
+        "content": "You need both discipline and motivation.\nDiscipline helps you start.\nMotivation helps you continue.\nIf either is missing for too long, habits start slipping."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "You may notice this pattern.\n• You start health routines sincerely\n• You continue when you see results\n• You slow down when things feel repetitive\nFor example, you may follow diet strictly for 2–3 weeks, then slowly feel bored and skip."
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "You may think:\n\"Why do I always start well but lose consistency later?\"\nOthers may say:\n\"You lack discipline.\"\nBut this is not failure.\nYour system needs periodic refresh, not pressure."
+      },
+      "section4": {
+        "title": "4⃣ WHAT BREAKS YOUR HABITS (WITHOUT YOU REALISING)",
+        "content": "Habits break when:\n• progress is not visible\n• routine feels monotonous\n• appreciation or reward is missing\nSmall discouragement affects you more than big problems."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY HELPS YOU",
+        "content": "You do best when:\n• progress is tracked\n• small changes are added\n• rewards are included\nFor example:\n• changing walking route\n• adding small weekly goals\n• noticing small health improvements\nThese keep you engaged."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS HABIT ADVICE DID NOT FEEL RIGHT",
+        "content": "Advice was usually extreme:\n• \"Just be disciplined\"\n• \"Just stay motivated\"\nNeither worked long-term.\nYou need structure + meaning together."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"I stay consistent when habits feel meaningful.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "Many successful people work this way.\nFor example, Barack Obama balanced discipline with purpose to sustain long-term routines.\n\nIn daily life too, when you mix discipline with meaning,\nhabits become steady and realistic."
+      }
+    },
+    "Habit_C_Motivation": {
+      "title": "YOUR HABIT FORMATION STYLE",
+      "subtitle": "Motivation-Driven",
+      "section1": {
+        "title": "1⃣ HOW YOUR HABIT STYLE NATURALLY WORKS",
+        "content": "Your habits depend on interest and emotion.\nWhen something excites you, you give your full energy.\nWhen excitement fades, routine feels heavy.\nYou don't like forced habits."
+      },
+      "section2": {
+        "title": "2⃣ HOW THIS SHOWS UP IN DAILY LIFE",
+        "content": "You may notice this clearly.\n• You start new habits with enthusiasm\n• You enjoy learning and experimenting\n• You stop when things become boring\nFor example, you may start gym, yoga, or diet enthusiastically — then suddenly lose interest after a few weeks."
+      },
+      "section3": {
+        "title": "3⃣ WHY THIS WAS MISUNDERSTOOD (BY YOU OR OTHERS)",
+        "content": "People may say:\n• \"You are inconsistent.\"\n• \"You never finish what you start.\"\nYou may believe this too.\nBut this is not laziness.\nYour system works on emotional connection."
+      },
+      "section4": {
+        "title": "4⃣ WHAT BREAKS YOUR HABITS (WITHOUT YOU REALISING)",
+        "content": "Habits break when:\n• routine feels repetitive\n• enjoyment disappears\n• results feel far away\nMonotony drains you faster than effort."
+      },
+      "section5": {
+        "title": "5⃣ WHAT ACTUALLY HELPS YOU",
+        "content": "You do best when:\n• habits feel fun\n• variety is allowed\n• purpose is clear\nFor example:\n• changing exercise styles\n• adding music\n• setting short-term challenges\nEnjoyment keeps you going."
+      },
+      "section6": {
+        "title": "6⃣ WHY PREVIOUS HABIT ADVICE DID NOT FEEL RIGHT",
+        "content": "Advice focused on control, discipline, and strict rules.\nThat made you feel trapped — and you quit completely.\nYou don't need pressure.\nYou need engagement."
+      },
+      "section7": {
+        "title": "7⃣ ONE LINE YOU SHOULD REMEMBER",
+        "content": "\"I stay consistent when habits excite me.\""
+      },
+      "finalNote": {
+        "title": "🌱 FINAL NOTE FOR YOU",
+        "content": "Motivation-driven people often succeed creatively.\nFor example, Richard Branson builds habits around interest and excitement rather than rigid routines.\nIn daily life too, when you allow flexibility and enjoyment,\nhabits last longer."
+      }
+    }
   }
 }

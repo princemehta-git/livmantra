@@ -196,7 +196,7 @@ router.post("/google", async (req, res) => {
 
     if (user) {
       // User exists with this email, link Google account
-      user = await prisma.user.update({
+      const updatedUser = await prisma.user.update({
         where: { id: user.id },
         data: {
           googleId,
@@ -210,6 +210,8 @@ router.post("/google", async (req, res) => {
           name: true,
           email: true,
           phone: true,
+          password: true,
+          googleId: true,
           isAdmin: true,
           dob: true,
           gender: true,
@@ -220,28 +222,29 @@ router.post("/google", async (req, res) => {
           updatedAt: true,
         },
       });
+      user = updatedUser;
 
-      const token = generateToken(user.id, user.isAdmin || false);
+      const token = generateToken(updatedUser.id, updatedUser.isAdmin || false);
       const userData = {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        phone: user.phone,
-        isAdmin: user.isAdmin,
-        dob: user.dob,
-        gender: user.gender,
-        profileImage: user.profileImage,
-        state: user.state,
-        nationality: user.nationality,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
+        id: updatedUser.id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        phone: updatedUser.phone,
+        isAdmin: updatedUser.isAdmin,
+        dob: updatedUser.dob,
+        gender: updatedUser.gender,
+        profileImage: updatedUser.profileImage,
+        state: updatedUser.state,
+        nationality: updatedUser.nationality,
+        createdAt: updatedUser.createdAt,
+        updatedAt: updatedUser.updatedAt,
       };
 
       return res.json({ token, user: userData });
     }
 
     // Create new user
-    user = await prisma.user.create({
+    const newUser = await prisma.user.create({
       data: {
         name: name || "User",
         email,
@@ -254,6 +257,8 @@ router.post("/google", async (req, res) => {
         name: true,
         email: true,
         phone: true,
+        password: true,
+        googleId: true,
         isAdmin: true,
         dob: true,
         gender: true,
@@ -265,9 +270,23 @@ router.post("/google", async (req, res) => {
       },
     });
 
-    const token = generateToken(user.id, user.isAdmin || false);
+    const token = generateToken(newUser.id, newUser.isAdmin || false);
+    const userData = {
+      id: newUser.id,
+      name: newUser.name,
+      email: newUser.email,
+      phone: newUser.phone,
+      isAdmin: newUser.isAdmin,
+      dob: newUser.dob,
+      gender: newUser.gender,
+      profileImage: newUser.profileImage,
+      state: newUser.state,
+      nationality: newUser.nationality,
+      createdAt: newUser.createdAt,
+      updatedAt: newUser.updatedAt,
+    };
 
-    return res.json({ token, user });
+    return res.json({ token, user: userData });
   } catch (err) {
     console.error("Google OAuth error:", err);
     return res.status(500).json({ error: "server error" });

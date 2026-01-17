@@ -14,10 +14,11 @@ import { motion } from "framer-motion";
 type Props = {
   open: boolean;
   onClose: () => void;
+  onAccept?: () => void; // Optional accept handler
   autoCloseTime?: number; // in seconds
 };
 
-export default function DisclaimerModal({ open, onClose, autoCloseTime = 15 }: Props) {
+export default function DisclaimerModal({ open, onClose, onAccept, autoCloseTime = 15 }: Props) {
   const [timeRemaining, setTimeRemaining] = useState(autoCloseTime);
 
   useEffect(() => {
@@ -30,7 +31,13 @@ export default function DisclaimerModal({ open, onClose, autoCloseTime = 15 }: P
       setTimeRemaining((prev) => {
         if (prev <= 1) {
           clearInterval(interval);
-          onClose();
+          // Use setTimeout to avoid setState during render
+          setTimeout(() => {
+            if (onAccept) {
+              onAccept();
+            }
+            onClose();
+          }, 0);
           return 0;
         }
         return prev - 1;
@@ -38,7 +45,7 @@ export default function DisclaimerModal({ open, onClose, autoCloseTime = 15 }: P
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [open, autoCloseTime, onClose]);
+  }, [open, autoCloseTime, onClose, onAccept]);
 
   const progress = (timeRemaining / autoCloseTime) * 100;
 
@@ -75,8 +82,8 @@ export default function DisclaimerModal({ open, onClose, autoCloseTime = 15 }: P
         transition={{ duration: 0.3 }}
       >
         <DialogTitle>
-          <Typography
-            variant="h5"
+          <Box
+            component="div"
             sx={{
               fontWeight: 900,
               background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 50%, #00ffff 100%)",
@@ -88,10 +95,11 @@ export default function DisclaimerModal({ open, onClose, autoCloseTime = 15 }: P
               textTransform: "uppercase",
               letterSpacing: "0.1em",
               textAlign: "center",
+              fontSize: "1.5rem",
             }}
           >
             Your Truth Zone
-          </Typography>
+          </Box>
         </DialogTitle>
         <DialogContent sx={{ pt: 3, pb: 2 }}>
           <Box sx={{ textAlign: "center" }}>
@@ -175,7 +183,12 @@ export default function DisclaimerModal({ open, onClose, autoCloseTime = 15 }: P
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button 
               variant="contained" 
-              onClick={onClose}
+              onClick={() => {
+                if (onAccept) {
+                  onAccept();
+                }
+                onClose();
+              }}
               sx={{
                 px: 5,
                 py: 1.5,

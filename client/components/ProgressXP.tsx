@@ -52,7 +52,7 @@ export default function ProgressXP({
           },
         }}
       >
-        <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, justifyContent: "space-between", mb: 2, alignItems: { xs: "flex-start", sm: "center" }, flexWrap: "wrap", gap: { xs: 1, sm: 2 } }}>
+        <Box sx={{ display: "flex", flexDirection: { xs: "row", sm: "row" }, justifyContent: "space-between", mb: 2, alignItems: "center", flexWrap: "wrap", gap: { xs: 1, sm: 2 } }}>
           <Typography 
             variant="h6" 
             sx={{ 
@@ -60,7 +60,7 @@ export default function ProgressXP({
               color: "#00ffff",
               textTransform: "uppercase",
               letterSpacing: "0.1em",
-              fontSize: { xs: "0.9rem", md: "1.1rem" },
+              fontSize: { xs: "0.75rem", sm: "0.9rem", md: "1.1rem" },
             }}
           >
             Mission Progress: {current}/{total}
@@ -84,12 +84,13 @@ export default function ProgressXP({
                   background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
                   color: "#0a0e27",
                   fontWeight: 900,
-                  fontSize: { xs: "0.7rem", sm: "0.85rem" },
+                  fontSize: { xs: "0.65rem", sm: "0.75rem", md: "0.85rem" },
                   borderRadius: 0,
                   border: "1px solid rgba(0, 255, 255, 0.5)",
                   boxShadow: "0 0 20px rgba(0, 255, 255, 0.4)",
                   textTransform: "uppercase",
                   letterSpacing: "0.1em",
+                  height: { xs: "24px", sm: "28px" },
                 }}
               />
             </motion.div>
@@ -129,7 +130,7 @@ export default function ProgressXP({
             fontWeight: 600,
             textTransform: "uppercase",
             letterSpacing: "0.1em",
-            fontSize: "0.75rem",
+            fontSize: { xs: "0.65rem", sm: "0.75rem" },
           }}
         >
           {percent}% Complete

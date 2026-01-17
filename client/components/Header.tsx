@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import {
   AppBar,
@@ -9,7 +9,7 @@ import {
   Container,
 } from "@mui/material";
 import { Dashboard, Logout, Login, AdminPanelSettings, Message } from "@mui/icons-material";
-import Logo from "./Logo";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
 import { useTranslation } from "next-i18next";
@@ -19,6 +19,8 @@ export default function Header() {
   const router = useRouter();
   const { user, admin, logout, adminLogout } = useAuth();
   const { t } = useTranslation("header");
+  const [logoError, setLogoError] = useState(false);
+  const [logoSrc, setLogoSrc] = useState("/logo16_9.svg");
 
   return (
     <AppBar
@@ -38,21 +40,83 @@ export default function Header() {
             justifyContent: "space-between", 
             py: { xs: 0.5, sm: 1 },
             px: 0,
-            minHeight: { xs: 56, sm: 64 },
+            minHeight: { xs: 56, sm: 72, md: 80 },
             flexWrap: { xs: "nowrap", sm: "nowrap" },
           }}
         >
           <Box sx={{ flexShrink: 0, display: "flex", alignItems: "center" }}>
-            <Logo
-              width={180}
-              height={72}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              style={{ cursor: "pointer" }}
               onClick={() => router.push("/")}
-              animated={true}
-              sx={{
-                height: { xs: 48, sm: 64, md: 72 },
-                width: { xs: 120, sm: 160, md: 180 },
-              }}
-            />
+            >
+              <Box
+                sx={{
+                  position: "relative",
+                  height: { xs: 40, sm: 56, md: 64 },
+                  width: { xs: 140, sm: 190, md: 220 },
+                  flexShrink: 0,
+                  overflow: "hidden",
+                }}
+              >
+                {!logoError ? (
+                  <Image
+                    src={logoSrc}
+                    alt="LivMantra Logo"
+                    fill
+                    style={{
+                      objectFit: "cover",
+                      objectPosition: "center center",
+                    }}
+                    priority
+                    onError={() => {
+                      // Try PNG fallback if SVG fails
+                      if (logoSrc === "/logo16_9.svg") {
+                        setLogoSrc("/logo16_9.png");
+                      } else {
+                        // Both SVG and PNG failed
+                        setLogoError(true);
+                      }
+                    }}
+                  />
+                ) : (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      height: "100%",
+                      width: "100%",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: "80%",
+                        height: "80%",
+                        background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
+                        borderRadius: "8px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          color: "#0a0e27",
+                          fontWeight: 800,
+                          fontSize: "1rem",
+                        }}
+                      >
+                        LM
+                      </Typography>
+                    </Box>
+                  </Box>
+                )}
+              </Box>
+            </motion.div>
           </Box>
           <Box 
             sx={{ 

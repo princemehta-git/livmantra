@@ -3,6 +3,7 @@ import { Card, CardContent, Typography, Button, Box, Tooltip, IconButton } from 
 import { InfoOutlined } from "@mui/icons-material";
 import { motion } from "framer-motion";
 import { useTranslation } from "next-i18next";
+import { playSoundEffect } from "../lib/audioUtils";
 
 type Props = {
   qIndex: number;
@@ -87,7 +88,7 @@ export default function QuestionCard({
                   sx={{ 
                     color: "#0a0e27",
                     fontWeight: 900,
-                    fontSize: { xs: "0.75rem", sm: "0.9rem" },
+                    fontSize: { xs: "0.7rem", sm: "0.85rem", md: "0.9rem" },
                     textTransform: "uppercase",
                     letterSpacing: "0.1em",
                   }}
@@ -105,7 +106,7 @@ export default function QuestionCard({
                 color: "#ffffff",
                 lineHeight: 1.5,
                 flex: 1,
-                fontSize: { xs: "1.1rem", md: "1.3rem" },
+                fontSize: { xs: "1rem", sm: "1.1rem", md: "1.3rem" },
               }}
             >
               {text}
@@ -179,18 +180,21 @@ export default function QuestionCard({
                 >
                   <Button
                     variant={selected === val ? "contained" : "outlined"}
-                    onClick={() => onAnswer(val)}
+                    onClick={() => {
+                      playSoundEffect();
+                      onAnswer(val);
+                    }}
                     fullWidth
                     sx={{
                       textAlign: "left",
                       justifyContent: "flex-start",
                       px: { xs: 1.5, sm: 2.5 },
-                      py: { xs: 1.1, sm: 1.8 },
+                      py: { xs: 1, sm: 1.6, md: 1.8 },
                       borderRadius: 0,
-                      fontSize: { xs: "0.75rem", sm: "0.95rem" },
+                      fontSize: { xs: "0.7rem", sm: "0.85rem", md: "0.95rem" },
                       fontWeight: 600,
                       textTransform: "none",
-                      lineHeight: { xs: 1.3, sm: 1.5 },
+                      lineHeight: { xs: 1.3, sm: 1.4, md: 1.5 },
                       minHeight: { xs: "44px", sm: "auto" },
                       ...(selected === val
                         ? {

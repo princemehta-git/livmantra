@@ -1,7 +1,9 @@
 import express from "express";
 import { prisma } from "../db";
-import { scoreVPK } from "../services/scoring";
+import { scoreBBA } from "../services/scoring";
+import { scorePersonality } from "../services/personalityScoring";
 import { mergeReportWithTemplates } from "../services/reportTemplates";
+import { mergePersonalityReportWithTemplates } from "../services/personalityReportTemplates";
 import { optionalAuth, AuthRequest } from "../middleware/auth";
 
 const router = express.Router();
@@ -11,14 +13,25 @@ router.post("/submit", optionalAuth, async (req: AuthRequest, res) => {
     const { user: userData, testType, answers } = req.body;
     if (!answers) return res.status(400).json({ error: "invalid body" });
 
-    // Validate answers if VPK test
-    if (testType === "VPK") {
+    // Validate answers if BBA test
+    if (testType === "BBA") {
       if (!Array.isArray(answers) || answers.length !== 35) {
         return res.status(400).json({ error: "answers must be an array of length 35" });
       }
       const invalidValues = answers.filter((a: number) => a !== 1 && a !== 2 && a !== 3 && a !== 4);
       if (invalidValues.length > 0) {
         return res.status(400).json({ error: "answers must contain only values 1, 2, 3, or 4" });
+      }
+    }
+
+    // Validate answers if Personality test
+    if (testType === "PERSONALITY") {
+      if (!Array.isArray(answers) || answers.length !== 48) {
+        return res.status(400).json({ error: "answers must be an array of length 48" });
+      }
+      const invalidValues = answers.filter((a: number) => a < 1 || a > 7);
+      if (invalidValues.length > 0) {
+        return res.status(400).json({ error: "answers must contain only values between 1 and 7" });
       }
     }
 
@@ -46,8 +59,10 @@ router.post("/submit", optionalAuth, async (req: AuthRequest, res) => {
 
     // scoring
     let snapshot;
-    if (testType === "VPK") {
-      snapshot = scoreVPK(answers);
+    if (testType === "BBA") {
+      snapshot = scoreBBA(answers);
+    } else if (testType === "PERSONALITY") {
+      snapshot = scorePersonality(answers);
     } else {
       snapshot = { message: "unknown test" };
     }
@@ -80,7 +95,11 @@ router.get("/result/:id", async (req, res) => {
     let mergedReport = null;
     if (result.snapshot) {
       try {
-        mergedReport = mergeReportWithTemplates(result.snapshot as any);
+        if (result.type === "PERSONALITY") {
+          mergedReport = mergePersonalityReportWithTemplates(result.snapshot as any);
+        } else {
+          mergedReport = mergeReportWithTemplates(result.snapshot as any);
+        }
       } catch (err) {
         console.error("Error merging templates:", err);
         // Continue without merged report if template merge fails
@@ -97,12 +116,18 @@ router.get("/result/:id", async (req, res) => {
 // Merge report endpoint
 router.post("/mergeReport", async (req, res) => {
   try {
-    const { snapshot } = req.body;
+    const { snapshot, testType } = req.body;
     if (!snapshot) {
       return res.status(400).json({ error: "snapshot is required" });
     }
     
-    const mergedReport = mergeReportWithTemplates(snapshot);
+    let mergedReport;
+    if (testType === "PERSONALITY") {
+      mergedReport = mergePersonalityReportWithTemplates(snapshot);
+    } else {
+      mergedReport = mergeReportWithTemplates(snapshot);
+    }
+    
     return res.json({ mergedReport });
   } catch (err) {
     console.error(err);

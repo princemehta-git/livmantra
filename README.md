@@ -1,6 +1,6 @@
-# LivMantra - VPK Test Platform
+# LivMantra - BBA Test Platform
 
-A full-stack TypeScript application for administering the VPK (Body Type + Prakriti + Vikriti) test with a gamified, responsive UI.
+A full-stack TypeScript application for administering the BBA (Body Type + Prakriti + Vikriti) test with a gamified, responsive UI.
 
 ## Tech Stack
 
@@ -98,7 +98,7 @@ livmantra/
 
 ## Features
 
-### VPK Test Flow
+### BBA Test Flow
 
 - **36 Questions** organized in 3 sections:
   - Questions 1-6: Somatotype (Body Type)

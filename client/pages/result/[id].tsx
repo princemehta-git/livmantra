@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { getResult, mergeReport } from "../../lib/api";
 import { Container, Typography, Box, CircularProgress } from "@mui/material";
-import VpkResultCard from "../../components/VpkResultCard";
+import BbaResultCard from "../../components/BbaResultCard";
+import PersonalityResultCard from "../../components/PersonalityResultCard";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import HackingSequenceLoader from "../../components/HackingSequenceLoader";
@@ -92,7 +93,10 @@ export default function ResultPage() {
     >
       {/* Hacking Sequence Loader */}
       {showHackingLoader && dataReady && (
-        <HackingSequenceLoader onComplete={handleHackingComplete} />
+        <HackingSequenceLoader 
+          onComplete={handleHackingComplete} 
+          testType={result?.type || "BBA"}
+        />
       )}
 
       {/* Matrix Background */}
@@ -199,57 +203,120 @@ export default function ResultPage() {
 
           {!loading && snapshot && (
             <>
-              <Box sx={{ textAlign: "center", mb: 3 }}>
-                <Typography
-                  variant="h2"
-                  component="h1"
-                  sx={{
-                    fontWeight: 900,
-                    fontSize: { xs: "2rem", md: "2.8rem" },
-                    background:
-                      "linear-gradient(135deg, #00ffff 0%, #8a2be2 50%, #00ffff 100%)",
-                    backgroundSize: "200% 200%",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    animation: "gradient 3s ease infinite",
-                    letterSpacing: "-0.03em",
-                    textShadow: "0 0 40px rgba(0, 255, 255, 0.35)",
-                    mb: 1,
-                    fontFamily: "monospace",
-                  }}
-                >
-                  {!showHackingLoader ? (
-                    "BODY DECODING COMPLETED"
-                  ) : (
-                    <TerminalTypingText text="BODY DECODING COMPLETED" speed={100} />
-                  )}
-                </Typography>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: "rgba(255, 255, 255, 0.7)",
-                    fontWeight: 300,
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase",
-                    fontSize: { xs: "0.8rem", md: "0.9rem" },
-                    fontFamily: "monospace",
-                  }}
-                >
-                  {!showHackingLoader && "> Know your body nature & behavior"}
-                </Typography>
-              </Box>
+              {result?.type === "PERSONALITY" ? (
+                <>
+                  <Box sx={{ textAlign: "center", mb: 3 }}>
+                    <Typography
+                      variant="h2"
+                      component="h1"
+                      sx={{
+                        fontWeight: 900,
+                        fontSize: { xs: "2rem", md: "2.8rem" },
+                        background:
+                          "linear-gradient(135deg, #00ffff 0%, #8a2be2 50%, #00ffff 100%)",
+                        backgroundSize: "200% 200%",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                        animation: "gradient 3s ease infinite",
+                        letterSpacing: "-0.03em",
+                        textShadow: "0 0 40px rgba(0, 255, 255, 0.35)",
+                        mb: 1,
+                        fontFamily: "monospace",
+                      }}
+                    >
+                      {!showHackingLoader ? (
+                        "PERSONALITY ANALYSIS COMPLETE"
+                      ) : (
+                        <TerminalTypingText text="PERSONALITY ANALYSIS COMPLETE" speed={100} />
+                      )}
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        color: "rgba(255, 255, 255, 0.7)",
+                        fontWeight: 300,
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
+                        fontSize: { xs: "0.8rem", md: "0.9rem" },
+                        fontFamily: "monospace",
+                      }}
+                    >
+                      {!showHackingLoader && "> Discover your personality dimensions"}
+                    </Typography>
+                  </Box>
 
-              <Container maxWidth="lg" sx={{ px: { xs: 0, md: 2 } }}>
-                <VpkResultCard 
-                  snapshot={snapshot} 
-                  mergedReport={mergedReport}
-                  currentSection={currentSection}
-                  onSectionChange={setCurrentSection}
-                  resultId={result?.id}
-                  userId={result?.userId}
-                />
-              </Container>
+                  <Container maxWidth="lg" sx={{ px: { xs: 0, md: 2 } }}>
+                    <PersonalityResultCard 
+                      snapshot={snapshot} 
+                      mergedReport={mergedReport}
+                      resultId={result?.id}
+                      userId={result?.userId}
+                    />
+                  </Container>
+                </>
+              ) : (
+                <>
+                  <Box sx={{ textAlign: "center", mb: 3 }}>
+                    <Typography
+                      variant="h2"
+                      component="h1"
+                      sx={{
+                        fontWeight: 900,
+                        fontSize: { xs: "2rem", md: "2.8rem" },
+                        background:
+                          "linear-gradient(135deg, #00ffff 0%, #8a2be2 50%, #00ffff 100%)",
+                        backgroundSize: "200% 200%",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                        animation: "gradient 3s ease infinite",
+                        letterSpacing: "-0.03em",
+                        textShadow: "0 0 40px rgba(0, 255, 255, 0.35)",
+                        mb: 1,
+                        fontFamily: "monospace",
+                      }}
+                    >
+                      {!showHackingLoader ? (
+                        result?.type === "PERSONALITY" ? "PERSONALITY ANALYSIS COMPLETED" : "BODY DECODING COMPLETED"
+                      ) : (
+                        <TerminalTypingText 
+                          text={result?.type === "PERSONALITY" ? "PERSONALITY ANALYSIS COMPLETED" : "BODY DECODING COMPLETED"} 
+                          speed={100} 
+                        />
+                      )}
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        color: "rgba(255, 255, 255, 0.7)",
+                        fontWeight: 300,
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
+                        fontSize: { xs: "0.8rem", md: "0.9rem" },
+                        fontFamily: "monospace",
+                      }}
+                    >
+                      {!showHackingLoader && (
+                        result?.type === "PERSONALITY" 
+                          ? "> Discover your personality dimensions & traits"
+                          : "> Know your body nature & behavior"
+                      )}
+                    </Typography>
+                  </Box>
+
+                  <Container maxWidth="lg" sx={{ px: { xs: 0, md: 2 } }}>
+                    <BbaResultCard 
+                      snapshot={snapshot} 
+                      mergedReport={mergedReport}
+                      currentSection={currentSection}
+                      onSectionChange={setCurrentSection}
+                      resultId={result?.id}
+                      userId={result?.userId}
+                    />
+                  </Container>
+                </>
+              )}
             </>
           )}
         </Container>

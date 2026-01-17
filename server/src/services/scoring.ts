@@ -1,4 +1,4 @@
-// versioned VPK scoring service
+// versioned BBA scoring service
 // Enhanced scoring with modifiers, detailed vikriti analysis, and report mapping
 
 /**
@@ -42,10 +42,10 @@ export type VikritiDetailed = {
 };
 
 // Backward compatible type (kept for existing clients)
-export type VPKResultSnapshot = {
-  bodyType: "Endomorph" | "Ectomorph" | "Mesomorph";
-  prakriti: "Vata" | "Pitta" | "Kapha";
-  vikriti: string;
+export type BBAResultSnapshot = {
+  bodyType: string; // Now returns "Aero", "Pyro", "Geo" or combinations like "Aero-Pyro"
+  prakriti: string; // Now returns "Aero", "Pyro", "Geo" or combinations like "Aero-Pyro"
+  vikriti: string; // Now returns "Aero", "Pyro", "Geo", "Balanced" or combinations like "Aero-Pyro"
   modifier?: string;
   shortEmotionalLine: string;
   score?: number;
@@ -518,7 +518,7 @@ export function generateShortEmotionalLine(vikritiSummary: string): string {
 /**
  * Main scoring function - enhanced with modifiers, detailed vikriti, and report mapping
  */
-export function scoreVPK(answers: number[]): VPKResultSnapshot {
+export function scoreBBA(answers: number[]): BBAResultSnapshot {
   // Validation
   if (!answers || answers.length !== 35) {
     throw new Error("answers must be length 35");
@@ -557,17 +557,68 @@ export function scoreVPK(answers: number[]): VPKResultSnapshot {
   // Generate emotional line
   const shortEmotionalLine = generateShortEmotionalLine(vikritiDetailed.summary);
 
-  // Backward compatible fields
-  const bodyType = bodyTypeResult.primary;
-  const prakriti = prakritiResult.primary;
-  const vikriti = vikritiDetailed.summary;
+  // Map body types to Aero/Pyro/Geo format
+  const mapBodyTypeToElement = (bodyType: "Ectomorph" | "Mesomorph" | "Endomorph"): string => {
+    if (bodyType === "Ectomorph") return "Aero";
+    if (bodyType === "Mesomorph") return "Pyro";
+    return "Geo";
+  };
 
-  // Compute module codes
-  const bodyPrimaryCode = bodyTypeToDoshaCode(bodyType);
+  const mapDoshaToElement = (dosha: "Vata" | "Pitta" | "Kapha"): string => {
+    if (dosha === "Vata") return "Aero";
+    if (dosha === "Pitta") return "Pyro";
+    return "Geo";
+  };
+
+  // Create body type with modifier if present
+  let bodyType: string;
+  const primaryElement = mapBodyTypeToElement(bodyTypeResult.primary);
+  if (bodyTypeResult.modifier) {
+    const modifierElement = mapDoshaToElement(bodyTypeResult.modifier);
+    bodyType = `${primaryElement}-${modifierElement}`;
+  } else {
+    bodyType = primaryElement;
+  }
+
+  // Create prakriti with modifier if present
+  let prakriti: string;
+  const prakritiPrimaryElement = mapDoshaToElement(prakritiResult.primary);
+  if (prakritiResult.modifier) {
+    const prakritiModifierElement = mapDoshaToElement(prakritiResult.modifier);
+    prakriti = `${prakritiPrimaryElement}-${prakritiModifierElement}`;
+  } else {
+    prakriti = prakritiPrimaryElement;
+  }
+
+  // Map vikriti to Aero/Pyro/Geo format
+  const mapVikritiToElement = (vikritiSummary: string): string => {
+    if (vikritiSummary === "Balanced") return "Balanced";
+    
+    // Handle single dosha
+    if (vikritiSummary === "Vata") return "Aero";
+    if (vikritiSummary === "Pitta") return "Pyro";
+    if (vikritiSummary === "Kapha") return "Geo";
+    
+    // Handle combinations (e.g., "Vata-Pitta" -> "Aero-Pyro")
+    if (vikritiSummary.includes("-")) {
+      return vikritiSummary
+        .split("-")
+        .map((d) => mapDoshaToElement(d.trim() as "Vata" | "Pitta" | "Kapha"))
+        .join("-");
+    }
+    
+    return vikritiSummary;
+  };
+
+  const vikriti = mapVikritiToElement(vikritiDetailed.summary);
+
+  // Compute module codes (use original bodyTypeResult.primary, not mapped bodyType)
+  const bodyPrimaryCode = bodyTypeToDoshaCode(bodyTypeResult.primary);
   const bodyModifierCode = bodyTypeResult.modifier ? doshaNameToCode(bodyTypeResult.modifier) : null;
   const bodyCode = mapBodyToCode(bodyPrimaryCode, bodyModifierCode);
 
-  const prakritiPrimaryCode = doshaNameToCode(prakriti);
+  // Compute prakriti codes (use original prakritiResult.primary, not mapped prakriti)
+  const prakritiPrimaryCode = doshaNameToCode(prakritiResult.primary);
   const prakritiModifierCode = prakritiResult.modifier ? doshaNameToCode(prakritiResult.modifier) : null;
   const prakritiCode = mapPrakritiToCode(prakritiPrimaryCode, prakritiModifierCode);
 

@@ -125,12 +125,12 @@ export default function HomePage() {
                   }}
                 >
                   <Logo
-                    width={400}
-                    height={160}
+                    width={560}
+                    height={224}
                     animated={false}
                     sx={{
-                      width: { xs: "240px", sm: "320px", md: "400px" },
-                      height: { xs: "96px", sm: "128px", md: "160px" },
+                      width: { xs: "320px", sm: "440px", md: "560px" },
+                      height: { xs: "128px", sm: "176px", md: "224px" },
                       mx: "auto",
                       display: "flex",
                       justifyContent: "center",

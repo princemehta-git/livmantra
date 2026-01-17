@@ -3,6 +3,7 @@ import { Box, Typography } from "@mui/material";
 
 type Props = {
   onComplete: () => void;
+  testType?: "BBA" | "PERSONALITY";
 };
 
 // Audio file path - place your audio file at public/audio/techy-sound.mp3
@@ -111,21 +112,33 @@ const playTechySound = async (isFinal: boolean = false, forceUnlock: boolean = f
   });
 };
 
-export default function HackingSequenceLoader({ onComplete }: Props) {
+export default function HackingSequenceLoader({ onComplete, testType = "BBA" }: Props) {
   const [stage, setStage] = useState(0);
   const audioUnlocked = useRef(false);
   const audioPreloaded = useRef(false);
   const activeAudioInstances = useRef<HTMLAudioElement[]>([]); // Track all playing audio
-  const messages = [
-    "> INITIALIZING SCAN...",
-    "> ACCESSING BIOSYSTEM DATABASE...",
-    "> ANALYZING BODYCODES...",
-    "> DECRYPTING BODY CODE...",
-    "> CALCULATING BODY TYPE SIGNATURE...",
-    "> DETECTING BODY TYPE ANOMALIES...",
-    "> COMPILING BODY TYPE REPORT...",
-    "> ACCESS GRANTED ✓",
-  ];
+  
+  const messages = testType === "PERSONALITY" 
+    ? [
+        "> INITIALIZING PERSONALITY SCAN...",
+        "> ACCESSING PSYCHOLOGICAL DATABASE...",
+        "> ANALYZING DIMENSION PATTERNS...",
+        "> DECRYPTING PERSONALITY CODE...",
+        "> CALCULATING DIMENSION SIGNATURES...",
+        "> DETECTING PERSONALITY TRAITS...",
+        "> COMPILING PERSONALITY REPORT...",
+        "> ACCESS GRANTED ✓",
+      ]
+    : [
+        "> INITIALIZING SCAN...",
+        "> ACCESSING BIOSYSTEM DATABASE...",
+        "> ANALYZING BODYCODES...",
+        "> DECRYPTING BODY CODE...",
+        "> CALCULATING BODY TYPE SIGNATURE...",
+        "> DETECTING BODY TYPE ANOMALIES...",
+        "> COMPILING BODY TYPE REPORT...",
+        "> ACCESS GRANTED ✓",
+      ];
 
   // Preload audio on mount
   useEffect(() => {

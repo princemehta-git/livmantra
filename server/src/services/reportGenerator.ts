@@ -1,5 +1,5 @@
 /**
- * Report Generator for 35-question VPK Test
+ * Report Generator for 35-question BBA Test
  * 
  * Sections:
  * - Body Type: Q1-Q6 (indices 0-5)

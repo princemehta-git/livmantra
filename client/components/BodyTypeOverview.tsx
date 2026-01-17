@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Card, Typography, Chip } from "@mui/material";
 import { motion } from "framer-motion";
-import { AutoAwesome } from "@mui/icons-material";
+import { FitnessCenter } from "@mui/icons-material";
 
 interface BodyTypeOverviewProps {
   snapshot?: any;
@@ -83,7 +83,7 @@ export default function BodyTypeOverview({ snapshot }: BodyTypeOverviewProps) {
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center", mb: { xs: 2, sm: 2.5, md: 3 } }}>
-          <AutoAwesome sx={{ color: "#00ffff", mr: 1, fontSize: { xs: 20, sm: 24, md: 32 } }} />
+          <FitnessCenter sx={{ color: "#00ffff", mr: 1, fontSize: { xs: 20, sm: 24, md: 32 } }} />
           <Typography
             variant="h5"
             sx={{

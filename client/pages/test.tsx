@@ -16,7 +16,7 @@ import { useTranslation } from "next-i18next";
 import { useAuth } from "../contexts/AuthContext";
 import { Lock } from "@mui/icons-material";
 
-// VPK Test Questions - 35 Questions total
+// BBA Test Questions - 35 Questions total
 // Section A: Body Type (1-6), Section B: Constitution (7-18), Section C: Current Imbalance (19-35)
 // Note: Questions are now loaded from translation files
 const QUESTIONS_DATA_EN = [
@@ -227,13 +227,20 @@ export default function TestPage() {
   const [lastAnsweredIndex, setLastAnsweredIndex] = useState(-1);
 
   useEffect(() => {
-    // Check if user has already taken a test
+    // Check if user has already taken BBA test
     const checkTestLock = async () => {
       if (authUser) {
         try {
           const response = await getUserTests();
           const tests = response.data.tests || [];
-          if (tests.length > 0) {
+          const hasBBATest = tests.some((test: any) => test.type === "BBA");
+          if (hasBBATest) {
+            const bbaTest = tests.find((test: any) => test.type === "BBA");
+            if (bbaTest) {
+              // Redirect to locked page with result ID
+              router.push(`/test-locked?testType=BBA&resultId=${bbaTest.id}&testName=Body Behaviour Analysis`);
+              return;
+            }
             setTestLocked(true);
           }
         } catch (error) {
@@ -247,7 +254,7 @@ export default function TestPage() {
     };
 
     checkTestLock();
-  }, [authUser]);
+  }, [authUser, router]);
 
   useEffect(() => {
     // If user is authenticated, use auth user
@@ -382,7 +389,7 @@ export default function TestPage() {
 
     // If user is authenticated, don't send user data (server will use auth token)
     // Otherwise, send user data for guest users
-    const payload: any = { testType: "VPK", answers };
+    const payload: any = { testType: "BBA", answers };
     if (!authUser && user) {
       payload.user = user;
     }
@@ -834,10 +841,10 @@ export default function TestPage() {
                 onClick={onSubmit}
                 disabled={submitting || answers.some((a) => a === 0)}
                 sx={{
-                  px: { xs: 2, sm: 5 },
-                  py: { xs: 0.9, sm: 1.5 },
+                  px: { xs: 2.5, sm: 4, md: 5 },
+                  py: { xs: 0.75, sm: 1, md: 1.5 },
                   borderRadius: 0,
-                  fontSize: { xs: "0.7rem", sm: "1rem" },
+                  fontSize: { xs: "0.7rem", sm: "0.85rem", md: "1rem" },
                   fontWeight: 700,
                   background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
                   color: "#0a0e27",

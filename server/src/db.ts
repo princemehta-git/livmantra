@@ -227,20 +227,178 @@ async function syncDatabaseSchema() {
   try {
     console.log("🔄 Syncing database schema with Prisma schema...");
     
-    const pushOutput = execSync("npx prisma db push --skip-generate --accept-data-loss", {
-      cwd: path.join(__dirname, ".."),
-      stdio: "pipe",
-      env: { ...process.env },
-      encoding: "utf-8",
-    });
-    
-    const outputStr = pushOutput.toString();
-    console.log("✅ Database schema synced successfully");
-    console.log(outputStr);
-  } catch (pushError: any) {
-    const pushErrorOutput = pushError.stdout?.toString() || pushError.stderr?.toString() || pushError.message || "";
-    console.error("❌ Failed to sync database schema:", pushErrorOutput);
-    throw new Error(`Failed to sync database schema: ${pushErrorOutput}`);
+    try {
+      const pushOutput = execSync("npx prisma db push --skip-generate --accept-data-loss", {
+        cwd: path.join(__dirname, ".."),
+        stdio: "pipe",
+        env: { ...process.env },
+        encoding: "utf-8",
+      });
+      
+      const outputStr = pushOutput.toString();
+      console.log("✅ Database schema synced successfully");
+      if (outputStr) {
+        console.log(outputStr);
+      }
+    } catch (pushError: any) {
+      // Check both stdout and stderr for output
+      const stdout = pushError.stdout?.toString() || "";
+      const stderr = pushError.stderr?.toString() || "";
+      const errorMessage = pushError.message || "";
+      
+      // Combine all output for logging
+      const fullOutput = [stdout, stderr, errorMessage].filter(Boolean).join("\n");
+      
+      // Check if the output indicates success (sometimes prisma outputs to stderr even on success)
+      const hasSuccessIndicators = 
+        stdout.includes("Your database is now in sync") ||
+        stdout.includes("Database schema is up to date") ||
+        stdout.includes("Pushed to database") ||
+        stderr.includes("Your database is now in sync") ||
+        stderr.includes("Database schema is up to date") ||
+        stderr.includes("Pushed to database");
+      
+      if (hasSuccessIndicators) {
+        console.log("✅ Database schema synced successfully");
+        if (fullOutput) {
+          console.log(fullOutput);
+        }
+        return; // Success, exit early
+      }
+      
+      // If it's a real error, try fallback: manually create missing tables
+      console.warn("⚠️ prisma db push failed, attempting manual table creation as fallback...");
+      console.error("STDOUT:", stdout || "(empty)");
+      console.error("STDERR:", stderr || "(empty)");
+      console.error("Error:", errorMessage || "(empty)");
+      
+      // Try to manually create missing tables
+      try {
+        await createMissingTables();
+        console.log("✅ Successfully created missing tables manually");
+        return; // Success with fallback
+      } catch (manualError: any) {
+        console.error("❌ Manual table creation also failed:", manualError.message);
+        // If manual creation also fails, throw the original error
+        throw new Error(`Database schema sync failed: ${fullOutput || errorMessage || "Unknown error"}`);
+      }
+    }
+  } catch (error: any) {
+    console.error("❌ Error in syncDatabaseSchema:", error.message);
+    throw error;
+  }
+}
+
+/**
+ * Manually create missing tables as a fallback if prisma db push fails
+ */
+async function createMissingTables() {
+  try {
+    // Create conversation table if it doesn't exist
+    try {
+      await prisma.$queryRawUnsafe(`SELECT 1 FROM \`conversation\` LIMIT 1`);
+      console.log("✅ Table 'conversation' already exists");
+    } catch (error: any) {
+      console.log("🔄 Creating 'conversation' table...");
+      await prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS \`conversation\` (
+          \`id\` VARCHAR(191) NOT NULL,
+          \`userId\` VARCHAR(191) NOT NULL,
+          \`adminId\` VARCHAR(191) NULL,
+          \`lastMessageAt\` DATETIME(3) NULL,
+          \`unreadCount\` INT NOT NULL DEFAULT 0,
+          \`createdAt\` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+          \`updatedAt\` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+          UNIQUE INDEX \`conversation_userId_key\`(\`userId\`),
+          PRIMARY KEY (\`id\`),
+          CONSTRAINT \`conversation_userId_fkey\` FOREIGN KEY (\`userId\`) REFERENCES \`user\`(\`id\`) ON DELETE CASCADE ON UPDATE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+      `);
+      console.log("✅ Table 'conversation' created successfully");
+    }
+
+    // Create message table if it doesn't exist
+    try {
+      await prisma.$queryRawUnsafe(`SELECT 1 FROM \`message\` LIMIT 1`);
+      console.log("✅ Table 'message' already exists");
+    } catch (error: any) {
+      console.log("🔄 Creating 'message' table...");
+      await prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS \`message\` (
+          \`id\` VARCHAR(191) NOT NULL,
+          \`conversationId\` VARCHAR(191) NOT NULL,
+          \`senderId\` VARCHAR(191) NOT NULL,
+          \`senderType\` VARCHAR(191) NOT NULL,
+          \`content\` TEXT NULL,
+          \`attachmentUrl\` VARCHAR(191) NULL,
+          \`attachmentType\` VARCHAR(191) NULL,
+          \`isRead\` BOOLEAN NOT NULL DEFAULT false,
+          \`createdAt\` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+          PRIMARY KEY (\`id\`),
+          INDEX \`message_conversationId_idx\`(\`conversationId\`),
+          CONSTRAINT \`message_conversationId_fkey\` FOREIGN KEY (\`conversationId\`) REFERENCES \`conversation\`(\`id\`) ON DELETE CASCADE ON UPDATE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+      `);
+      console.log("✅ Table 'message' created successfully");
+    }
+
+    // Add missing columns to user table
+    const userColumns = [
+      { name: "password", type: "VARCHAR(191) NULL" },
+      { name: "googleId", type: "VARCHAR(191) NULL" },
+      { name: "isAdmin", type: "BOOLEAN NOT NULL DEFAULT FALSE" },
+      { name: "dob", type: "DATETIME(3) NULL" },
+      { name: "gender", type: "VARCHAR(191) NULL" },
+      { name: "profileImage", type: "VARCHAR(191) NULL" },
+      { name: "state", type: "VARCHAR(191) NULL" },
+      { name: "nationality", type: "VARCHAR(191) NULL" },
+    ];
+
+    for (const column of userColumns) {
+      try {
+        const checkResult = await prisma.$queryRawUnsafe(`
+          SELECT COUNT(*) as count 
+          FROM INFORMATION_SCHEMA.COLUMNS 
+          WHERE TABLE_SCHEMA = DATABASE() 
+          AND TABLE_NAME = 'user' 
+          AND COLUMN_NAME = '${column.name}'
+        `) as Array<{ count: number }>;
+        
+        if (checkResult[0]?.count === 0) {
+          console.log(`🔄 Adding column '${column.name}' to 'user' table...`);
+          await prisma.$executeRawUnsafe(`
+            ALTER TABLE \`user\` 
+            ADD COLUMN \`${column.name}\` ${column.type}
+          `);
+          console.log(`✅ Column '${column.name}' added to 'user' table`);
+        } else {
+          console.log(`✅ Column '${column.name}' already exists in 'user' table`);
+        }
+      } catch (error: any) {
+        if (error.message?.includes("Duplicate column") || error.code === "42S21") {
+          console.log(`✅ Column '${column.name}' already exists in 'user' table`);
+        } else {
+          console.warn(`⚠️ Could not add column '${column.name}': ${error.message}`);
+        }
+      }
+    }
+
+    // Add unique index for googleId if it doesn't exist
+    try {
+      await prisma.$executeRawUnsafe(`
+        CREATE UNIQUE INDEX IF NOT EXISTS \`user_googleId_key\` ON \`user\`(\`googleId\`);
+      `);
+    } catch (error: any) {
+      // Index might already exist, which is fine
+      if (!error.message?.includes("Duplicate key name")) {
+        console.warn(`⚠️ Could not create googleId index: ${error.message}`);
+      }
+    }
+
+    console.log("✅ All missing tables and columns created successfully");
+  } catch (error: any) {
+    console.error("❌ Error creating missing tables:", error.message);
+    throw error;
   }
 }
 

@@ -15,7 +15,16 @@ export async function initializeDatabase() {
     await runPrismaMigrations();
     
     // Step 2: Verify all tables and columns exist
-    await verifyDatabaseSchema();
+    const schemaValid = await verifyDatabaseSchema();
+    
+    // Step 3: If schema is invalid, try to fix it with db push
+    if (!schemaValid) {
+      console.log("🔄 Schema verification failed. Attempting to sync database schema...");
+      await syncDatabaseSchema();
+      
+      // Verify again after sync
+      await verifyDatabaseSchema();
+    }
     
     console.log("✅ Database initialization completed successfully");
   } catch (error) {
@@ -91,8 +100,9 @@ async function runPrismaMigrations() {
 
 /**
  * Verify that all tables and columns from Prisma schema exist in the database
+ * Returns true if schema is valid, false otherwise
  */
-async function verifyDatabaseSchema() {
+async function verifyDatabaseSchema(): Promise<boolean> {
   try {
     console.log("🔍 Verifying database schema...");
     
@@ -135,6 +145,8 @@ async function verifyDatabaseSchema() {
       }
     ];
 
+    let schemaValid = true;
+
     // Check each table exists
     for (const table of expectedTables) {
       try {
@@ -143,7 +155,10 @@ async function verifyDatabaseSchema() {
         console.log(`✅ Table '${table.name}' exists`);
         
         // Verify columns exist
-        await verifyTableColumns(table.name, table.columns);
+        const columnsValid = await verifyTableColumns(table.name, table.columns);
+        if (!columnsValid) {
+          schemaValid = false;
+        }
       } catch (error: any) {
         if (
           error.code === "P2021" || 
@@ -153,8 +168,8 @@ async function verifyDatabaseSchema() {
           error.message?.includes("doesn't exist") ||
           error.message?.includes("Unknown table")
         ) {
-          console.error(`❌ Table '${table.name}' does not exist. Please run migrations.`);
-          throw new Error(`Table '${table.name}' is missing. Database schema is out of sync.`);
+          console.error(`❌ Table '${table.name}' does not exist.`);
+          schemaValid = false;
         } else {
           // Other errors might be connection issues, log but don't fail
           console.warn(`⚠️ Could not verify table '${table.name}': ${error.message}`);
@@ -162,18 +177,24 @@ async function verifyDatabaseSchema() {
       }
     }
     
-    console.log("✅ Database schema verification completed");
+    if (schemaValid) {
+      console.log("✅ Database schema verification completed - all tables and columns exist");
+    } else {
+      console.warn("⚠️ Database schema verification found missing tables or columns");
+    }
+    
+    return schemaValid;
   } catch (error: any) {
     console.error("❌ Database schema verification failed:", error.message);
-    // Don't throw - migrations should have handled this, but log the issue
-    console.warn("⚠️ Continuing with server startup, but database may be incomplete");
+    return false;
   }
 }
 
 /**
  * Verify that all expected columns exist in a table
+ * Returns true if all columns exist, false otherwise
  */
-async function verifyTableColumns(tableName: string, expectedColumns: string[]) {
+async function verifyTableColumns(tableName: string, expectedColumns: string[]): Promise<boolean> {
   try {
     const result = await prisma.$queryRawUnsafe(`
       SELECT COLUMN_NAME 
@@ -187,12 +208,39 @@ async function verifyTableColumns(tableName: string, expectedColumns: string[]) 
     
     if (missingColumns.length > 0) {
       console.warn(`⚠️ Table '${tableName}' is missing columns: ${missingColumns.join(", ")}`);
-      console.warn("⚠️ This may indicate that migrations need to be run");
+      return false;
     } else {
       console.log(`✅ Table '${tableName}' has all expected columns`);
+      return true;
     }
   } catch (error: any) {
     console.warn(`⚠️ Could not verify columns for table '${tableName}': ${error.message}`);
+    return false;
+  }
+}
+
+/**
+ * Sync database schema using prisma db push
+ * This will create missing tables and columns automatically
+ */
+async function syncDatabaseSchema() {
+  try {
+    console.log("🔄 Syncing database schema with Prisma schema...");
+    
+    const pushOutput = execSync("npx prisma db push --skip-generate --accept-data-loss", {
+      cwd: path.join(__dirname, ".."),
+      stdio: "pipe",
+      env: { ...process.env },
+      encoding: "utf-8",
+    });
+    
+    const outputStr = pushOutput.toString();
+    console.log("✅ Database schema synced successfully");
+    console.log(outputStr);
+  } catch (pushError: any) {
+    const pushErrorOutput = pushError.stdout?.toString() || pushError.stderr?.toString() || pushError.message || "";
+    console.error("❌ Failed to sync database schema:", pushErrorOutput);
+    throw new Error(`Failed to sync database schema: ${pushErrorOutput}`);
   }
 }
 

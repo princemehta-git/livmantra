@@ -1,19 +1,23 @@
 import { PrismaClient } from "@prisma/client";
+import { execSync } from "child_process";
+import path from "path";
 
 export const prisma = new PrismaClient();
 
 /**
- * Initialize database tables - creates missing tables if they don't exist
+ * Initialize database - runs Prisma migrations and verifies schema
  */
 export async function initializeDatabase() {
   try {
-    // Check and create all tables if they don't exist
-    await ensureUserTableExists();
-    await ensureTestResponseTableExists();
-    await ensureFeedbackTableExists();
-    // Migrate user table to add new columns
-    await migrateUserTable();
-    console.log("✅ Database tables initialized");
+    console.log("🔄 Starting database initialization...");
+    
+    // Step 1: Apply Prisma migrations
+    await runPrismaMigrations();
+    
+    // Step 2: Verify all tables and columns exist
+    await verifyDatabaseSchema();
+    
+    console.log("✅ Database initialization completed successfully");
   } catch (error) {
     console.error("❌ Error initializing database:", error);
     throw error;
@@ -21,185 +25,174 @@ export async function initializeDatabase() {
 }
 
 /**
- * Ensure user table exists, create it if it doesn't
+ * Run Prisma migrations to ensure database is up to date
  */
-async function ensureUserTableExists() {
+async function runPrismaMigrations() {
   try {
-    await prisma.$queryRaw`SELECT 1 FROM user LIMIT 1`;
-    console.log("✅ User table exists");
-  } catch (error: any) {
-    if (error.code === "P2021" || error.code === "P2010" || error.meta?.code === "1146" || error.message?.includes("does not exist") || error.message?.includes("doesn't exist")) {
-      console.log("⚠️ User table not found, creating it...");
-      try {
-        await prisma.$executeRawUnsafe(`
-          CREATE TABLE IF NOT EXISTS \`user\` (
-            \`id\` VARCHAR(191) NOT NULL,
-            \`name\` VARCHAR(191) NOT NULL,
-            \`email\` VARCHAR(191) NOT NULL,
-            \`phone\` VARCHAR(191) NOT NULL,
-            \`createdAt\` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-            \`updatedAt\` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-            PRIMARY KEY (\`id\`),
-            UNIQUE KEY \`User_email_key\` (\`email\`)
-          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-        `);
-        console.log("✅ User table created successfully");
-      } catch (createError: any) {
-        if (createError.message?.includes("already exists") || createError.code === "42S01") {
-          console.log("✅ User table already exists");
-        } else {
-          console.error("❌ Error creating user table:", createError);
-          throw createError;
-        }
+    console.log("🔄 Checking for pending Prisma migrations...");
+    
+    // Run prisma migrate deploy to apply pending migrations
+    // This is safe to run on every startup as it only applies pending migrations
+    try {
+      const output = execSync("npx prisma migrate deploy", {
+        cwd: path.join(__dirname, ".."),
+        stdio: "pipe",
+        env: { ...process.env },
+        encoding: "utf-8",
+      });
+      
+      const outputStr = output.toString();
+      if (outputStr.includes("No pending migrations") || outputStr.includes("already applied")) {
+        console.log("✅ Database is up to date with all migrations");
+      } else {
+        console.log("✅ Prisma migrations applied successfully");
+        console.log(outputStr);
       }
-    } else {
-      console.error("❌ Unexpected error checking user table:", error);
-      throw error;
+    } catch (migrationError: any) {
+      const errorOutput = migrationError.stdout?.toString() || migrationError.stderr?.toString() || migrationError.message || "";
+      
+      // Check if the error is just "no pending migrations" which is actually success
+      if (
+        errorOutput.includes("No pending migrations") ||
+        errorOutput.includes("already applied") ||
+        errorOutput.includes("Database schema is up to date")
+      ) {
+        console.log("✅ Database is up to date with all migrations");
+        return; // Success, exit early
+      }
+      
+      // If migration deploy fails, try db push as fallback (for development)
+      console.warn("⚠️ Migration deploy encountered an issue:", errorOutput);
+      console.log("🔄 Attempting schema sync as fallback...");
+      
+      try {
+        const pushOutput = execSync("npx prisma db push --skip-generate", {
+          cwd: path.join(__dirname, ".."),
+          stdio: "pipe",
+          env: { ...process.env },
+          encoding: "utf-8",
+        });
+        console.log("✅ Database schema synced successfully");
+        console.log(pushOutput.toString());
+      } catch (pushError: any) {
+        const pushErrorOutput = pushError.stdout?.toString() || pushError.stderr?.toString() || pushError.message || "";
+        console.error("❌ Failed to sync database schema:", pushErrorOutput);
+        // Don't throw - allow server to start even if migrations fail
+        // The verification step will catch missing tables/columns
+        console.warn("⚠️ Continuing startup, but database may need manual migration");
+      }
     }
+  } catch (error: any) {
+    console.error("❌ Error running Prisma migrations:", error.message);
+    // Don't throw - allow server to start, verification will catch issues
+    console.warn("⚠️ Continuing startup, but database may need manual migration");
   }
 }
 
 /**
- * Ensure testresponse table exists, create it if it doesn't
+ * Verify that all tables and columns from Prisma schema exist in the database
  */
-async function ensureTestResponseTableExists() {
+async function verifyDatabaseSchema() {
   try {
-    await prisma.$queryRaw`SELECT 1 FROM testresponse LIMIT 1`;
-    console.log("✅ TestResponse table exists");
-  } catch (error: any) {
-    if (error.code === "P2021" || error.code === "P2010" || error.meta?.code === "1146" || error.message?.includes("does not exist") || error.message?.includes("doesn't exist")) {
-      console.log("⚠️ TestResponse table not found, creating it...");
-      try {
-        await prisma.$executeRawUnsafe(`
-          CREATE TABLE IF NOT EXISTS \`testresponse\` (
-            \`id\` VARCHAR(191) NOT NULL,
-            \`userId\` VARCHAR(191) NOT NULL,
-            \`type\` VARCHAR(191) NOT NULL,
-            \`answers\` JSON NOT NULL,
-            \`score\` DOUBLE PRECISION NULL,
-            \`snapshot\` JSON NOT NULL,
-            \`status\` VARCHAR(191) NOT NULL DEFAULT 'submitted',
-            \`reportUrl\` VARCHAR(191) NULL,
-            \`createdAt\` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-            PRIMARY KEY (\`id\`),
-            INDEX \`TestResponse_userId_idx\` (\`userId\`),
-            CONSTRAINT \`TestResponse_userId_fkey\` FOREIGN KEY (\`userId\`) REFERENCES \`user\` (\`id\`) ON DELETE RESTRICT ON UPDATE CASCADE
-          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-        `);
-        console.log("✅ TestResponse table created successfully");
-      } catch (createError: any) {
-        if (createError.message?.includes("already exists") || createError.code === "42S01") {
-          console.log("✅ TestResponse table already exists");
-        } else {
-          console.error("❌ Error creating testresponse table:", createError);
-          throw createError;
-        }
+    console.log("🔍 Verifying database schema...");
+    
+    // Define expected tables and their columns based on Prisma schema
+    const expectedTables = [
+      {
+        name: "user",
+        columns: [
+          "id", "name", "email", "phone", "password", "googleId", 
+          "isAdmin", "dob", "gender", "profileImage", "state", 
+          "nationality", "createdAt", "updatedAt"
+        ]
+      },
+      {
+        name: "testresponse",
+        columns: [
+          "id", "userId", "type", "answers", "score", "snapshot", 
+          "status", "reportUrl", "createdAt"
+        ]
+      },
+      {
+        name: "feedback",
+        columns: [
+          "id", "userId", "resultId", "rating", "comment", "createdAt"
+        ]
+      },
+      {
+        name: "conversation",
+        columns: [
+          "id", "userId", "adminId", "lastMessageAt", "unreadCount", 
+          "createdAt", "updatedAt"
+        ]
+      },
+      {
+        name: "message",
+        columns: [
+          "id", "conversationId", "senderId", "senderType", "content", 
+          "attachmentUrl", "attachmentType", "isRead", "createdAt"
+        ]
       }
-    } else {
-      console.error("❌ Unexpected error checking testresponse table:", error);
-      throw error;
-    }
-  }
-}
-
-/**
- * Ensure feedback table exists, create it if it doesn't
- */
-async function ensureFeedbackTableExists() {
-  try {
-    await prisma.$queryRaw`SELECT 1 FROM feedback LIMIT 1`;
-    console.log("✅ Feedback table exists");
-  } catch (error: any) {
-    if (error.code === "P2021" || error.code === "P2010" || error.meta?.code === "1146" || error.message?.includes("does not exist") || error.message?.includes("doesn't exist")) {
-      console.log("⚠️ Feedback table not found, creating it...");
-      try {
-        await prisma.$executeRawUnsafe(`
-          CREATE TABLE IF NOT EXISTS \`feedback\` (
-            \`id\` VARCHAR(191) NOT NULL,
-            \`userId\` VARCHAR(191) NOT NULL,
-            \`resultId\` VARCHAR(191) NOT NULL,
-            \`rating\` INT NOT NULL,
-            \`comment\` TEXT NULL,
-            \`createdAt\` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-            PRIMARY KEY (\`id\`),
-            INDEX \`Feedback_userId_idx\` (\`userId\`),
-            INDEX \`Feedback_resultId_idx\` (\`resultId\`),
-            CONSTRAINT \`Feedback_userId_fkey\` FOREIGN KEY (\`userId\`) REFERENCES \`user\` (\`id\`) ON DELETE RESTRICT ON UPDATE CASCADE,
-            CONSTRAINT \`Feedback_resultId_fkey\` FOREIGN KEY (\`resultId\`) REFERENCES \`testresponse\` (\`id\`) ON DELETE RESTRICT ON UPDATE CASCADE
-          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-        `);
-        console.log("✅ Feedback table created successfully");
-      } catch (createError: any) {
-        if (createError.message?.includes("already exists") || createError.code === "42S01") {
-          console.log("✅ Feedback table already exists");
-        } else {
-          console.error("❌ Error creating feedback table:", createError);
-          throw createError;
-        }
-      }
-    } else {
-      console.error("❌ Unexpected error checking feedback table:", error);
-      throw error;
-    }
-  }
-}
-
-/**
- * Migrate user table to add new columns if they don't exist
- */
-async function migrateUserTable() {
-  try {
-    const columns = [
-      { name: "password", type: "VARCHAR(191) NULL" },
-      { name: "isAdmin", type: "BOOLEAN NOT NULL DEFAULT FALSE" },
-      { name: "dob", type: "DATETIME(3) NULL" },
-      { name: "gender", type: "VARCHAR(191) NULL" },
-      { name: "profileImage", type: "VARCHAR(191) NULL" },
-      { name: "state", type: "VARCHAR(191) NULL" },
-      { name: "nationality", type: "VARCHAR(191) NULL" },
     ];
 
-    for (const column of columns) {
+    // Check each table exists
+    for (const table of expectedTables) {
       try {
-        await prisma.$executeRawUnsafe(`
-          ALTER TABLE \`user\` 
-          ADD COLUMN IF NOT EXISTS \`${column.name}\` ${column.type}
-        `);
-        console.log(`✅ User table column '${column.name}' checked/added`);
+        // Try to query the table to see if it exists
+        await prisma.$queryRawUnsafe(`SELECT 1 FROM \`${table.name}\` LIMIT 1`);
+        console.log(`✅ Table '${table.name}' exists`);
+        
+        // Verify columns exist
+        await verifyTableColumns(table.name, table.columns);
       } catch (error: any) {
-        // Column might already exist or there's a syntax issue with IF NOT EXISTS
-        // Try without IF NOT EXISTS for MySQL compatibility
-        if (error.message?.includes("Duplicate column") || error.code === "42S21") {
-          console.log(`✅ User table column '${column.name}' already exists`);
+        if (
+          error.code === "P2021" || 
+          error.code === "P2010" || 
+          error.meta?.code === "1146" || 
+          error.message?.includes("does not exist") || 
+          error.message?.includes("doesn't exist") ||
+          error.message?.includes("Unknown table")
+        ) {
+          console.error(`❌ Table '${table.name}' does not exist. Please run migrations.`);
+          throw new Error(`Table '${table.name}' is missing. Database schema is out of sync.`);
         } else {
-          // Try alternative syntax for MySQL
-          try {
-            const checkResult = await prisma.$queryRawUnsafe(`
-              SELECT COUNT(*) as count 
-              FROM INFORMATION_SCHEMA.COLUMNS 
-              WHERE TABLE_SCHEMA = DATABASE() 
-              AND TABLE_NAME = 'user' 
-              AND COLUMN_NAME = '${column.name}'
-            `) as any[];
-            
-            if (checkResult[0]?.count === 0) {
-              await prisma.$executeRawUnsafe(`
-                ALTER TABLE \`user\` 
-                ADD COLUMN \`${column.name}\` ${column.type}
-              `);
-              console.log(`✅ User table column '${column.name}' added`);
-            } else {
-              console.log(`✅ User table column '${column.name}' already exists`);
-            }
-          } catch (altError: any) {
-            console.log(`⚠️ Could not add column '${column.name}': ${altError.message}`);
-          }
+          // Other errors might be connection issues, log but don't fail
+          console.warn(`⚠️ Could not verify table '${table.name}': ${error.message}`);
         }
       }
     }
+    
+    console.log("✅ Database schema verification completed");
   } catch (error: any) {
-    console.error("⚠️ Error migrating user table:", error.message);
-    // Don't throw - allow app to continue even if migration fails
+    console.error("❌ Database schema verification failed:", error.message);
+    // Don't throw - migrations should have handled this, but log the issue
+    console.warn("⚠️ Continuing with server startup, but database may be incomplete");
+  }
+}
+
+/**
+ * Verify that all expected columns exist in a table
+ */
+async function verifyTableColumns(tableName: string, expectedColumns: string[]) {
+  try {
+    const result = await prisma.$queryRawUnsafe(`
+      SELECT COLUMN_NAME 
+      FROM INFORMATION_SCHEMA.COLUMNS 
+      WHERE TABLE_SCHEMA = DATABASE() 
+      AND TABLE_NAME = '${tableName}'
+    `) as Array<{ COLUMN_NAME: string }>;
+    
+    const existingColumns = result.map(row => row.COLUMN_NAME);
+    const missingColumns = expectedColumns.filter(col => !existingColumns.includes(col));
+    
+    if (missingColumns.length > 0) {
+      console.warn(`⚠️ Table '${tableName}' is missing columns: ${missingColumns.join(", ")}`);
+      console.warn("⚠️ This may indicate that migrations need to be run");
+    } else {
+      console.log(`✅ Table '${tableName}' has all expected columns`);
+    }
+  } catch (error: any) {
+    console.warn(`⚠️ Could not verify columns for table '${tableName}': ${error.message}`);
   }
 }
 

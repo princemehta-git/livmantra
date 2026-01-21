@@ -115,11 +115,37 @@ export default function PersonalityOverview({ snapshot }: PersonalityOverviewPro
           }}>
             {personalityCode.split("-").map((letter: string, idx: number) => {
               const dimColor = getDimensionColor(idx);
+              const dimensionNames = [
+                "MIND", "STRESS", "HEALTH", "SOCIAL", "ENERGY", "HABIT"
+              ];
+              const dimensionName = dimensionNames[idx] || `DIM ${idx + 1}`;
+              
               return (
                 <Box key={idx} sx={{ 
                   flex: { xs: "1 1 auto", sm: "1 1 auto", md: "1 1 auto" }, 
                   minWidth: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: { xs: 0.5, sm: 0.75, md: 1 },
                 }}>
+                  {/* Dimension Name */}
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: dimColor,
+                      fontWeight: 600,
+                      fontSize: { xs: "0.55rem", sm: "0.65rem", md: "0.7rem" },
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                      textAlign: "center",
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {dimensionName}
+                  </Typography>
+                  
+                  {/* Code Chip */}
                   <Chip
                     label={letter}
                     sx={{

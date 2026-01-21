@@ -10,6 +10,10 @@ import {
   IconButton,
   Tooltip,
   Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { motion } from "framer-motion";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -28,6 +32,7 @@ import FeedbackDialog from "./FeedbackDialog";
 import ShareDialog from "./ShareDialog";
 import { submitFeedback } from "../lib/api";
 import { playSoundEffect } from "../lib/audioUtils";
+import { useRouter } from "next/router";
 
 // Enhanced type definitions
 type DoshaCounts = {
@@ -143,6 +148,7 @@ type Props = {
   onSectionChange?: (section: number) => void;
   resultId?: string;
   userId?: string;
+  hasPersonalityTest?: boolean;
 };
 
 const getLevelColor = (level: "dominant" | "secondary" | "mild"): string => {
@@ -425,7 +431,8 @@ function ExpandableParagraph({
   );
 }
 
-export default function BbaResultCard({ snapshot, mergedReport, currentSection = 0, onSectionChange, resultId, userId }: Props) {
+export default function BbaResultCard({ snapshot, mergedReport, currentSection = 0, onSectionChange, resultId, userId, hasPersonalityTest = false }: Props) {
+  const router = useRouter();
   const hasEnhancedData =
     snapshot.bodyTypeDetailed || snapshot.prakritiDetailed || snapshot.vikritiDetailed;
 
@@ -459,6 +466,9 @@ export default function BbaResultCard({ snapshot, mergedReport, currentSection =
   const [showFeedbackDialog, setShowFeedbackDialog] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [feedbackShown, setFeedbackShown] = useState(false);
+  const [feedbackMandatory, setFeedbackMandatory] = useState(false);
+  const [showSecondTestPrompt, setShowSecondTestPrompt] = useState(false);
+  const [showSecondTestDialog, setShowSecondTestDialog] = useState(false);
   const bodyVideoRef = React.useRef<HTMLVideoElement>(null);
   const dnaVideoRef = React.useRef<HTMLVideoElement>(null);
   const energyVideoRef = React.useRef<HTMLVideoElement>(null);
@@ -518,20 +528,33 @@ export default function BbaResultCard({ snapshot, mergedReport, currentSection =
     }
   }, [currentSection]);
 
-  // Auto-show feedback popup after 20 seconds when user reaches the last section
+  // Show feedback when user scrolls ~80% through Imbalance (last) section
   useEffect(() => {
-    if (!feedbackShown && currentSection === 2) {
-      // User has seen all three reports (currentSection is 2, meaning they're on the last one)
-      // Wait 20 seconds after reaching the last section, then show feedback popup
-      const timer = setTimeout(() => {
-        if (!feedbackShown) {
-          setShowFeedbackDialog(true);
-          setFeedbackShown(true);
-        }
-      }, 20000); // 20 seconds
+    const container = reportContainerRef.current;
+    if (!container) return;
 
-      return () => clearTimeout(timer);
-    }
+    const handleScroll = () => {
+      if (feedbackShown || currentSection !== 2) return;
+
+      const containerTop = container.offsetTop;
+      const containerHeight = container.scrollHeight || 1;
+      const scrollPosition = window.scrollY + window.innerHeight;
+      const progress = Math.max(
+        0,
+        Math.min((scrollPosition - containerTop) / containerHeight, 1)
+      );
+
+      if (progress >= 0.8) {
+        setFeedbackShown(true);
+        setFeedbackMandatory(true);
+        setShowFeedbackDialog(true);
+      }
+    };
+
+    handleScroll(); // handle deep links/reloads already near the end
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [currentSection, feedbackShown]);
 
   const handleNextWithParticles = () => {
@@ -2233,212 +2256,285 @@ Please provide me:
             bottom: 0,
             mt: 2,
             p: 2,
-            background: "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)",
+            background: hasPersonalityTest
+              ? "linear-gradient(135deg, #00ffff 0%, #8a2be2 100%)"
+              : "linear-gradient(135deg, #111827 0%, #0ea5e9 50%, #8b5cf6 100%)",
             color: "white",
             boxShadow:
               "0 -10px 30px rgba(0, 0, 0, 0.6), 0 0 35px rgba(0, 255, 255, 0.4)",
             zIndex: 1000,
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 1.5 }}>
-            <Box sx={{ flex: 1, minWidth: { xs: "100%", sm: 200 } }}>
-              <Typography 
-                variant="h6" 
-                sx={{ 
-                  fontWeight: 700, 
-                  mb: 0.8, 
-                  fontSize: { xs: "1.2rem", sm: "1.4rem" }, 
-                  lineHeight: 1.3,
-                  color: "#0f172a",
-                  textShadow: "0 1px 2px rgba(255, 255, 255, 0.5)",
-                }}
-              >
-                Need Expert Guidance for Healthier Body and Mind
-              </Typography>
-              <Box 
-                sx={{ 
-                  display: "grid", 
-                  gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)" },
-                  gap: { xs: 0.3, sm: 0.4 },
-                  fontSize: { xs: "0.75rem", sm: "0.8rem" }
-                }}
-              >
-                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
-                  <Box
-                    sx={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: "50%",
-                      backgroundColor: "#0f172a",
-                      mt: 0.5,
-                      flexShrink: 0,
-                    }}
-                  />
-                  <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
-                    <strong style={{ color: "#0f172a", fontWeight: 700 }}>Diet Plan</strong> – tailored to your needs
-                  </Typography>
-                </Box>
-                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
-                  <Box
-                    sx={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: "50%",
-                      backgroundColor: "#0f172a",
-                      mt: 0.5,
-                      flexShrink: 0,
-                    }}
-                  />
-                  <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
-                    <strong style={{ color: "#0f172a", fontWeight: 700 }}>Workout Plan</strong> – safe, effective movement
-                  </Typography>
-                </Box>
-                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
-                  <Box
-                    sx={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: "50%",
-                      backgroundColor: "#0f172a",
-                      mt: 0.5,
-                      flexShrink: 0,
-                    }}
-                  />
-                  <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
-                    <strong style={{ color: "#0f172a", fontWeight: 700 }}>Sleep Scheduling</strong> – deep, quality sleep
-                  </Typography>
-                </Box>
-                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
-                  <Box
-                    sx={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: "50%",
-                      backgroundColor: "#0f172a",
-                      mt: 0.5,
-                      flexShrink: 0,
-                    }}
-                  />
-                  <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
-                    <strong style={{ color: "#0f172a", fontWeight: 700 }}>Emotional Training</strong> – calm, healthy mind
-                  </Typography>
-                </Box>
-                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
-                  <Box
-                    sx={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: "50%",
-                      backgroundColor: "#0f172a",
-                      mt: 0.5,
-                      flexShrink: 0,
-                    }}
-                  />
-                  <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
-                    <strong style={{ color: "#0f172a", fontWeight: 700 }}>Daily Routine Mapping</strong> – habit alignment
-                  </Typography>
-                </Box>
-                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
-                  <Box
-                    sx={{
-                      width: 6,
-                      height: 6,
-                      borderRadius: "50%",
-                      backgroundColor: "#0f172a",
-                      mt: 0.5,
-                      flexShrink: 0,
-                    }}
-                  />
-                  <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
-                    <strong style={{ color: "#0f172a", fontWeight: 700 }}>Expert Doctor Consultation</strong> – medication & suppliment
-                  </Typography>
-                </Box>
-              </Box>
-              <Box sx={{ mt: 1.5, display: "flex", alignItems: "center", gap: 1 }}>
-                <Typography 
-                  variant="body2" 
-                  sx={{ 
-                    color: "#0f172a", 
-                    fontSize: { xs: "0.85rem", sm: "0.9rem" },
-                    fontWeight: 600,
-                  }}
-                >
-                  Only @
-                </Typography>
+          {hasPersonalityTest ? (
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 1.5 }}>
+              <Box sx={{ flex: 1, minWidth: { xs: "100%", sm: 200 } }}>
                 <Typography 
                   variant="h6" 
                   sx={{ 
-                    color: "#0f172a", 
-                    fontSize: { xs: "1.1rem", sm: "1.25rem" },
-                    fontWeight: 800,
-                    lineHeight: 1,
+                    fontWeight: 700, 
+                    mb: 0.8, 
+                    fontSize: { xs: "1.2rem", sm: "1.4rem" }, 
+                    lineHeight: 1.3,
+                    color: "#0f172a",
+                    textShadow: "0 1px 2px rgba(255, 255, 255, 0.5)",
                   }}
                 >
-                  ₹2,499/-
+                  Need Expert Guidance for Healthier Body and Mind
                 </Typography>
+                <Box 
+                  sx={{ 
+                    display: "grid", 
+                    gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)" },
+                    gap: { xs: 0.3, sm: 0.4 },
+                    fontSize: { xs: "0.75rem", sm: "0.8rem" }
+                  }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                    <Box
+                      sx={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        backgroundColor: "#0f172a",
+                        mt: 0.5,
+                        flexShrink: 0,
+                      }}
+                    />
+                    <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                      <strong style={{ color: "#0f172a", fontWeight: 700 }}>Diet Plan</strong> – tailored to your needs
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                    <Box
+                      sx={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        backgroundColor: "#0f172a",
+                        mt: 0.5,
+                        flexShrink: 0,
+                      }}
+                    />
+                    <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                      <strong style={{ color: "#0f172a", fontWeight: 700 }}>Workout Plan</strong> – safe, effective movement
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                    <Box
+                      sx={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        backgroundColor: "#0f172a",
+                        mt: 0.5,
+                        flexShrink: 0,
+                      }}
+                    />
+                    <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                      <strong style={{ color: "#0f172a", fontWeight: 700 }}>Sleep Scheduling</strong> – deep, quality sleep
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                    <Box
+                      sx={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        backgroundColor: "#0f172a",
+                        mt: 0.5,
+                        flexShrink: 0,
+                      }}
+                    />
+                    <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                      <strong style={{ color: "#0f172a", fontWeight: 700 }}>Emotional Training</strong> – calm, healthy mind
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                    <Box
+                      sx={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        backgroundColor: "#0f172a",
+                        mt: 0.5,
+                        flexShrink: 0,
+                      }}
+                    />
+                    <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                      <strong style={{ color: "#0f172a", fontWeight: 700 }}>Daily Routine Mapping</strong> – habit alignment
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: "flex", alignItems: "flex-start", gap: 0.5 }}>
+                    <Box
+                      sx={{
+                        width: 6,
+                        height: 6,
+                        borderRadius: "50%",
+                        backgroundColor: "#0f172a",
+                        mt: 0.5,
+                        flexShrink: 0,
+                      }}
+                    />
+                    <Typography variant="body2" sx={{ color: "#0f172a", fontSize: "inherit", lineHeight: 1.4 }}>
+                      <strong style={{ color: "#0f172a", fontWeight: 700 }}>Expert Doctor Consultation</strong> – medication & suppliment
+                    </Typography>
+                  </Box>
+                </Box>
+                <Box sx={{ mt: 1.5, display: "flex", alignItems: "center", gap: 1 }}>
+                  <Typography 
+                    variant="body2" 
+                    sx={{ 
+                      color: "#0f172a", 
+                      fontSize: { xs: "0.85rem", sm: "0.9rem" },
+                      fontWeight: 600,
+                    }}
+                  >
+                    Only @
+                  </Typography>
+                  <Typography 
+                    variant="h6" 
+                    sx={{ 
+                      color: "#0f172a", 
+                      fontSize: { xs: "1.1rem", sm: "1.25rem" },
+                      fontWeight: 800,
+                      lineHeight: 1,
+                    }}
+                  >
+                    ₹2,499/-
+                  </Typography>
+                </Box>
+              </Box>
+              <Box
+                component={motion.div}
+                animate={{
+                  scale: [1, 1.03, 1],
+                }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
+              >
+                <Button
+                  variant="contained"
+                  size="medium"
+                  onClick={handleContactUs}
+                  startIcon={<WhatsAppIcon />}
+                  sx={{
+                    backgroundColor: "#0f172a",
+                    color: "#ffffff",
+                    fontWeight: 700,
+                    px: 2.5,
+                    py: 1,
+                    fontSize: "0.9rem",
+                    borderRadius: "8px",
+                    border: "2px solid #ffffff",
+                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)",
+                    animation: "contactButtonGlow 2.5s ease-in-out infinite",
+                    position: "relative",
+                    overflow: "hidden",
+                    transition: "all 0.3s ease",
+                    "&::before": {
+                      content: '""',
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent)",
+                      animation: "contactButtonShimmer 3s infinite",
+                    },
+                    "&:hover": {
+                      backgroundColor: "#1e293b",
+                      borderColor: "#ffffff",
+                      boxShadow: "0 6px 16px rgba(0, 0, 0, 0.4), 0 3px 6px rgba(0, 0, 0, 0.3)",
+                      transform: "translateY(-1px)",
+                    },
+                    "& .MuiButton-startIcon": {
+                      transition: "transform 0.3s ease",
+                      color: "#ffffff",
+                    },
+                    "&:hover .MuiButton-startIcon": {
+                      transform: "scale(1.1)",
+                    },
+                  }}
+                >
+                  Contact Us
+                </Button>
               </Box>
             </Box>
-            <Box
-              component={motion.div}
-              animate={{
-                scale: [1, 1.03, 1],
-              }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              <Button
-                variant="contained"
-                size="medium"
-                onClick={handleContactUs}
-                startIcon={<WhatsAppIcon />}
+          ) : (
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 1.5 }}>
+              <Box sx={{ flex: 1, minWidth: { xs: "100%", sm: 200 } }}>
+                <Typography 
+                  variant="h6" 
+                  sx={{ 
+                    fontWeight: 800, 
+                    mb: 0.5, 
+                    fontSize: { xs: "1.25rem", sm: "1.5rem" }, 
+                    lineHeight: 1.3,
+                    color: "#e0f2fe",
+                    textShadow: "0 2px 12px rgba(14, 165, 233, 0.45)",
+                  }}
+                >
+                  Unlock Your Complete Mind-Body Profile
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "rgba(226, 232, 240, 0.9)",
+                    maxWidth: 520,
+                    lineHeight: 1.5,
+                  }}
+                >
+                  You&apos;ve finished the Body Behaviour Analysis. Continue with the Personality Test to discover habits, stress style, and energy patterns tailored for you.
+                </Typography>
+              </Box>
+
+              <Box
                 sx={{
-                  backgroundColor: "#0f172a",
-                  color: "#ffffff",
-                  fontWeight: 700,
-                  px: 2.5,
-                  py: 1,
-                  fontSize: "0.9rem",
-                  borderRadius: "8px",
-                  border: "2px solid #ffffff",
-                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)",
-                  animation: "contactButtonGlow 2.5s ease-in-out infinite",
-                  position: "relative",
-                  overflow: "hidden",
-                  transition: "all 0.3s ease",
-                  "&::before": {
-                    content: '""',
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent)",
-                    animation: "contactButtonShimmer 3s infinite",
-                  },
-                  "&:hover": {
-                    backgroundColor: "#1e293b",
-                    borderColor: "#ffffff",
-                    boxShadow: "0 6px 16px rgba(0, 0, 0, 0.4), 0 3px 6px rgba(0, 0, 0, 0.3)",
-                    transform: "translateY(-1px)",
-                  },
-                  "& .MuiButton-startIcon": {
-                    transition: "transform 0.3s ease",
-                    color: "#ffffff",
-                  },
-                  "&:hover .MuiButton-startIcon": {
-                    transform: "scale(1.1)",
-                  },
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  flexWrap: "wrap",
+                  justifyContent: "flex-end",
                 }}
               >
-                Contact Us
-              </Button>
+                <Chip
+                  label="Step 2 of 2"
+                  color="default"
+                  sx={{
+                    backgroundColor: "rgba(226, 232, 240, 0.15)",
+                    color: "#e2e8f0",
+                    border: "1px solid rgba(226, 232, 240, 0.35)",
+                    fontWeight: 700,
+                  }}
+                />
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button
+                    variant="contained"
+                    onClick={() => router.push("/personality-test")}
+                    sx={{
+                      background: "linear-gradient(135deg, #06b6d4 0%, #22d3ee 50%, #a855f7 100%)",
+                      color: "#0b1120",
+                      px: 3,
+                      py: 1.4,
+                      fontWeight: 800,
+                      textTransform: "none",
+                      boxShadow: "0 10px 30px rgba(8, 47, 73, 0.4)",
+                      "&:hover": {
+                        background: "linear-gradient(135deg, #0ea5e9 0%, #38bdf8 50%, #c084fc 100%)",
+                      },
+                    }}
+                  >
+                    Start Personality Test
+                  </Button>
+                </motion.div>
+              </Box>
             </Box>
-          </Box>
+          )}
         </Paper>
       </motion.div>
 
@@ -2517,8 +2613,12 @@ Please provide me:
       {/* Feedback Dialog */}
       <FeedbackDialog
         open={showFeedbackDialog}
-        onClose={() => setShowFeedbackDialog(false)}
+        onClose={() => {
+          setShowFeedbackDialog(false);
+          setFeedbackMandatory(false);
+        }}
         testType="BBA"
+        mandatory={feedbackMandatory}
         onSubmit={async (feedback) => {
           if (!resultId || !userId) {
             alert("Unable to submit feedback: Missing result ID or user ID");
@@ -2532,6 +2632,10 @@ Please provide me:
               comment: feedback.comment,
             });
             alert("Thank you for your feedback!");
+            setFeedbackMandatory(false);
+            if (!hasPersonalityTest) {
+              setShowSecondTestDialog(true);
+            }
           } catch (error: any) {
             console.error("Error submitting feedback:", error);
             alert(error.response?.data?.error || "Failed to submit feedback. Please try again.");
@@ -2581,6 +2685,50 @@ Please provide me:
           }}
         />
       )}
+
+      {/* Prompt to start personality test after mandatory feedback */}
+      <Dialog
+        open={showSecondTestDialog}
+        onClose={() => setShowSecondTestDialog(false)}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{
+          sx: {
+            background: "linear-gradient(145deg, #0b1120 0%, #111827 100%)",
+            border: "1px solid rgba(56, 189, 248, 0.35)",
+            boxShadow: "0 20px 50px rgba(0,0,0,0.45)",
+          },
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 800, color: "#e0f2fe" }}>
+          Continue to Personality Test
+        </DialogTitle>
+        <DialogContent>
+          <Typography sx={{ color: "rgba(226, 232, 240, 0.8)" }}>
+            Great! You&apos;ve finished your BBA report. Move to the Personality Test to complete your 2-step profile.
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ pb: 3, pr: 3 }}>
+          <Button
+            variant="outlined"
+            onClick={() => setShowSecondTestDialog(false)}
+            sx={{ borderColor: "rgba(226, 232, 240, 0.35)", color: "#e2e8f0" }}
+          >
+            Later
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => router.push("/personality-test")}
+            sx={{
+              background: "linear-gradient(135deg, #06b6d4 0%, #22d3ee 50%, #a855f7 100%)",
+              color: "#0b1120",
+              fontWeight: 800,
+            }}
+          >
+            Start Now
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

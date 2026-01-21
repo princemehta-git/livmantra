@@ -30,6 +30,7 @@ export default function PersonalityResultCard({
   const [showFeedbackDialog, setShowFeedbackDialog] = useState(false);
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [feedbackShown, setFeedbackShown] = useState(false);
+  const [feedbackMandatory, setFeedbackMandatory] = useState(false);
   const reportContainerRef = React.useRef<HTMLDivElement>(null);
 
   if (!snapshot) {
@@ -54,19 +55,34 @@ export default function PersonalityResultCard({
     setCurrentDimension(newDimension);
   };
 
-  // Auto-show feedback popup after 20 seconds when user views the report
+  // Auto-show feedback when user has scrolled ~80% of the Habit tab (near end)
   useEffect(() => {
-    if (!feedbackShown && enrichedDimensions.length > 0) {
-      const timer = setTimeout(() => {
-        if (!feedbackShown) {
-          setShowFeedbackDialog(true);
-          setFeedbackShown(true);
-        }
-      }, 20000); // 20 seconds
+    const container = reportContainerRef.current;
+    if (!container) return;
 
-      return () => clearTimeout(timer);
-    }
-  }, [enrichedDimensions.length, feedbackShown]);
+    const handleScroll = () => {
+      if (feedbackShown || currentDimension !== 5) return;
+
+      const containerTop = container.offsetTop;
+      const containerHeight = container.scrollHeight || 1;
+      const scrollPosition = window.scrollY + window.innerHeight;
+      const progress = Math.max(
+        0,
+        Math.min((scrollPosition - containerTop) / containerHeight, 1)
+      );
+
+      if (progress >= 0.8) {
+        setFeedbackShown(true);
+        setFeedbackMandatory(true);
+        setShowFeedbackDialog(true);
+      }
+    };
+
+    handleScroll(); // check immediately in case user reloads near the end
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [currentDimension, feedbackShown]);
 
   const handleContactUs = () => {
     // Build WhatsApp message for personality test
@@ -638,8 +654,12 @@ Please provide me:
       {/* Feedback Dialog */}
       <FeedbackDialog
         open={showFeedbackDialog}
-        onClose={() => setShowFeedbackDialog(false)}
+        onClose={() => {
+          setShowFeedbackDialog(false);
+          setFeedbackMandatory(false);
+        }}
         testType="PERSONALITY"
+        mandatory={feedbackMandatory}
         onSubmit={async (feedback) => {
           if (!resultId || !userId) {
             alert("Unable to submit feedback: Missing result ID or user ID");
@@ -653,6 +673,7 @@ Please provide me:
               comment: feedback.comment,
             });
             alert("Thank you for your feedback!");
+            setFeedbackMandatory(false);
           } catch (error: any) {
             console.error("Error submitting feedback:", error);
             alert(error.response?.data?.error || "Failed to submit feedback. Please try again.");

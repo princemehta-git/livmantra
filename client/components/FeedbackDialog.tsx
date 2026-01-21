@@ -19,9 +19,10 @@ type Props = {
   onClose: () => void;
   onSubmit?: (feedback: { rating: number; comment: string }) => void | Promise<void>;
   testType?: string; // "BBA" or "PERSONALITY" or custom test name
+  mandatory?: boolean; // when true, dialog cannot be dismissed without submitting
 };
 
-export default function FeedbackDialog({ open, onClose, onSubmit, testType = "BBA" }: Props) {
+export default function FeedbackDialog({ open, onClose, onSubmit, testType = "BBA", mandatory = false }: Props) {
   // Get test name based on test type
   const getTestName = () => {
     if (testType === "PERSONALITY" || testType.toLowerCase().includes("personality")) {
@@ -64,7 +65,11 @@ export default function FeedbackDialog({ open, onClose, onSubmit, testType = "BB
     }
   };
 
-  const handleClose = () => {
+  const handleClose = (_event?: object, reason?: string) => {
+    // Block backdrop/escape closes when mandatory
+    if (mandatory && (reason === "backdropClick" || reason === "escapeKeyDown")) {
+      return;
+    }
     setRating(null);
     setComment("");
     onClose();
@@ -76,7 +81,7 @@ export default function FeedbackDialog({ open, onClose, onSubmit, testType = "BB
       onClose={handleClose}
       maxWidth="sm"
       fullWidth
-      disableEscapeKeyDown={false}
+      disableEscapeKeyDown={mandatory || false}
       PaperProps={{
         sx: {
           borderRadius: 2,
@@ -115,15 +120,17 @@ export default function FeedbackDialog({ open, onClose, onSubmit, testType = "BB
         <Typography variant="h5" sx={{ fontWeight: 700 }}>
           Share Your Feedback
         </Typography>
-        <IconButton
-          onClick={handleClose}
-          sx={{
-            color: "rgba(255, 255, 255, 0.7)",
-            "&:hover": { color: "#00ffff" },
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
+        {!mandatory && (
+          <IconButton
+            onClick={handleClose}
+            sx={{
+              color: "rgba(255, 255, 255, 0.7)",
+              "&:hover": { color: "#00ffff" },
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        )}
       </DialogTitle>
 
       <DialogContent sx={{ pt: 3 }}>
@@ -198,28 +205,30 @@ export default function FeedbackDialog({ open, onClose, onSubmit, testType = "BB
       </DialogContent>
 
       <DialogActions sx={{ p: 3, pt: 2, position: "relative", zIndex: 1 }}>
-        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} style={{ pointerEvents: "auto", zIndex: 2 }}>
-          <Button
-            onClick={handleClose}
-            sx={{
-              px: 3,
-              py: 1,
-              borderRadius: 1,
-              fontWeight: 600,
-              color: "rgba(255, 255, 255, 0.6)",
-              border: "1px solid rgba(255, 255, 255, 0.2)",
-              textTransform: "none",
-              pointerEvents: "auto",
-              "&:hover": {
-                borderColor: "rgba(255, 255, 255, 0.4)",
-                bgcolor: "rgba(255, 255, 255, 0.05)",
-                color: "rgba(255, 255, 255, 0.9)",
-              },
-            }}
-          >
-            Cancel
-          </Button>
-        </motion.div>
+        {!mandatory && (
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} style={{ pointerEvents: "auto", zIndex: 2 }}>
+            <Button
+              onClick={handleClose}
+              sx={{
+                px: 3,
+                py: 1,
+                borderRadius: 1,
+                fontWeight: 600,
+                color: "rgba(255, 255, 255, 0.6)",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                textTransform: "none",
+                pointerEvents: "auto",
+                "&:hover": {
+                  borderColor: "rgba(255, 255, 255, 0.4)",
+                  bgcolor: "rgba(255, 255, 255, 0.05)",
+                  color: "rgba(255, 255, 255, 0.9)",
+                },
+              }}
+            >
+              Cancel
+            </Button>
+          </motion.div>
+        )}
         <motion.div 
           whileHover={{ scale: 1.05 }} 
           whileTap={{ scale: 0.95 }} 

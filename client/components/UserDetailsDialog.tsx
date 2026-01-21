@@ -269,7 +269,9 @@ export default function UserDetailsDialog({
                             {test.score?.toFixed(1) || "N/A"}
                           </TableCell>
                           <TableCell sx={{ color: "#fff" }}>
-                            {test.snapshot?.bodyType || "N/A"}
+                            {test.type === "PERSONALITY"
+                              ? test.snapshot?.personalityName || "N/A"
+                              : test.snapshot?.bodyType || "N/A"}
                           </TableCell>
                           <TableCell>
                             <Chip

@@ -321,7 +321,7 @@ export default function AdminUserDetailPage() {
                           <TableCell sx={{ color: "#00ffff", fontWeight: 700 }}>Date</TableCell>
                           <TableCell sx={{ color: "#00ffff", fontWeight: 700 }}>Type</TableCell>
                           <TableCell sx={{ color: "#00ffff", fontWeight: 700 }}>Score</TableCell>
-                          <TableCell sx={{ color: "#00ffff", fontWeight: 700 }}>Body Type</TableCell>
+                          <TableCell sx={{ color: "#00ffff", fontWeight: 700 }}>Result Type</TableCell>
                           <TableCell sx={{ color: "#00ffff", fontWeight: 700 }}>Actions</TableCell>
                         </TableRow>
                       </TableHead>
@@ -336,7 +336,9 @@ export default function AdminUserDetailPage() {
                               {test.score?.toFixed(1) || "N/A"}
                             </TableCell>
                             <TableCell sx={{ color: "#fff" }}>
-                              {test.snapshot?.bodyType || "N/A"}
+                              {test.type === "PERSONALITY"
+                                ? test.snapshot?.personalityName || "N/A"
+                                : test.snapshot?.bodyType || "N/A"}
                             </TableCell>
                             <TableCell>
                               <Button

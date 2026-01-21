@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { getResult, mergeReport } from "../../lib/api";
+import { getResult, mergeReport, getUserTests } from "../../lib/api";
 import { Container, Typography, Box, CircularProgress } from "@mui/material";
 import BbaResultCard from "../../components/BbaResultCard";
 import PersonalityResultCard from "../../components/PersonalityResultCard";
@@ -39,6 +39,8 @@ export default function ResultPage() {
   const [currentSection, setCurrentSection] = useState(0); // 0: Body Type, 1: Prakriti, 2: Vikriti
   const [showHackingLoader, setShowHackingLoader] = useState(true);
   const [dataReady, setDataReady] = useState(false);
+  const [hasPersonalityTest, setHasPersonalityTest] = useState(false);
+  const [checkedTests, setCheckedTests] = useState(false);
 
   // Unlock audio immediately when page loads (navigation is user interaction)
   useEffect(() => {
@@ -74,6 +76,22 @@ export default function ResultPage() {
         setShowHackingLoader(false);
       });
   }, [id]);
+
+  // Check if user has already taken the personality test (for BBA result CTA logic)
+  useEffect(() => {
+    if (!result?.userId || checkedTests) return;
+
+    getUserTests()
+      .then((response) => {
+        const tests = response.data.tests || [];
+        const hasPersonality = tests.some((t: any) => t.type === "PERSONALITY");
+        setHasPersonalityTest(hasPersonality);
+      })
+      .catch((err) => {
+        console.error("Failed to check user tests:", err);
+      })
+      .finally(() => setCheckedTests(true));
+  }, [result?.userId, checkedTests]);
 
   const handleHackingComplete = () => {
     setShowHackingLoader(false);
@@ -313,6 +331,7 @@ export default function ResultPage() {
                       onSectionChange={setCurrentSection}
                       resultId={result?.id}
                       userId={result?.userId}
+                      hasPersonalityTest={hasPersonalityTest}
                     />
                   </Container>
                 </>

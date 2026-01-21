@@ -20,6 +20,8 @@ export default function Logo({
   sx,
   ...props
 }: LogoProps) {
+  const sources = ["/logo16_9.svg", "/logo.png"];
+  const [sourceIndex, setSourceIndex] = useState(0);
   const [imageError, setImageError] = useState(false);
 
   const logoContent = (
@@ -44,14 +46,20 @@ export default function Logo({
           }}
         >
           <Image
-            src="/logo.png"
+            src={sources[sourceIndex]}
             alt="LivMantra Logo"
             fill
             style={{
               objectFit: "contain",
             }}
             priority
-            onError={() => setImageError(true)}
+            onError={() => {
+              if (sourceIndex < sources.length - 1) {
+                setSourceIndex(sourceIndex + 1);
+              } else {
+                setImageError(true);
+              }
+            }}
           />
         </Box>
       ) : (

@@ -16,7 +16,7 @@ export default function Footer() {
   
   // Translations with fallbacks
   const translations = {
-    description: getTranslation("description", "Your personal AI wellness coach combining modern medicine, Ayurveda, and behavioral psychology to help you achieve optimal health."),
+    description: getTranslation("description", "Your Personal AI health coach!"),
     quickLinks: getTranslation("quickLinks", "Quick Links"),
     home: getTranslation("home", "Home"),
     freeTests: getTranslation("freeTests", "Free Tests"),
@@ -59,16 +59,32 @@ export default function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              <Box sx={{ mb: 3 }}>
-                <Logo
-                  width={180}
-                  height={72}
-                  animated={false}
-                />
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: { xs: "center", md: "flex-start" },
+                  gap: 2,
+                  mb: 3,
+                }}
+              >
+                <Logo width={200} height={80} animated={false} />
+                <Typography
+                  variant="h6"
+                  sx={{
+                    opacity: 0.9,
+                    lineHeight: 1.6,
+                    textAlign: { xs: "center", md: "left" },
+                    fontWeight: 700,
+                    letterSpacing: "0.02em",
+                    background: "linear-gradient(90deg, #00ffff 0%, #8a2be2 100%)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                  }}
+                >
+                  {translations.description}
+                </Typography>
               </Box>
-              <Typography variant="body2" sx={{ opacity: 0.8, lineHeight: 1.8 }}>
-                {translations.description}
-              </Typography>
             </motion.div>
           </Grid>
           <Grid item xs={12} md={4}>

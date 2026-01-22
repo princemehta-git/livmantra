@@ -239,7 +239,7 @@ export default function LoginPage() {
                 <Divider sx={{ flex: 1, borderColor: "rgba(0, 255, 255, 0.3)" }} />
               </Box>
 
-              <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+              <Box sx={{ display: "none", justifyContent: "center", mb: 2 }}>
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
                   onError={handleGoogleError}

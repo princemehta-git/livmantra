@@ -1,11 +1,14 @@
 import React from "react";
-import { Box, Container, Typography, Link, Grid } from "@mui/material";
+import { Box, Container, Typography, Link, Grid, Button } from "@mui/material";
 import { motion } from "framer-motion";
 import { useTranslation } from "next-i18next";
+import { FitnessCenter, ArrowForward } from "@mui/icons-material";
+import { useRouter } from "next/router";
 import Logo from "./Logo";
 
 export default function Footer() {
   const { t } = useTranslation("footer");
+  const router = useRouter();
   
   // Helper function to get translation with fallback
   const getTranslation = (key: string, fallback: string) => {
@@ -33,7 +36,6 @@ export default function Footer() {
       sx={{
         background: "rgba(10, 14, 39, 0.9)",
         color: "white",
-        py: 8,
         mt: 12,
         position: "relative",
         overflow: "hidden",
@@ -50,7 +52,165 @@ export default function Footer() {
         },
       }}
     >
-      <Container maxWidth="lg">
+      {/* Credibility Section */}
+      <Box
+        sx={{
+          borderBottom: "1px solid rgba(0, 255, 255, 0.1)",
+          py: { xs: 8, md: 10 },
+        }}
+      >
+        <Container maxWidth="lg">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <Box sx={{ textAlign: "center" }}>
+              <Box
+                sx={{
+                  display: "inline-flex",
+                  p: 2,
+                  borderRadius: "50%",
+                  background: "rgba(0, 255, 255, 0.1)",
+                  border: "1px solid rgba(0, 255, 255, 0.2)",
+                  mb: 4,
+                }}
+              >
+                <FitnessCenter sx={{ fontSize: 32, color: "#00ffff" }} />
+              </Box>
+              <Typography
+                variant="h2"
+                sx={{
+                  fontSize: { xs: "2rem", md: "2.5rem", lg: "3rem" },
+                  fontWeight: 400,
+                  color: "#ffffff",
+                  mb: 3,
+                  fontFamily: "serif",
+                }}
+              >
+                Designed by doctors. Built for real life.
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontSize: { xs: "1rem", md: "1.125rem" },
+                  color: "rgba(255, 255, 255, 0.7)",
+                  maxWidth: "800px",
+                  mx: "auto",
+                  mb: 4,
+                  lineHeight: 1.7,
+                }}
+              >
+                LivMantra is created by experienced doctors who believe health should feel understandable, habits should feel realistic, and guidance should feel humane.
+              </Typography>
+              <Typography
+                variant="overline"
+                sx={{
+                  fontSize: "0.75rem",
+                  fontWeight: 600,
+                  letterSpacing: "0.1em",
+                  color: "rgba(255, 255, 255, 0.5)",
+                  textTransform: "uppercase",
+                  display: "block",
+                }}
+              >
+                Follows the philosophy of{" "}
+                <Box
+                  component="span"
+                  sx={{
+                    color: "#ffffff",
+                    borderBottom: "1px solid rgba(0, 255, 255, 0.3)",
+                    pb: 0.5,
+                    mx: 0.5,
+                  }}
+                >
+                  My Expert Doctor Health Clinic
+                </Box>
+              </Typography>
+            </Box>
+          </motion.div>
+        </Container>
+      </Box>
+
+      {/* Final CTA Section */}
+      <Box
+        sx={{
+          background: "rgba(0, 0, 0, 0.3)",
+          py: { xs: 8, md: 10 },
+        }}
+      >
+        <Container maxWidth="lg">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <Box sx={{ textAlign: "center" }}>
+              <Typography
+                variant="h3"
+                sx={{
+                  fontSize: { xs: "1.5rem", md: "2rem" },
+                  fontWeight: 400,
+                  color: "#ffffff",
+                  mb: 4,
+                  lineHeight: 1.4,
+                }}
+              >
+                The first step is not changing everything.
+                <br />
+                It's understanding yourself.
+              </Typography>
+              <Button
+                variant="contained"
+                size="large"
+                onClick={() => router.push("/test")}
+                endIcon={<ArrowForward sx={{ fontSize: { xs: 18, md: 20 } }} />}
+                sx={{
+                  px: { xs: 3, sm: 4, md: 5 },
+                  py: { xs: 1.5, sm: 2, md: 2.5 },
+                  background: "#ffffff",
+                  color: "#0a0e27",
+                  borderRadius: "50px",
+                  fontWeight: 700,
+                  fontSize: { xs: "0.875rem", sm: "1rem", md: "1.125rem" },
+                  textTransform: "none",
+                  mb: 3,
+                  width: { xs: "90%", sm: "auto" },
+                  maxWidth: { xs: "100%", sm: "none" },
+                  whiteSpace: { xs: "normal", sm: "nowrap" },
+                  lineHeight: { xs: 1.4, sm: 1.5 },
+                  "& .MuiButton-endIcon": {
+                    ml: { xs: 1, md: 1.5 },
+                  },
+                  "&:hover": {
+                    background: "rgba(255, 255, 255, 0.9)",
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 4px 20px rgba(255, 255, 255, 0.3)",
+                  },
+                  transition: "all 0.3s ease",
+                }}
+              >
+                Start Free Body & Mind Assessment
+              </Button>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "rgba(255, 255, 255, 0.5)",
+                  fontSize: "0.875rem",
+                }}
+              >
+                No spam. No pressure. Just clarity.
+              </Typography>
+            </Box>
+          </motion.div>
+        </Container>
+      </Box>
+
+      {/* Main Footer Content */}
+      <Box sx={{ py: 8 }}>
+        <Container maxWidth="lg">
         <Grid container spacing={6}>
           <Grid item xs={12} md={4}>
             <motion.div
@@ -157,8 +317,29 @@ export default function Footer() {
               </Typography>
             </motion.div>
           </Grid>
-        </Grid>
-      </Container>
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* Copyright */}
+      <Box
+        sx={{
+          py: 3,
+          background: "rgba(0, 0, 0, 0.2)",
+          textAlign: "center",
+          borderTop: "1px solid rgba(0, 255, 255, 0.1)",
+        }}
+      >
+        <Typography
+          variant="body2"
+          sx={{
+            color: "rgba(255, 255, 255, 0.5)",
+            fontSize: "0.75rem",
+          }}
+        >
+          © {new Date().getFullYear()} LivMantra. All rights reserved.
+        </Typography>
+      </Box>
     </Box>
   );
 }

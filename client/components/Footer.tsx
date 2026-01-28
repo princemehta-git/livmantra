@@ -2,13 +2,23 @@ import React from "react";
 import { Box, Container, Typography, Link, Grid, Button } from "@mui/material";
 import { motion } from "framer-motion";
 import { useTranslation } from "next-i18next";
-import { FitnessCenter, ArrowForward } from "@mui/icons-material";
+import { FitnessCenter, ArrowForward, CheckCircle } from "@mui/icons-material";
 import { useRouter } from "next/router";
+import { useAuth } from "../contexts/AuthContext";
 import Logo from "./Logo";
 
 export default function Footer() {
   const { t } = useTranslation("footer");
   const router = useRouter();
+  const { user } = useAuth();
+
+  const handleStartTest = () => {
+    if (user) {
+      router.push("/test");
+    } else {
+      router.push("/login");
+    }
+  };
   
   // Helper function to get translation with fallback
   const getTranslation = (key: string, fallback: string) => {
@@ -165,7 +175,7 @@ export default function Footer() {
               <Button
                 variant="contained"
                 size="large"
-                onClick={() => router.push("/test")}
+                onClick={handleStartTest}
                 endIcon={<ArrowForward sx={{ fontSize: { xs: 18, md: 20 } }} />}
                 sx={{
                   px: { xs: 3, sm: 4, md: 5 },
@@ -194,15 +204,31 @@ export default function Footer() {
               >
                 Start Free Body & Mind Assessment
               </Button>
-              <Typography
-                variant="body2"
+              <Box
                 sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: { xs: 1.5, sm: 2, md: 3 },
                   color: "rgba(255, 255, 255, 0.5)",
                   fontSize: "0.875rem",
                 }}
               >
-                No spam. No pressure. Just clarity.
-              </Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, whiteSpace: "nowrap", flexShrink: 0 }}>
+                  <CheckCircle sx={{ fontSize: 14, color: "#00ffff", flexShrink: 0 }} />
+                  <span>No spam</span>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, whiteSpace: "nowrap", flexShrink: 0 }}>
+                  <CheckCircle sx={{ fontSize: 14, color: "#00ffff", flexShrink: 0 }} />
+                  <span>No pressure</span>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, whiteSpace: "nowrap", flexShrink: 0 }}>
+                  <CheckCircle sx={{ fontSize: 14, color: "#00ffff", flexShrink: 0 }} />
+                  <span>Just clarity</span>
+                </Box>
+              </Box>
             </Box>
           </motion.div>
         </Container>

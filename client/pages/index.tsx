@@ -136,20 +136,35 @@ export default function HomePage() {
         }}
       >
         <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1, width: "100%" }}>
-          <Grid container spacing={{ xs: 4, md: 6 }} alignItems="center">
+          <Grid container spacing={{ xs: 4, md: 0 }} alignItems="stretch" justifyContent="center">
             {/* Left Side - Logo and Tagline */}
-            <Grid item xs={12} md={6}>
+            <Grid
+              item
+              xs={12}
+              md={6}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: { md: "flex-end" },
+                pr: { md: 4 },
+                borderRight: { md: "1px solid rgba(255, 255, 255, 0.08)" },
+              }}
+            >
               <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 1, ease: "easeOut" }}
+                style={{ width: "100%", maxWidth: 480 }}
               >
                 <Box
                   sx={{
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
-                    gap: 3,
+                    justifyContent: "center",
+                    gap: { xs: 2.5, md: 3 },
+                    height: "100%",
+                    py: { md: 3 },
                   }}
                 >
                   <motion.div
@@ -160,8 +175,8 @@ export default function HomePage() {
                     <Box
                       sx={{
                         position: "relative",
-                        width: { xs: 280, sm: 350, md: 450, lg: 500 },
-                        height: { xs: 112, sm: 140, md: 180, lg: 200 },
+                        width: { xs: 440, sm: 520, md: 560, lg: 620 },
+                        height: { xs: 176, sm: 208, md: 224, lg: 248 },
                       }}
                     >
                       <Image
@@ -183,9 +198,9 @@ export default function HomePage() {
                     <Typography
                       variant="h4"
                       sx={{
-                        fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem", lg: "3.5rem" },
+                        fontSize: { xs: "1.25rem", sm: "1.5rem", md: "1.65rem", lg: "1.875rem" },
                         fontWeight: 700,
-                        lineHeight: 1.4,
+                        lineHeight: 1.35,
                         textAlign: "center",
                         background: "linear-gradient(90deg, #00ffff 0%, #8a2be2 100%)",
                         WebkitBackgroundClip: "text",
@@ -201,14 +216,14 @@ export default function HomePage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.6 }}
                   >
-                    <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
                       <Chip
                         icon={<MedicalServices sx={{ color: "#00ffff" }} />}
                         label="Designed by Doctors. Built around you."
                         sx={{
                           px: 2,
-                          py: 3,
-                          fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                          py: 2.5,
+                          fontSize: { xs: "0.75rem", sm: "0.8125rem" },
                           fontWeight: 600,
                           background: "rgba(0, 255, 255, 0.1)",
                           border: "1px solid rgba(0, 255, 255, 0.3)",
@@ -225,28 +240,55 @@ export default function HomePage() {
             </Grid>
 
             {/* Right Side - Main Content */}
-            <Grid item xs={12} md={6}>
+            <Grid
+              item
+              xs={12}
+              md={6}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: { md: "flex-start" },
+                pl: { md: 4 },
+              }}
+            >
               <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 1, ease: "easeOut" }}
+                style={{ width: "100%", maxWidth: 480 }}
               >
-                <Box sx={{ textAlign: "center", width: "100%" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: { xs: 2.5, md: 3 },
+                    height: "100%",
+                    textAlign: "center",
+                    width: "100%",
+                    py: { md: 3 },
+                    pt: { md: 8 },
+                  }}
+                >
                   {/* Main Heading */}
                   <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
+                    style={{ width: "100%" }}
                   >
                     <Typography
                       variant="h1"
                       sx={{ 
-                        fontSize: { xs: "1.25rem", sm: "1.5rem", md: "1.75rem", lg: "2rem" },
+                        fontSize: { xs: "1.25rem", sm: "1.375rem", md: "1.5rem", lg: "1.625rem" },
                         fontWeight: 400,
                         color: "#ffffff",
-                        mb: 3,
-                        lineHeight: 1.1,
+                        mb: 0,
+                        lineHeight: 1.5,
                         fontFamily: "serif",
+                        maxWidth: 480,
+                        mx: "auto",
                       }}
                     >
                       Understand your body, mind & behaviour.{" "}
@@ -254,7 +296,9 @@ export default function HomePage() {
                         component="span"
                         sx={{
                           fontStyle: "italic",
-                          color: "#00ffff",
+                          background: "linear-gradient(90deg, #00ffff 0%, #8a2be2 100%)",
+                          WebkitBackgroundClip: "text",
+                          WebkitTextFillColor: "transparent",
                         }}
                       >
                         Get Daily Guidance that fits your life.
@@ -267,18 +311,18 @@ export default function HomePage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.4 }}
+                    style={{ width: "100%" }}
                   >
-                    <Box>
+                    <Box sx={{ maxWidth: 480, mx: "auto" }}>
                       <Typography
                         variant="h6"
                         sx={{
-                          color: "rgba(255, 255, 255, 0.7)",
+                          color: "rgba(255, 255, 255, 0.9)",
                           fontWeight: 300,
-                          fontSize: { xs: "1rem", sm: "1.125rem", md: "1.25rem" },
-                          maxWidth: "800px",
-                          mx: "auto",
-                          lineHeight: 1.6,
+                          fontSize: { xs: "1rem", sm: "1.0625rem", md: "1.125rem" },
+                          lineHeight: 1.65,
                           textAlign: "center",
+                          letterSpacing: "0.01em",
                         }}
                       >
                         No more random health advice
@@ -286,13 +330,12 @@ export default function HomePage() {
                       <Typography
                         variant="h6"
                         sx={{
-                          color: "rgba(255, 255, 255, 0.7)",
-                          fontWeight: 300,
-                          fontSize: { xs: "1rem", sm: "1.125rem", md: "1.25rem" },
-                          maxWidth: "800px",
-                          mx: "auto",
-                          lineHeight: 1.6,
+                          color: "rgba(255, 255, 255, 0.9)",
+                          fontWeight: 500,
+                          fontSize: { xs: "1rem", sm: "1.0625rem", md: "1.125rem" },
+                          lineHeight: 1.65,
                           textAlign: "center",
+                          letterSpacing: "0.01em",
                         }}
                       >
                         Just Clarity.
@@ -1400,19 +1443,19 @@ export default function HomePage() {
                     width: "100%",
                     maxWidth: { xs: "100%", sm: "500px" },
                     height: "100%",
-                    background: "rgba(255, 255, 255, 0.03)",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    background: "rgba(255, 255, 255, 0.06)",
+                    border: "1px solid rgba(255, 255, 255, 0.22)",
                     borderRadius: 3,
                   }}
                 >
                   <Typography
                     variant="h5"
                     sx={{
-                      color: "rgba(255, 255, 255, 0.7)",
+                      color: "rgba(255, 255, 255, 0.92)",
                       fontWeight: 400,
                       mb: 3,
                       pb: 2,
-                      borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+                      borderBottom: "1px solid rgba(255, 255, 255, 0.2)",
                       fontFamily: "serif",
                       fontSize: "1.5rem",
                     }}
@@ -1432,18 +1475,18 @@ export default function HomePage() {
                               width: 24,
                               height: 24,
                               borderRadius: "50%",
-                              background: "rgba(255, 255, 255, 0.1)",
+                              background: "rgba(255, 255, 255, 0.15)",
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
                             }}
                           >
-                            <Cancel sx={{ color: "rgba(255, 255, 255, 0.5)", fontSize: 16 }} />
+                            <Cancel sx={{ color: "rgba(255, 255, 255, 0.8)", fontSize: 16 }} />
                           </Box>
                         </ListItemIcon>
                         <ListItemText
                           primary={
-                            <Typography sx={{ color: "rgba(255, 255, 255, 0.6)", fontSize: "1rem" }}>
+                            <Typography sx={{ color: "rgba(255, 255, 255, 0.88)", fontSize: "1rem", fontWeight: 500 }}>
                               {text}
                             </Typography>
                           }

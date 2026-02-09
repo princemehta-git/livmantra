@@ -18,6 +18,12 @@ import { useAuth } from "../contexts/AuthContext";
 import { useTranslation } from "next-i18next";
 import Header from "../components/Header";
 
+function getRedirectPath(redirect: string | string[] | undefined): string {
+  const path = typeof redirect === "string" ? redirect : Array.isArray(redirect) ? redirect[0] : undefined;
+  if (path && path.startsWith("/") && !path.includes("//")) return path;
+  return "/dashboard";
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const { login, googleLogin, user, loading } = useAuth();
@@ -26,12 +32,13 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const redirectTo = getRedirectPath(router.query.redirect);
 
   useEffect(() => {
     if (!loading && user) {
-      router.push("/dashboard");
+      router.push(redirectTo);
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, redirectTo]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +47,7 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-      router.push("/dashboard");
+      router.push(redirectTo);
     } catch (err: any) {
       setError(err.message || "Login failed");
     } finally {
@@ -53,7 +60,7 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       await googleLogin(credentialResponse.credential);
-      router.push("/dashboard");
+      router.push(redirectTo);
     } catch (err: any) {
       setError(err.message || "Google login failed");
     } finally {

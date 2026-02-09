@@ -205,7 +205,7 @@ export default function TestPage() {
   const { t, i18n } = useTranslation("test");
   const total = 35;
 
-  const { user: authUser } = useAuth();
+  const { user: authUser, loading: authLoading } = useAuth();
   const [openModal, setOpenModal] = useState(false);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
@@ -225,6 +225,15 @@ export default function TestPage() {
   const [checkingLock, setCheckingLock] = useState(true);
   const [hasGoneBack, setHasGoneBack] = useState(false);
   const [lastAnsweredIndex, setLastAnsweredIndex] = useState(-1);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (authLoading) return;
+    if (!authUser) {
+      router.push("/login?redirect=/test");
+      return;
+    }
+  }, [authUser, authLoading, router]);
 
   useEffect(() => {
     // Check if user has already taken BBA test
@@ -449,6 +458,15 @@ export default function TestPage() {
   const hintResult = getHintForLevel();
   const displayBodyHint = hintResult.bodyTypeHint;
   const displayPrakritiHint = hintResult.prakritiHint;
+
+  // Wait for auth and redirect if not logged in
+  if (authLoading || !authUser) {
+    return (
+      <Box sx={{ minHeight: "100vh", background: "#0a0e27", display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <Typography sx={{ color: "#00ffff" }}>{t("loading", { ns: "common", defaultValue: "Loading..." })}</Typography>
+      </Box>
+    );
+  }
 
   // Handle loading state
   if (checkingLock) {

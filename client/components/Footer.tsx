@@ -5,7 +5,7 @@ import { useTranslation } from "next-i18next";
 import { FitnessCenter, ArrowForward, CheckCircle } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import { useAuth } from "../contexts/AuthContext";
-import Logo from "./Logo";
+import Image from "next/image";
 
 export default function Footer() {
   const { t } = useTranslation("footer");
@@ -29,7 +29,7 @@ export default function Footer() {
   
   // Translations with fallbacks
   const translations = {
-    description: getTranslation("description", "Your Personal AI health coach!"),
+    description: getTranslation("description", "Personal AI Health Coach!"),
     quickLinks: getTranslation("quickLinks", "Quick Links"),
     home: getTranslation("home", "Home"),
     freeTests: getTranslation("freeTests", "Free Tests"),
@@ -254,7 +254,14 @@ export default function Footer() {
                   mb: 3,
                 }}
               >
-                <Logo width={200} height={80} animated={false} />
+                <Box sx={{ position: "relative", width: 200, height: 80, flexShrink: 0 }}>
+                  <Image
+                    src="/logo.png"
+                    alt="LivMantra"
+                    fill
+                    style={{ objectFit: "contain" }}
+                  />
+                </Box>
                 <Typography
                   variant="h6"
                   sx={{
